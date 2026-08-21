@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { articles } from "@/lib/articles";
-import { articleUi } from "@/lib/articleTranslations";
+import { articleUi, getLocalizedArticle } from "@/lib/articleTranslations";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -27,8 +27,7 @@ async function ArticlesContent({ params }: { params: Promise<{ locale: string }>
         <div className="grid gap-6 md:grid-cols-2">
           {articles.map((article) => (
             <Link key={article.slug} href={`/${locale}/articles/${article.slug}`} className="group overflow-hidden rounded-xl border border-line bg-card no-underline transition-all hover:-translate-y-1 hover:shadow-lg">
-              <div className="relative aspect-[16/9] overflow-hidden bg-line"><Image src={article.image} alt={article.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover transition-transform duration-500 group-hover:scale-105" /></div>
-              <div className="p-6"><div className="flex justify-between gap-3 font-mono text-[10px] uppercase tracking-wider text-rust"><span>{article.category}</span><span>{article.readTime}</span></div><h2 className="mt-3 font-display text-2xl leading-tight text-pine-dark group-hover:text-rust">{article.title}</h2><p className="mt-3 leading-relaxed text-ink-soft">{article.excerpt}</p><span className="mt-5 inline-block font-display text-sm font-semibold uppercase tracking-wide text-pine-dark">{ui.read} →</span></div>
+              {(() => { const localized = getLocalizedArticle(article, locale); return <><div className="relative aspect-[16/9] overflow-hidden bg-line"><Image src={localized.image} alt={localized.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover transition-transform duration-500 group-hover:scale-105" /></div><div className="p-6"><div className="flex justify-between gap-3 font-mono text-[10px] uppercase tracking-wider text-rust"><span>{localized.category}</span><span>{localized.readTime}</span></div><h2 className="mt-3 font-display text-2xl leading-tight text-pine-dark group-hover:text-rust">{localized.title}</h2><p className="mt-3 leading-relaxed text-ink-soft">{localized.excerpt}</p><span className="mt-5 inline-block font-display text-sm font-semibold uppercase tracking-wide text-pine-dark">{ui.read} →</span></div></>; })()}
             </Link>
           ))}
         </div>
