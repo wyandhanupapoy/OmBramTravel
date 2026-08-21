@@ -37,21 +37,32 @@ export function DriverDashboardClient({ driver, bookings }: DriverDashboardClien
 
     if (tracking && activeBookingId) {
       if ("geolocation" in navigator) {
-        watchId = navigator.geolocation.watchPosition(
+        // Send a first immediate position using getCurrentPosition (more aggressive)
+        navigator.geolocation.getCurrentPosition(
           async (position) => {
             const { latitude, longitude, speed, heading } = position.coords;
-            // Send to our backend API quietly
             try {
               await fetch("/api/driver/track", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  bookingId: activeBookingId,
-                  lat: latitude,
-                  lng: longitude,
-                  speed,
-                  heading
-                })
+                body: JSON.stringify({ bookingId: activeBookingId, lat: latitude, lng: longitude, speed, heading })
+              });
+              setLocationError("");
+            } catch (err) {}
+          },
+          (error) => { console.warn("Initial GPS fetch failed"); },
+          { enableHighAccuracy: false, maximumAge: 60000, timeout: 15000 }
+        );
+
+        // Then start continuous watching
+        watchId = navigator.geolocation.watchPosition(
+          async (position) => {
+            const { latitude, longitude, speed, heading } = position.coords;
+            try {
+              await fetch("/api/driver/track", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ bookingId: activeBookingId, lat: latitude, lng: longitude, speed, heading })
               });
               setLocationError("");
             } catch (err) {
@@ -59,12 +70,16 @@ export function DriverDashboardClient({ driver, bookings }: DriverDashboardClien
             }
           },
           (error) => {
-            setLocationError("GPS signal lost. Please check permissions.");
+            console.warn("GPS Error", error);
+            // Don't show scary error immediately if it's just a timeout, Android does this often
+            if (error.code !== 3) {
+              setLocationError("Sinyal GPS lemah atau izin lokasi belum diberikan browser.");
+            }
           },
-          { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
+          { enableHighAccuracy: true, maximumAge: 10000, timeout: 20000 } // Increased timeout significantly for Android
         );
       } else {
-        setLocationError("Geolocation is not supported by this browser.");
+        setLocationError("Browser ini tidak mendukung GPS.");
       }
     }
 
