@@ -6,6 +6,7 @@ export function ScrollVideoSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const frameRef = useRef<number | null>(null);
+  const hasPrimedVideoRef = useRef(false);
   const [progress, setProgress] = useState(0);
   const [isReady, setIsReady] = useState(false);
 
@@ -23,11 +24,29 @@ export function ScrollVideoSection() {
       const travelled = Math.min(Math.max(-bounds.top, 0), scrollableDistance);
       const nextProgress = travelled / scrollableDistance;
 
-      video.currentTime = nextProgress * video.duration;
+      try {
+        video.currentTime = nextProgress * video.duration;
+      } catch {
+        return;
+      }
       setProgress(nextProgress);
     };
 
+    const primeVideo = () => {
+      if (hasPrimedVideoRef.current || video.readyState < HTMLMediaElement.HAVE_METADATA) return;
+      hasPrimedVideoRef.current = true;
+
+      // Mobile browsers often require a muted play before allowing frame seeking.
+      video.play().then(() => {
+        video.pause();
+        requestUpdate();
+      }).catch(() => {
+        hasPrimedVideoRef.current = false;
+      });
+    };
+
     const requestUpdate = () => {
+      primeVideo();
       if (frameRef.current === null) {
         frameRef.current = window.requestAnimationFrame(updateVideo);
       }
@@ -35,18 +54,25 @@ export function ScrollVideoSection() {
 
     const handleLoadedMetadata = () => {
       setIsReady(true);
+      primeVideo();
       requestUpdate();
     };
 
     video.addEventListener("loadedmetadata", handleLoadedMetadata);
+    video.addEventListener("canplay", handleLoadedMetadata);
     window.addEventListener("scroll", requestUpdate, { passive: true });
     window.addEventListener("resize", requestUpdate);
+    window.addEventListener("touchstart", primeVideo, { passive: true });
+    window.addEventListener("pointerdown", primeVideo, { passive: true });
     requestUpdate();
 
     return () => {
       video.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      video.removeEventListener("canplay", handleLoadedMetadata);
       window.removeEventListener("scroll", requestUpdate);
       window.removeEventListener("resize", requestUpdate);
+      window.removeEventListener("touchstart", primeVideo);
+      window.removeEventListener("pointerdown", primeVideo);
       if (frameRef.current !== null) window.cancelAnimationFrame(frameRef.current);
     };
   }, []);
@@ -59,8 +85,9 @@ export function ScrollVideoSection() {
           className="absolute inset-0 h-full w-full object-cover opacity-25"
           src="/scrollvideo.webm"
           muted
+          autoPlay
           playsInline
-          preload="metadata"
+          preload="auto"
           aria-hidden="true"
         />
         <div className="absolute inset-0 bg-pine-dark/55" />
