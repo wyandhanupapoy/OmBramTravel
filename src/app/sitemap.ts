@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
 import { db } from '@/lib/db'
 import { locales } from '@/i18n/config'
+import { articles } from '@/lib/articles'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
@@ -13,7 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const sitemap: MetadataRoute.Sitemap = []
 
   // Static routes
-  const staticRoutes = ['', '/tours', '/about', '/contact', '/faq']
+  const staticRoutes = ['', '/tours', '/articles', '/about', '/contact', '/faq']
   
   staticRoutes.forEach((route) => {
     locales.forEach((locale) => {
@@ -34,6 +35,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: tour.updatedAt,
         changeFrequency: 'monthly',
         priority: 0.9,
+      })
+    })
+  })
+
+  articles.forEach((article) => {
+    locales.forEach((locale) => {
+      sitemap.push({
+        url: `${baseUrl}/${locale}/articles/${article.slug}`,
+        lastModified: new Date(article.publishedAt),
+        changeFrequency: 'monthly',
+        priority: 0.7,
       })
     })
   })

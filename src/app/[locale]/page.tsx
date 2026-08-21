@@ -1,11 +1,11 @@
 import { useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { ScrollVideoSection } from "@/components/home/ScrollVideoSection";
 import { HomeTourSearch } from "@/components/home/HomeTourSearch";
 import { db } from "@/lib/db";
-import { VehicleShowcase } from "@/components/home/VehicleShowcase";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -50,7 +50,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           stops: tour.stops.map((stop) => stop.nameId)
         }))}
       />
-      <VehicleShowcase />
       <ScrollVideoSection />
       <TrustBar />
       <ServicesSection />
@@ -81,31 +80,42 @@ function HeroSection() {
       {/* Radial glow */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_85%_-10%,rgba(242,169,60,0.16),transparent_55%)]" />
 
-      <div className="relative max-w-[1180px] mx-auto px-7">
-        <span className="font-mono text-xs tracking-[0.16em] uppercase font-medium text-beacon mb-5 block">
-          {t("eyebrow")}
-        </span>
-        <h1 className="font-display uppercase tracking-tight text-[clamp(38px,5.4vw,64px)] leading-[1.08] mb-6 max-w-[680px]">
-          {t.rich("title", {
-            em: (chunks) => <em className="not-italic text-beacon">{chunks}</em>
-          })}
-        </h1>
-        <p className="text-lg text-white/80 max-w-[520px] mb-9">
-          {t("subtitle")}
-        </p>
-        <div className="flex gap-4 flex-wrap">
-          <Link
-            href="/tours"
-            className="inline-flex items-center gap-2 font-display uppercase tracking-wide text-sm font-semibold px-7 py-4 rounded bg-beacon text-pine-dark no-underline hover:-translate-y-0.5 transition-transform"
-          >
-            {t("cta1")}
-          </Link>
-          <a
-            href="#how-it-works"
-            className="inline-flex items-center gap-2 font-display uppercase tracking-wide text-sm font-semibold px-7 py-4 rounded bg-transparent text-paper border border-white/40 no-underline hover:border-white transition-colors"
-          >
-            {t("cta2")}
-          </a>
+      <div className="relative mx-auto grid max-w-[1180px] items-center gap-10 px-7 lg:grid-cols-[1.05fr_0.95fr] lg:gap-4">
+        <div className="relative z-10">
+          <span className="font-mono text-xs tracking-[0.16em] uppercase font-medium text-beacon mb-5 block">
+            {t("eyebrow")}
+          </span>
+          <h1 className="font-display uppercase tracking-tight text-[clamp(38px,5.4vw,64px)] leading-[1.08] mb-6 max-w-[680px]">
+            {t.rich("title", {
+              em: (chunks) => <em className="not-italic text-beacon">{chunks}</em>
+            })}
+          </h1>
+          <p className="text-lg text-white/80 max-w-[520px] mb-9">
+            {t("subtitle")}
+          </p>
+          <div className="flex gap-4 flex-wrap">
+            <Link
+              href="/tours"
+              className="inline-flex items-center gap-2 font-display uppercase tracking-wide text-sm font-semibold px-7 py-4 rounded bg-beacon text-pine-dark no-underline hover:-translate-y-0.5 transition-transform"
+            >
+              {t("cta1")}
+            </Link>
+            <a
+              href="#how-it-works"
+              className="inline-flex items-center gap-2 font-display uppercase tracking-wide text-sm font-semibold px-7 py-4 rounded bg-transparent text-paper border border-white/40 no-underline hover:border-white transition-colors"
+            >
+              {t("cta2")}
+            </a>
+          </div>
+        </div>
+
+        <div className="relative h-[260px] sm:h-[330px] lg:h-[390px]" aria-label="Armada kendaraan Om Bram">
+          <div className="absolute inset-x-0 bottom-4 h-px bg-beacon/30" />
+          <Image src="/hiace.png" alt="Toyota Hiace travel Om Bram" fill sizes="(max-width: 1024px) 100vw, 48vw" className="object-contain object-bottom drop-shadow-[0_18px_18px_rgba(0,0,0,0.28)]" priority />
+          <Image src="/kijanginova.png" alt="Toyota Kijang Innova Om Bram" width={360} height={240} className="absolute -bottom-2 -left-8 w-[48%] object-contain drop-shadow-[0_12px_12px_rgba(0,0,0,0.24)]" />
+          <Image src="/avanza.png" alt="Toyota Avanza Om Bram" width={300} height={210} className="absolute -bottom-1 -right-3 w-[42%] object-contain drop-shadow-[0_12px_12px_rgba(0,0,0,0.24)]" />
+          <Image src="/isuzuelf.webp" alt="Isuzu ELF travel Om Bram" width={340} height={220} className="absolute -top-3 left-2 w-[38%] object-contain opacity-90 drop-shadow-[0_10px_10px_rgba(0,0,0,0.2)]" />
+          <span className="absolute right-0 top-4 rounded-full border border-white/25 bg-pine-dark/30 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-white/70">Armada siap jalan</span>
         </div>
       </div>
     </section>
