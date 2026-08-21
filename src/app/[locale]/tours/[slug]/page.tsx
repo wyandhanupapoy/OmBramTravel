@@ -31,13 +31,15 @@ export default async function TourDetailPage({
   let highlight = tour.highlightId;
 
   try {
-    const translatedTitle = tTourData(`${tour.slug}.title`);
-    const translatedDesc = tTourData(`${tour.slug}.desc`);
-    const translatedHighlight = tTourData(`${tour.slug}.highlight`);
+    if (!tour.slug.startsWith("bandung-")) {
+      const translatedTitle = tTourData(`${tour.slug}.title`);
+      const translatedDesc = tTourData(`${tour.slug}.desc`);
+      const translatedHighlight = tTourData(`${tour.slug}.highlight`);
 
-    if (translatedTitle && !translatedTitle.includes("tourData.")) title = translatedTitle;
-    if (translatedDesc && !translatedDesc.includes("tourData.")) desc = translatedDesc;
-    if (translatedHighlight && !translatedHighlight.includes("tourData.")) highlight = translatedHighlight;
+      if (translatedTitle && !translatedTitle.includes("tourData.")) title = translatedTitle;
+      if (translatedDesc && !translatedDesc.includes("tourData.")) desc = translatedDesc;
+      if (translatedHighlight && !translatedHighlight.includes("tourData.")) highlight = translatedHighlight;
+    }
   } catch (e) {}
 
   // JSON-LD SEO

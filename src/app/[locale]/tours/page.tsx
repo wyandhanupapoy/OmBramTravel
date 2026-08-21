@@ -38,9 +38,11 @@ export default async function ToursPage({ params }: { params: Promise<{ locale: 
           let title = tour.titleId;
           try {
             // Fallback to DB titleId if translation key is missing
-            const translatedTitle = tTourData(`${tour.slug}.title`);
-            if (translatedTitle && !translatedTitle.includes("tourData.")) {
-              title = translatedTitle;
+            if (!tour.slug.startsWith("bandung-")) {
+              const translatedTitle = tTourData(`${tour.slug}.title`);
+              if (translatedTitle && !translatedTitle.includes("tourData.")) {
+                title = translatedTitle;
+              }
             }
           } catch(e) {}
 

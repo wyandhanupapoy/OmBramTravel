@@ -3,6 +3,8 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ScrollVideoSection } from "@/components/home/ScrollVideoSection";
+import { HomeTourSearch } from "@/components/home/HomeTourSearch";
+import { db } from "@/lib/db";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -18,10 +20,35 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
-export default function HomePage() {
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const tours = await db.tour.findMany({
+    where: { isActive: true },
+    select: {
+      slug: true,
+      titleId: true,
+      basePrice: true,
+      duration: true,
+      zone: true,
+      stops: { orderBy: { order: "asc" }, select: { nameId: true } }
+    },
+    orderBy: { basePrice: "asc" }
+  });
+
   return (
     <>
       <HeroSection />
+      <HomeTourSearch
+        locale={locale}
+        tours={tours.map((tour) => ({
+          slug: tour.slug,
+          title: tour.titleId,
+          basePrice: tour.basePrice,
+          duration: tour.duration,
+          zone: tour.zone,
+          stops: tour.stops.map((stop) => stop.nameId)
+        }))}
+      />
       <ScrollVideoSection />
       <TrustBar />
       <ServicesSection />
