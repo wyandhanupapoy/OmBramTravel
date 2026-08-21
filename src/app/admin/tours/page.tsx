@@ -54,7 +54,7 @@ export default async function AdminTours() {
                   )}
                 </td>
                 <td className="p-4 text-right">
-                  <button className="text-pine-dark underline text-sm hover:text-beacon transition-colors">Edit</button>
+                  <Link href={`/admin/tours/${tour.id}/edit`} className="rounded-md border border-line-strong px-3 py-1.5 text-xs font-semibold text-pine-dark transition-colors hover:border-pine hover:bg-pine-dark hover:text-paper">Edit Tour</Link>
                 </td>
               </tr>
             ))}

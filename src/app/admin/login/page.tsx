@@ -56,7 +56,7 @@ export default function AdminLogin() {
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full flex justify-center items-center font-display uppercase tracking-wide text-sm font-semibold px-6 py-4 rounded bg-pine-dark text-paper hover:-translate-y-0.5 transition-transform disabled:opacity-50 disabled:transform-none"
+            className="flex w-full items-center justify-center rounded-lg bg-pine-dark px-6 py-4 font-display text-sm font-semibold uppercase tracking-wide text-paper shadow-lg transition-all hover:-translate-y-0.5 hover:bg-pine focus:outline-none focus:ring-2 focus:ring-beacon/70 active:translate-y-0 disabled:cursor-wait disabled:opacity-50 disabled:transform-none"
           >
             {loading ? "Memproses..." : "Masuk"}
           </button>

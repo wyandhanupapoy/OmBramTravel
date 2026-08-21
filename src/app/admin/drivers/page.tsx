@@ -51,7 +51,7 @@ export default async function AdminDrivers() {
                 </td>
                 <td className="p-4 font-mono">{driver._count.bookings} trip</td>
                 <td className="p-4 text-right">
-                  <button className="text-pine-dark underline text-sm hover:text-beacon transition-colors">Edit</button>
+                  <Link href={`/admin/drivers/${driver.id}/edit`} className="rounded-md border border-line-strong px-3 py-1.5 text-xs font-semibold text-pine-dark transition-colors hover:border-pine hover:bg-pine-dark hover:text-paper">Edit Driver</Link>
                 </td>
               </tr>
             ))}

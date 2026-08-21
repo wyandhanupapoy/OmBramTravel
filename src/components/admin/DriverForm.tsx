@@ -2,11 +2,21 @@
 import { useState } from "react";
 import { createDriver } from "@/app/actions/driver";
 
-export function DriverForm() {
+type DriverFormData = {
+  id?: string;
+  name: string;
+  phone: string;
+  licenseNo: string;
+  email: string;
+  vehicle?: { id: string; name: string; plate: string; type: string; capacity: number } | null;
+};
+
+export function DriverForm({ initialDriver, action = createDriver }: { initialDriver?: DriverFormData; action?: typeof createDriver }) {
   const [loading, setLoading] = useState(false);
 
   return (
-    <form action={createDriver} onSubmit={() => setLoading(true)} className="space-y-10">
+    <form action={action} onSubmit={() => setLoading(true)} className="space-y-10">
+      {initialDriver && <><input type="hidden" name="driverId" value={initialDriver.id} /><input type="hidden" name="vehicleId" value={initialDriver.vehicle?.id || ""} /></>}
       
       {/* Biodata Driver */}
       <div className="bg-card border border-line rounded p-8">
@@ -14,15 +24,15 @@ export function DriverForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium mb-1.5">Nama Lengkap</label>
-            <input name="name" required placeholder="Nama sesuai KTP/SIM" className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine" />
+            <input name="name" required defaultValue={initialDriver?.name} placeholder="Nama sesuai KTP/SIM" className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine" />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1.5">No. Telepon / WhatsApp</label>
-            <input name="phone" required placeholder="08..." className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine" />
+            <input name="phone" required defaultValue={initialDriver?.phone} placeholder="08..." className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine" />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1.5">Nomor SIM</label>
-            <input name="licenseNo" required className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine font-mono" />
+            <input name="licenseNo" required defaultValue={initialDriver?.licenseNo} className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine font-mono" />
           </div>
         </div>
       </div>
@@ -33,11 +43,11 @@ export function DriverForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium mb-1.5">Email Login</label>
-            <input name="email" type="email" required placeholder="driver@ombram.com" className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine" />
+            <input name="email" type="email" required defaultValue={initialDriver?.email} placeholder="driver@ombram.com" className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine" />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1.5">Password</label>
-            <input name="password" type="password" required className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine" />
+            <input name="password" type="password" required={!initialDriver} placeholder={initialDriver ? "Kosongkan jika tidak diubah" : undefined} className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine" />
           </div>
         </div>
       </div>
@@ -48,15 +58,15 @@ export function DriverForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div>
             <label className="block text-sm font-medium mb-1.5">Merek & Tipe</label>
-            <input name="vehicleName" required placeholder="Toyota Hiace / Innova" className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine" />
+            <input name="vehicleName" required defaultValue={initialDriver?.vehicle?.name} placeholder="Toyota Hiace / Innova" className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine" />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1.5">Plat Nomor</label>
-            <input name="vehiclePlate" required placeholder="D 1234 ABC" className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine font-mono uppercase" />
+            <input name="vehiclePlate" required defaultValue={initialDriver?.vehicle?.plate} placeholder="D 1234 ABC" className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine font-mono uppercase" />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1.5">Jenis Mobil</label>
-            <select name="vehicleType" className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine">
+            <select name="vehicleType" defaultValue={initialDriver?.vehicle?.type || "Minivan"} className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine">
               <option value="Minivan">Minivan</option>
               <option value="MPV">MPV</option>
               <option value="SUV">SUV</option>
@@ -65,14 +75,14 @@ export function DriverForm() {
           </div>
           <div>
             <label className="block text-sm font-medium mb-1.5">Kapasitas</label>
-            <input name="vehicleCapacity" type="number" defaultValue="7" required className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine font-mono" />
+            <input name="vehicleCapacity" type="number" defaultValue={initialDriver?.vehicle?.capacity || 7} required className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:border-pine font-mono" />
           </div>
         </div>
       </div>
 
-      <div className="flex justify-end gap-4 sticky bottom-4">
-        <button type="submit" disabled={loading} className="font-display uppercase tracking-wide text-sm font-semibold px-8 py-4 rounded bg-pine-dark text-paper hover:-translate-y-0.5 transition-transform shadow-lg disabled:opacity-50 disabled:transform-none">
-          {loading ? "Menyimpan..." : "Simpan Driver"}
+      <div className="sticky bottom-4 flex justify-end gap-4">
+        <button type="submit" disabled={loading} className="rounded-lg bg-pine-dark px-8 py-4 font-display text-sm font-semibold uppercase tracking-wide text-paper shadow-lg transition-all hover:-translate-y-0.5 hover:bg-pine focus:outline-none focus:ring-2 focus:ring-beacon/70 active:translate-y-0 disabled:cursor-wait disabled:opacity-50 disabled:transform-none">
+          {loading ? "Menyimpan..." : initialDriver ? "Simpan Perubahan" : "Simpan Driver"}
         </button>
       </div>
 

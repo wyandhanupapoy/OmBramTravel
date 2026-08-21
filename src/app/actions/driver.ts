@@ -43,3 +43,33 @@ export async function createDriver(formData: FormData) {
   revalidatePath("/admin/drivers");
   redirect("/admin/drivers");
 }
+
+export async function updateDriver(formData: FormData) {
+  const driverId = formData.get("driverId") as string;
+  const vehicleId = formData.get("vehicleId") as string;
+
+  await db.$transaction([
+    db.vehicle.update({
+      where: { id: vehicleId },
+      data: {
+        name: formData.get("vehicleName") as string,
+        plate: formData.get("vehiclePlate") as string,
+        type: formData.get("vehicleType") as string,
+        capacity: Number(formData.get("vehicleCapacity"))
+      }
+    }),
+    db.driver.update({
+      where: { id: driverId },
+      data: {
+        name: formData.get("name") as string,
+        phone: formData.get("phone") as string,
+        licenseNo: formData.get("licenseNo") as string,
+        email: formData.get("email") as string,
+        ...(formData.get("password") ? { password: formData.get("password") as string } : {})
+      }
+    })
+  ]);
+
+  revalidatePath("/admin/drivers");
+  redirect("/admin/drivers");
+}

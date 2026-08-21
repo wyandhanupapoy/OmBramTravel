@@ -26,13 +26,14 @@ export function AssignDriverDropdown({ orderId, drivers }: Props) {
   };
 
   if (loading) {
-    return <span className="text-xs text-pine-dark font-medium animate-pulse">Menugaskan...</span>;
+    return <span className="inline-flex items-center gap-2 rounded-md bg-beacon/20 px-3 py-2 text-xs font-semibold text-pine-dark animate-pulse">Menugaskan...</span>;
   }
 
   return (
     <select 
       onChange={handleAssign}
-      className="text-xs px-2 py-1.5 border border-line-strong rounded focus:outline-none focus:border-pine cursor-pointer bg-white"
+      aria-label="Assign driver"
+      className="cursor-pointer rounded-md border border-line-strong bg-white px-3 py-2 text-xs font-semibold text-pine-dark transition-colors hover:border-pine hover:bg-mist focus:outline-none focus:ring-2 focus:ring-beacon/70"
     >
       <option value="">+ Assign Driver</option>
       {drivers.map(d => (

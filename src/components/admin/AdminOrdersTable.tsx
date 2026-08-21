@@ -16,7 +16,7 @@ export function AdminOrdersTable({ orders, drivers }: { orders: any[], drivers: 
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      await fetch("/api/admin/orders/edit", {
+      const response = await fetch("/api/admin/orders/edit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -25,6 +25,7 @@ export function AdminOrdersTable({ orders, drivers }: { orders: any[], drivers: 
           reportResolved: true 
         })
       });
+      if (!response.ok) throw new Error("Gagal mengupdate pesanan");
       window.location.reload();
     } catch (e) {
       alert("Gagal mengupdate pesanan");
@@ -77,13 +78,20 @@ export function AdminOrdersTable({ orders, drivers }: { orders: any[], drivers: 
                 </td>
                 <td className="p-4">
                   {order.driver ? (
-                    <span className="text-pine-dark font-medium">{order.driver.name}</span>
+                    <div>
+                      <span className="text-pine-dark font-medium">{order.driver.name}</span>
+                      <span className={`mt-1 block w-fit rounded px-1.5 py-0.5 text-[10px] font-mono font-bold uppercase ${order.status === "completed" ? "bg-ok/15 text-ok" : order.status === "touring" ? "bg-pine/15 text-pine-dark" : "bg-beacon/20 text-pine-dark"}`}>
+                        {order.status === "en-route" ? "Menuju pickup" : order.status === "touring" ? "Tour berjalan" : order.status}
+                      </span>
+                    </div>
                   ) : (
                     <AssignDriverDropdown orderId={order.id} drivers={drivers} />
                   )}
                 </td>
                 <td className="p-4">
-                  <button onClick={() => handleEdit(order)} className="text-pine underline text-sm hover:text-pine-dark font-medium">Edit</button>
+                  <button onClick={() => handleEdit(order)} className="rounded-md border border-line-strong px-3 py-1.5 text-xs font-semibold text-pine-dark transition-colors hover:border-pine hover:bg-pine-dark hover:text-paper focus:outline-none focus:ring-2 focus:ring-beacon/70">
+                    Edit Pesanan
+                  </button>
                 </td>
               </tr>
             ))}
@@ -133,17 +141,17 @@ export function AdminOrdersTable({ orders, drivers }: { orders: any[], drivers: 
             </div>
 
             <div className="flex justify-end gap-3">
-              <button 
+              <button
                 onClick={() => setSelectedOrder(null)} 
-                className="px-6 py-2.5 rounded font-medium border border-line hover:bg-line/50 transition-colors"
+                className="rounded-lg border border-line-strong px-5 py-2.5 text-sm font-semibold text-ink-soft transition-colors hover:bg-line/50 focus:outline-none focus:ring-2 focus:ring-beacon/70"
                 disabled={isSubmitting}
               >
                 Batal
               </button>
-              <button 
+              <button
                 onClick={handleSave} 
                 disabled={isSubmitting}
-                className="px-6 py-2.5 rounded font-medium bg-pine-dark text-paper hover:bg-pine transition-colors disabled:opacity-50"
+                className="rounded-lg bg-pine-dark px-5 py-2.5 text-sm font-semibold text-paper shadow-sm transition-colors hover:bg-pine focus:outline-none focus:ring-2 focus:ring-beacon/70 disabled:cursor-wait disabled:opacity-50"
               >
                 {isSubmitting ? "Menyimpan..." : "Simpan & Selesaikan Laporan"}
               </button>
