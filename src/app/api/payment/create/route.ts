@@ -7,22 +7,51 @@ import { generateOrderCode } from "@/lib/utils";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { tourId, date, adults, children, luggage, pickupPoint, customerName, customerPhone, customerEmail, notes, locale } = body;
+    const { tourId, date, adults, children, luggage, pickupPoint, customerName, customerPhone, customerEmail, notes, locale, customDistance } = body;
 
-    const tour = await db.tour.findUnique({ where: { id: tourId } });
-    if (!tour) return NextResponse.json({ error: "Tour not found" }, { status: 404 });
+    let tour;
+    let finalSubtotal = 0;
+    let luggageTotal = 0;
+    let extraTotal = 0;
+    let totalIDR = 0;
 
-    // Server-side recalculation to prevent tampering
-    const totalPax = adults + children;
-    const extraPax = Math.max(0, totalPax - tour.maxPax);
+    if (tourId === "custom") {
+      // Find or create the virtual "Custom Tour" in the DB
+      tour = await db.tour.findUnique({ where: { slug: "custom" } });
+      if (!tour) {
+        tour = await db.tour.create({
+          data: {
+            slug: "custom", titleId: "Tur Kustom", titleEn: "Custom Tour", titleZh: "Custom Tour",
+            zone: "custom", duration: "custom", basePrice: 300000, maxPax: 7,
+            descId: "Tur sesuai pilihan pelanggan", descEn: "Custom client route",
+          }
+        });
+      }
+      
+      // Calculate custom price
+      const BASE_PRICE = 300000;
+      const RATE_PER_KM = 5000;
+      const distance = customDistance || 0;
+      finalSubtotal = BASE_PRICE;
+      extraTotal = Math.ceil(distance) * RATE_PER_KM;
+      totalIDR = finalSubtotal + extraTotal; // Custom tour ignores children/luggage modifiers for now to keep it simple
 
-    const adultTotal = adults * tour.basePrice;
-    const childTotal = children * (tour.basePrice * ((100 - tour.childDisc) / 100));
-    const extraTotal = extraPax * tour.extraPaxFee;
-    const luggageTotal = luggage * tour.luggageFee;
-    
-    const subtotal = adultTotal + childTotal;
-    const totalIDR = subtotal + extraTotal + luggageTotal;
+    } else {
+      tour = await db.tour.findUnique({ where: { id: tourId } });
+      if (!tour) return NextResponse.json({ error: "Tour not found" }, { status: 404 });
+
+      // Server-side recalculation to prevent tampering
+      const totalPax = adults + children;
+      const extraPax = Math.max(0, totalPax - tour.maxPax);
+
+      const adultTotal = adults * tour.basePrice;
+      const childTotal = children * (tour.basePrice * ((100 - tour.childDisc) / 100));
+      extraTotal = extraPax * tour.extraPaxFee;
+      luggageTotal = luggage * tour.luggageFee;
+      
+      finalSubtotal = adultTotal + childTotal;
+      totalIDR = finalSubtotal + extraTotal + luggageTotal;
+    }
 
     const orderCode = generateOrderCode();
 
@@ -41,7 +70,7 @@ export async function POST(req: Request) {
     const booking = await db.booking.create({
       data: {
         orderCode,
-        tourId,
+        tourId: tour.id, // Use the resolved tour object's ID
         date: new Date(date),
         pax: adults,
         children,
@@ -51,10 +80,10 @@ export async function POST(req: Request) {
         customerPhone,
         customerEmail,
         notes: finalNotes,
-        subtotal,
+        subtotal: finalSubtotal,
         extraFees: extraTotal + luggageTotal,
         totalIDR,
-        displayCurrency: "IDR", // Simplification: actual charge is always in IDR
+        displayCurrency: "IDR",
       }
     });
 
