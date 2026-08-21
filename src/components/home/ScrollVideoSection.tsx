@@ -7,6 +7,7 @@ export function ScrollVideoSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const frameRef = useRef<number | null>(null);
   const hasPrimedVideoRef = useRef(false);
+  const targetTimeRef = useRef(0);
   const [progress, setProgress] = useState(0);
   const [isReady, setIsReady] = useState(false);
 
@@ -24,10 +25,14 @@ export function ScrollVideoSection() {
       const travelled = Math.min(Math.max(-bounds.top, 0), scrollableDistance);
       const nextProgress = travelled / scrollableDistance;
 
-      try {
-        video.currentTime = nextProgress * video.duration;
-      } catch {
-        return;
+      targetTimeRef.current = nextProgress * video.duration;
+      if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+        try {
+          video.pause();
+          video.currentTime = targetTimeRef.current;
+        } catch {
+          return;
+        }
       }
       setProgress(nextProgress);
     };
@@ -37,9 +42,13 @@ export function ScrollVideoSection() {
       hasPrimedVideoRef.current = true;
 
       // Mobile browsers often require a muted play before allowing frame seeking.
+      video.load();
       video.play().then(() => {
-        video.pause();
-        requestUpdate();
+        window.requestAnimationFrame(() => {
+          video.pause();
+          if (Number.isFinite(video.duration)) video.currentTime = targetTimeRef.current;
+          requestUpdate();
+        });
       }).catch(() => {
         hasPrimedVideoRef.current = false;
       });
@@ -58,7 +67,16 @@ export function ScrollVideoSection() {
       requestUpdate();
     };
 
+    const handleLoadedData = () => {
+      if (Number.isFinite(video.duration)) {
+        video.pause();
+        video.currentTime = targetTimeRef.current;
+      }
+      requestUpdate();
+    };
+
     video.addEventListener("loadedmetadata", handleLoadedMetadata);
+    video.addEventListener("loadeddata", handleLoadedData);
     video.addEventListener("canplay", handleLoadedMetadata);
     window.addEventListener("scroll", requestUpdate, { passive: true });
     window.addEventListener("resize", requestUpdate);
@@ -68,6 +86,7 @@ export function ScrollVideoSection() {
 
     return () => {
       video.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      video.removeEventListener("loadeddata", handleLoadedData);
       video.removeEventListener("canplay", handleLoadedMetadata);
       window.removeEventListener("scroll", requestUpdate);
       window.removeEventListener("resize", requestUpdate);
@@ -85,7 +104,6 @@ export function ScrollVideoSection() {
           className="absolute inset-0 h-full w-full object-cover opacity-25"
           src="/scrollvideo.webm"
           muted
-          autoPlay
           playsInline
           preload="auto"
           aria-hidden="true"
