@@ -7,7 +7,8 @@ export async function assignDriverToOrder(orderId: string, driverId: string) {
     where: { id: orderId },
     data: { 
       driverId, 
-      status: "assigned" 
+      status: "assigned",
+      tourStartedAt: null
     }
   });
   

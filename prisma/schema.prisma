@@ -83,6 +83,7 @@ model Booking {
   driverId      String?
   driver        Driver?   @relation(fields: [driverId], references: [id])
   status        String    @default("new")
+  tourStartedAt DateTime?
 
   rating        Int?
   reviewText    String?

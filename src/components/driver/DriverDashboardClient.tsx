@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface Booking {
   id: string;
@@ -10,7 +11,8 @@ interface Booking {
   date: Date;
   pax: number;
   status: string;
-  tour: { titleId: string };
+  tour: { titleId: string; duration: string };
+  tourStartedAt?: Date | string | null;
   isReported?: boolean;
 }
 
@@ -20,18 +22,24 @@ interface DriverDashboardClientProps {
 }
 
 export function DriverDashboardClient({ driver, bookings }: DriverDashboardClientProps) {
+  const router = useRouter();
   const [activeBookingId, setActiveBookingId] = useState<string | null>(null);
   const [tracking, setTracking] = useState(false);
   const [locationError, setLocationError] = useState("");
 
   // Auto-detect if any booking is already en-route
   useEffect(() => {
-    const enRouteBooking = bookings.find(b => b.status === "en-route");
-    if (enRouteBooking) {
-      setActiveBookingId(enRouteBooking.id);
+    const activeBooking = bookings.find(b => b.status === "en-route" || b.status === "touring");
+    if (activeBooking) {
+      setActiveBookingId(activeBooking.id);
       setTracking(true);
     }
   }, [bookings]);
+
+  useEffect(() => {
+    const interval = setInterval(() => router.refresh(), 30000);
+    return () => clearInterval(interval);
+  }, [router]);
 
   useEffect(() => {
     let watchId: number;
@@ -91,31 +99,29 @@ export function DriverDashboardClient({ driver, bookings }: DriverDashboardClien
     };
   }, [tracking, activeBookingId]);
 
-  const handleStartTrip = async (bookingId: string) => {
-    setTracking(true);
-    setActiveBookingId(bookingId);
-    
-    // Update booking status in DB
-    await fetch("/api/driver/status", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ bookingId, status: "en-route" })
-    });
-  };
+  const handleStatusChange = async (bookingId: string, status: "en-route" | "arrived" | "completed") => {
+    if (status === "completed" && !confirm("Akhiri tour ini?")) return;
 
-  const handleEndTrip = async (bookingId: string) => {
-    if (!confirm("Akhiri perjalanan ini?")) return;
-    
-    setTracking(false);
-    setActiveBookingId(null);
-    
-    await fetch("/api/driver/status", {
+    const response = await fetch("/api/driver/status", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ bookingId, status: "completed" })
+      body: JSON.stringify({ bookingId, status })
     });
-    
-    window.location.reload(); // Refresh list
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => null);
+      alert(data?.error || "Status perjalanan gagal diperbarui.");
+      return;
+    }
+
+    if (status === "completed") {
+      setTracking(false);
+      setActiveBookingId(null);
+    } else {
+      setTracking(true);
+      setActiveBookingId(bookingId);
+    }
+    router.refresh();
   };
 
   const handleReport = async (bookingId: string) => {
@@ -179,6 +185,15 @@ export function DriverDashboardClient({ driver, bookings }: DriverDashboardClien
               </div>
               <h4 className="font-display text-lg text-pine-dark mb-1">{b.tour.titleId}</h4>
               <p className="text-sm font-medium mb-4">{b.customerName} • {b.pax} Penumpang</p>
+
+              <div className={`mb-3 rounded-lg border p-3 text-sm ${b.status === "assigned" ? "border-beacon/40 bg-beacon/10 text-pine-dark" : b.status === "touring" ? "border-ok/30 bg-ok/10 text-ok" : "border-pine/30 bg-pine/10 text-pine-dark"}`}>
+                <div className="font-bold uppercase tracking-wide text-xs">
+                  {b.status === "assigned" ? "Peringatan jemput penumpang" : b.status === "en-route" ? "Menuju lokasi penumpang" : "Tour sedang berjalan"}
+                </div>
+                <div className="mt-1">
+                  {b.status === "assigned" ? "Segera berangkat ke titik pickup." : b.status === "en-route" ? "Klik setelah sudah tiba di lokasi penumpang." : "Tour akan otomatis diakhiri setelah durasi paket habis."}
+                </div>
+              </div>
               
               <div className="bg-paper p-3 rounded-lg text-sm flex gap-3 items-start border border-line mb-3">
                 <div className="mt-0.5 text-beacon">
@@ -202,17 +217,19 @@ export function DriverDashboardClient({ driver, bookings }: DriverDashboardClien
                 Hubungi Tamu
               </a>
               
-              {activeBookingId === b.id ? (
-                <button onClick={() => handleEndTrip(b.id)} className="flex-1 py-3 bg-rust text-white rounded-xl font-display uppercase tracking-wide text-sm shadow-md animate-pulse">
-                  Akhiri Trip
+              {b.status === "assigned" && (
+                <button onClick={() => handleStatusChange(b.id, "en-route")} disabled={tracking} className="flex-1 py-3 bg-beacon text-pine-dark rounded-xl font-display uppercase tracking-wide text-sm shadow-md disabled:opacity-50">
+                  Berangkat ke Penumpang
                 </button>
-              ) : (
-                <button 
-                  onClick={() => handleStartTrip(b.id)} 
-                  disabled={tracking && activeBookingId !== b.id}
-                  className="flex-1 py-3 bg-beacon text-pine-dark rounded-xl font-display uppercase tracking-wide text-sm shadow-md disabled:opacity-50"
-                >
-                  Mulai Trip
+              )}
+              {b.status === "en-route" && (
+                <button onClick={() => handleStatusChange(b.id, "arrived")} className="flex-1 py-3 bg-pine-dark text-paper rounded-xl font-display uppercase tracking-wide text-sm shadow-md">
+                  Sampai di Lokasi Penumpang
+                </button>
+              )}
+              {b.status === "touring" && (
+                <button onClick={() => handleStatusChange(b.id, "completed")} className="flex-1 py-3 bg-rust text-white rounded-xl font-display uppercase tracking-wide text-sm shadow-md animate-pulse">
+                  Akhiri Tour
                 </button>
               )}
             </div>

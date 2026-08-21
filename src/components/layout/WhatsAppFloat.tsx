@@ -5,7 +5,7 @@ export function WhatsAppFloat() {
   return (
     <a
       href={getWhatsAppUrl()}
-      className="wa-float"
+      className="wa-float print:hidden"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat WhatsApp"
