@@ -14,6 +14,7 @@ export async function POST(req: Request) {
     let luggageTotal = 0;
     let extraTotal = 0;
     let totalIDR = 0;
+    let extraPax = 0;
 
     if (tourId === "custom") {
       // Find or create the virtual "Custom Tour" in the DB
@@ -42,7 +43,7 @@ export async function POST(req: Request) {
 
       // Server-side recalculation to prevent tampering
       const totalPax = adults + children;
-      const extraPax = Math.max(0, totalPax - tour.maxPax);
+      extraPax = Math.max(0, totalPax - tour.maxPax);
 
       const adultTotal = adults * tour.basePrice;
       const childTotal = children * (tour.basePrice * ((100 - tour.childDisc) / 100));
