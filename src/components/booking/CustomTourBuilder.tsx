@@ -26,6 +26,7 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
   const [date, setDate] = useState<string>("");
   const [adults, setAdults] = useState<number>(1);
   const [children, setChildren] = useState<number>(0);
+  const [extraLuggage, setExtraLuggage] = useState<number>(0);
   const [name, setName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -41,6 +42,7 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
     setDate(sessionStorage.getItem("ct_date") || "");
     setAdults(parseInt(sessionStorage.getItem("ct_adults") || "1"));
     setChildren(parseInt(sessionStorage.getItem("ct_children") || "0"));
+    setExtraLuggage(parseInt(sessionStorage.getItem("ct_luggage") || "0"));
     setName(sessionStorage.getItem("ct_name") || "");
     setPhone(sessionStorage.getItem("ct_phone") || "");
     setEmail(sessionStorage.getItem("ct_email") || "");
@@ -54,11 +56,12 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
       sessionStorage.setItem("ct_date", date);
       sessionStorage.setItem("ct_adults", adults.toString());
       sessionStorage.setItem("ct_children", children.toString());
+      sessionStorage.setItem("ct_luggage", extraLuggage.toString());
       sessionStorage.setItem("ct_name", name);
       sessionStorage.setItem("ct_phone", phone);
       sessionStorage.setItem("ct_email", email);
     }
-  }, [pickup, destinations, date, adults, children, name, phone, email, isMounted]);
+  }, [pickup, destinations, date, adults, children, extraLuggage, name, phone, email, isMounted]);
 
   const [routeLine, setRouteLine] = useState<[number, number][]>([]);
   const [distanceKm, setDistanceKm] = useState(0);
@@ -66,7 +69,8 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
   // Pricing
   const BASE_PRICE = 300000;
   const RATE_PER_KM = 5000;
-  const price = BASE_PRICE + (Math.ceil(distanceKm) * RATE_PER_KM);
+  const LUGGAGE_FEE = 50000;
+  const price = BASE_PRICE + (Math.ceil(distanceKm) * RATE_PER_KM) + (extraLuggage * LUGGAGE_FEE);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -154,7 +158,7 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           tourId: "custom", // Special flag
-          date, adults, children, luggage: 0,
+          date, adults, children, luggage: extraLuggage,
           pickupPoint: pickup,
           customerName: name, customerPhone: phone, customerEmail: email,
           notes: customNotes,
@@ -232,6 +236,10 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
               <div className="flex-1">
                 <label className="block text-sm font-medium mb-1.5">{t("children")}</label>
                 <input required type="number" min="0" max="15" value={children} onChange={e => setChildren(parseInt(e.target.value))} className="w-full border border-line rounded px-4 py-3 focus:outline-none focus:border-pine" />
+              </div>
+              <div className="flex-1">
+                <label className="block text-sm font-medium mb-1.5">Koper Besar</label>
+                <input required type="number" min="0" max="10" value={extraLuggage} onChange={e => setExtraLuggage(parseInt(e.target.value))} className="w-full border border-line rounded px-4 py-3 focus:outline-none focus:border-pine" />
               </div>
             </div>
           </div>

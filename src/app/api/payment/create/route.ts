@@ -29,13 +29,14 @@ export async function POST(req: Request) {
         });
       }
       
-      // Calculate custom price
       const BASE_PRICE = 300000;
       const RATE_PER_KM = 5000;
+      const LUGGAGE_FEE = 50000;
       const distance = customDistance || 0;
       finalSubtotal = BASE_PRICE;
       extraTotal = Math.ceil(distance) * RATE_PER_KM;
-      totalIDR = finalSubtotal + extraTotal; // Custom tour ignores children/luggage modifiers for now to keep it simple
+      luggageTotal = (luggage || 0) * LUGGAGE_FEE;
+      totalIDR = finalSubtotal + extraTotal + luggageTotal;
 
     } else {
       tour = await db.tour.findUnique({ where: { id: tourId } });
@@ -48,7 +49,7 @@ export async function POST(req: Request) {
       const adultTotal = adults * tour.basePrice;
       const childTotal = children * (tour.basePrice * ((100 - tour.childDisc) / 100));
       extraTotal = extraPax * tour.extraPaxFee;
-      luggageTotal = luggage * tour.luggageFee;
+      luggageTotal = (luggage || 0) * tour.luggageFee;
       
       finalSubtotal = adultTotal + childTotal;
       totalIDR = finalSubtotal + extraTotal + luggageTotal;
@@ -104,6 +105,14 @@ export async function POST(req: Request) {
           price: extraTotal,
           quantity: 1,
           name: `Distance Charge (${Math.ceil(customDistance || 0)} KM)`,
+        });
+      }
+      if (luggage > 0) {
+        item_details.push({
+          id: `custom-luggage`,
+          price: 50000,
+          quantity: luggage,
+          name: `Large Luggage Charge`,
         });
       }
     } else {

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
 import { LiveMap } from "@/components/track/LiveMap";
 import { PrintButton } from "@/components/track/PrintButton";
+import { ReviewForm } from "@/components/track/ReviewForm";
 import { formatIDR } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 
@@ -78,6 +79,14 @@ export default async function TrackPage({
             <h1 className="font-display uppercase tracking-tight text-3xl text-pine-dark mb-4">{t("statusPending")}</h1>
             <p className="text-ink-soft mb-8">Selesaikan pembayaran untuk kode pesanan <strong className="font-mono">{orderCode}</strong>.</p>
           </div>
+        )}
+
+        {isCompleted && booking.driverId && (
+          <ReviewForm 
+            orderCode={orderCode} 
+            initialRating={booking.rating} 
+            initialReview={booking.reviewText} 
+          />
         )}
 
         {/* Invoice Card UI */}

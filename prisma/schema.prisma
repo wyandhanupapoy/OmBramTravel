@@ -84,6 +84,9 @@ model Booking {
   driver        Driver?   @relation(fields: [driverId], references: [id])
   status        String    @default("new")
 
+  rating        Int?
+  reviewText    String?
+
   trackings     Tracking[]
 
   createdAt     DateTime  @default(now())
