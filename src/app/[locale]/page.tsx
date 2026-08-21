@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { ScrollVideoSection } from "@/components/home/ScrollVideoSection";
 import { HomeTourSearch } from "@/components/home/HomeTourSearch";
 import { db } from "@/lib/db";
+import { VehicleShowcase } from "@/components/home/VehicleShowcase";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -49,6 +50,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           stops: tour.stops.map((stop) => stop.nameId)
         }))}
       />
+      <VehicleShowcase />
       <ScrollVideoSection />
       <TrustBar />
       <ServicesSection />

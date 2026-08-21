@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { db } from "@/lib/db";
 import { TourCard } from "@/components/tours/TourCard";
+import { HomeTourSearch } from "@/components/home/HomeTourSearch";
 import type { Metadata } from "next";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -18,7 +19,7 @@ export default async function ToursPage({ params }: { params: Promise<{ locale: 
 
   const tours = await db.tour.findMany({
     where: { isActive: true },
-    include: { _count: { select: { stops: true } } },
+    include: { _count: { select: { stops: true } }, stops: { orderBy: { order: "asc" } } },
     orderBy: { createdAt: 'desc' }
   });
 
@@ -32,6 +33,18 @@ export default async function ToursPage({ params }: { params: Promise<{ locale: 
           {t("subtitle")}
         </p>
       </div>
+
+      <HomeTourSearch
+        locale={locale}
+        tours={tours.map((tour) => ({
+          slug: tour.slug,
+          title: tour.titleId,
+          basePrice: tour.basePrice,
+          duration: tour.duration,
+          zone: tour.zone,
+          stops: tour.stops.map((stop) => stop.nameId)
+        }))}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {tours.map(tour => {

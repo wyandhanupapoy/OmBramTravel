@@ -2,7 +2,20 @@ import { PrismaClient } from "@prisma/client";
 import destinationsData from "../src/lib/destinationsData.json";
 
 const prisma = new PrismaClient();
-const image = "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=1200&h=800&fit=crop";
+const destinationImages = {
+  city: [
+    "https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1518005020951-eccb494ad742?w=1200&h=800&fit=crop"
+  ],
+  nature: [
+    "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&h=800&fit=crop"
+  ],
+  family: [
+    "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=1200&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1519331379826-f10be5486c6f?w=1200&h=800&fit=crop"
+  ]
+} as const;
 
 function slugify(value: string, index: number) {
   const slug = value.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -32,6 +45,7 @@ async function main() {
     const zone = classify(name);
     const slug = slugify(name, index);
     const basePrice = priceFor(index, zone);
+    const images = destinationImages[zone as keyof typeof destinationImages] || destinationImages.nature;
 
     await prisma.tour.upsert({
       where: { slug },
@@ -41,6 +55,7 @@ async function main() {
         descId: `Rute wisata menuju ${name} dengan pilihan destinasi sekitar Bandung Raya.`,
         descEn: `A Bandung Raya route to ${name} with nearby destinations included.`,
         basePrice,
+        images: JSON.stringify(images),
         zone,
         duration: zone === "city" ? "half-day" : "full-day",
         stops: {
@@ -64,7 +79,7 @@ async function main() {
         extraPaxFee: 100000,
         luggageFee: 50000,
         childDisc: 50,
-        images: JSON.stringify([image]),
+        images: JSON.stringify(images),
         titleId: `${name} & Bandung Raya`,
         titleEn: `${name} & Bandung Raya`,
         titleZh: name,
