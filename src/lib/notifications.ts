@@ -57,7 +57,7 @@ export async function sendEmailReceipt(data: NotificationData) {
           </table>
 
           <div style="text-align: center; margin-top: 30px;">
-            <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://ombramtravel.vercel.app'}/id/track/${data.orderCode}" style="background-color: #123024; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Cek Pesanan & Live Tracking</a>
+            <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://om-bram-travel.vercel.app'}/id/track/${data.orderCode}" style="background-color: #123024; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Cek Pesanan & Live Tracking</a>
           </div>
         </div>
       </div>
@@ -85,7 +85,7 @@ export async function sendWhatsAppReceipt(data: NotificationData) {
   }
 
   try {
-    const trackingUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://ombramtravel.vercel.app'}/id/track/${data.orderCode}`;
+    const trackingUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://om-bram-travel.vercel.app'}/id/track/${data.orderCode}`;
     
     const message = `*PEMBAYARAN BERHASIL - OM BRAM TRAVEL* 🎉\n\nHalo ${data.customerName},\nTerima kasih, pembayaran Anda untuk pesanan *${data.orderCode}* telah kami terima.\n\n*Detail Pesanan:*\nTour: ${data.tourName}\nTanggal: ${data.date}\nPax: ${data.paxInfo}\nTotal: ${data.totalIDR}\n\nPantau status driver dan titik kumpul Anda secara *Live* melalui tautan berikut pada hari-H:\n👉 ${trackingUrl}\n\nSalam Hangat,\n*Om Bram City Tour*`;
 
