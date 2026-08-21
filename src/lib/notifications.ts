@@ -107,3 +107,21 @@ export async function sendWhatsAppReceipt(data: NotificationData) {
     return false;
   }
 }
+
+export async function sendAdminWhatsApp(data: NotificationData) {
+  if (!process.env.FONNTE_API_TOKEN) return false;
+
+  try {
+    const adminPhone = "083870405395"; // Nomor Admin Sesuai Permintaan
+    const message = `🔔 *PESANAN BARU MASUK!* 🔔\n\nPesanan *${data.orderCode}* baru saja LUNAS.\n\n*Pelanggan:* ${data.customerName} (${data.customerPhone})\n*Tour:* ${data.tourName}\n*Tgl:* ${data.date}\n*Total:* ${data.totalIDR}\n\nSilakan buka Dashboard Admin untuk Assign Driver:\n${process.env.NEXT_PUBLIC_BASE_URL || 'https://om-bram-travel.vercel.app'}/admin`;
+
+    const response = await fetch("https://api.fonnte.com/send", {
+      method: "POST",
+      headers: { "Authorization": process.env.FONNTE_API_TOKEN },
+      body: new URLSearchParams({ target: adminPhone, message: message, countryCode: "62" }),
+    });
+    return response.ok;
+  } catch (err) {
+    return false;
+  }
+}

@@ -29,11 +29,10 @@ export function LiveMap({ bookingId, tourName, pickupGeoJson }: { bookingId: str
   useEffect(() => {
     import("leaflet").then((L) => {
       setCarIcon(L.icon({
-        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
+        iconUrl: "https://cdn-icons-png.flaticon.com/512/741/741407.png",
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+        popupAnchor: [0, -20],
       }));
       setPickupIcon(L.icon({
         iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
@@ -59,7 +58,7 @@ export function LiveMap({ bookingId, tourName, pickupGeoJson }: { bookingId: str
     };
 
     fetchLocation();
-    const interval = setInterval(fetchLocation, 10000);
+    const interval = setInterval(fetchLocation, 3000);
     return () => clearInterval(interval);
   }, [bookingId]);
 

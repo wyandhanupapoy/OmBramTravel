@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { formatIDR } from "@/lib/utils";
+import { AutoRefresh } from "@/components/admin/AutoRefresh";
 
 export default async function AdminDashboard() {
   const [totalOrders, paidOrders, totalRevenue] = await Promise.all([
@@ -19,6 +20,7 @@ export default async function AdminDashboard() {
 
   return (
     <div>
+      <AutoRefresh intervalMs={5000} />
       <h1 className="font-display text-3xl text-pine-dark mb-8">Dashboard</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">

@@ -60,7 +60,8 @@ export async function POST(req: Request) {
       try {
         await Promise.all([
           sendEmailReceipt(notifData),
-          sendWhatsAppReceipt(notifData)
+          sendWhatsAppReceipt(notifData),
+          sendAdminWhatsApp(notifData)
         ]);
         console.log("Notifikasi berhasil dikirim!");
       } catch (err) {

@@ -25,7 +25,10 @@ export default async function TrackPage({
 
   const isSuccess = status === "success" || booking.paymentStatus === "paid";
   const isEnRoute = booking.status === "en-route";
-  const showMap = isSuccess || isEnRoute; // Selalu tunjukkan map jika sudah lunas
+  const isCompleted = booking.status === "completed";
+  
+  // Tunjukkan map hanya jika lunas dan BELUM selesai
+  const showMap = isSuccess && !isCompleted && booking.paymentStatus === "paid";
 
   let title = booking.tour.titleId;
   if (locale === "en") title = booking.tour.titleEn;
@@ -42,9 +45,19 @@ export default async function TrackPage({
       <div className="max-w-[800px] mx-auto px-7 text-center print:hidden">
         
         {/* Status Header */}
-        {isEnRoute ? (
+        {isCompleted ? (
           <div className="mb-10">
-            <h1 className="font-display uppercase tracking-tight text-3xl text-pine-dark mb-2">Driver Sedang Menjemput</h1>
+            <div className="w-20 h-20 bg-pine text-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <h1 className="font-display uppercase tracking-tight text-3xl text-pine-dark mb-4">Perjalanan Selesai</h1>
+            <p className="text-ink-soft mb-8">
+              Terima kasih telah menjelajahi Bandung bersama Om Bram Travel. Sampai jumpa di perjalanan berikutnya!
+            </p>
+          </div>
+        ) : isEnRoute ? (
+          <div className="mb-10">
+            <h1 className="font-display uppercase tracking-tight text-3xl text-pine-dark mb-2">Driver Sedang Menjemput / Bertugas</h1>
             <p className="text-ink-soft mb-8">Pantau pergerakan kendaraan Anda secara langsung pada peta di bawah ini.</p>
           </div>
         ) : isSuccess ? (
