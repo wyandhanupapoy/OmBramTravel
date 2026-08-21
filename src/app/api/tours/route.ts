@@ -6,6 +6,7 @@ export async function GET(req: Request) {
   const query = url.searchParams.get("q")?.trim() || "";
   const zone = url.searchParams.get("zone") || "all";
   const sort = url.searchParams.get("sort") || "recommended";
+  const locale = url.searchParams.get("locale") || "id";
   const page = Math.max(Number(url.searchParams.get("page")) || 1, 1);
   const limit = Math.min(Math.max(Number(url.searchParams.get("limit")) || 12, 1), 24);
   const where = {
@@ -27,8 +28,8 @@ export async function GET(req: Request) {
       orderBy,
       skip: (page - 1) * limit,
       take: limit,
-      select: { slug: true, titleId: true, basePrice: true, duration: true, zone: true, stops: { orderBy: { order: "asc" }, select: { nameId: true } } }
+      select: { slug: true, titleId: true, titleEn: true, titleZh: true, basePrice: true, duration: true, zone: true, stops: { orderBy: { order: "asc" }, select: { nameId: true } } }
     })
   ]);
-  return NextResponse.json({ total, page, limit, tours: tours.map((tour) => ({ ...tour, title: tour.titleId, stops: tour.stops.map((stop) => stop.nameId) })) });
+  return NextResponse.json({ total, page, limit, tours: tours.map((tour) => ({ ...tour, title: locale === "en" ? tour.titleEn : locale === "zh" ? (tour.titleZh || tour.titleEn) : tour.titleId, stops: tour.stops.map((stop) => stop.nameId) })) });
 }

@@ -28,6 +28,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     select: {
       slug: true,
       titleId: true,
+      titleEn: true,
+      titleZh: true,
       basePrice: true,
       duration: true,
       zone: true,
@@ -44,7 +46,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         locale={locale}
         tours={tours.map((tour) => ({
           slug: tour.slug,
-          title: tour.titleId,
+          title: locale === "en" ? tour.titleEn : locale === "zh" ? (tour.titleZh || tour.titleEn) : tour.titleId,
           basePrice: tour.basePrice,
           duration: tour.duration,
           zone: tour.zone,

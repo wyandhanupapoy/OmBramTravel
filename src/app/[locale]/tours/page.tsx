@@ -48,7 +48,7 @@ export default async function ToursPage({ params, searchParams }: { params: Prom
         locale={locale}
         tours={tours.map((tour) => ({
           slug: tour.slug,
-          title: tour.titleId,
+          title: locale === "en" ? tour.titleEn : locale === "zh" ? (tour.titleZh || tour.titleEn) : tour.titleId,
           basePrice: tour.basePrice,
           duration: tour.duration,
           zone: tour.zone,
