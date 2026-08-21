@@ -161,7 +161,8 @@ export default async function TrackPage({
           <div className="bg-card border border-line rounded-xl p-8 text-left mb-10 shadow-sm">
             <h2 className="font-display text-xl text-pine-dark mb-4 px-2">{t("liveMap")}</h2>
             <LiveMap 
-              bookingId={booking.id} 
+              bookingId={booking.id}
+              tourName={title} 
               pickupGeoJson={typeof booking.pickupPoint === 'string' && booking.pickupPoint.startsWith("{") ? booking.pickupPoint : undefined}
             />
           </div>
