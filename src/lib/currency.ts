@@ -10,6 +10,9 @@ const FALLBACK_RATES: Record<Currency, number> = {
   SGD: 0.0000825,
   THB: 0.00215,
   CNY: 0.000447,
+  JPY: 0.0094,
+  KRW: 0.084,
+  SAR: 0.00023,
 };
 
 const CURRENCY_SYMBOLS: Record<Currency, string> = {
@@ -21,6 +24,9 @@ const CURRENCY_SYMBOLS: Record<Currency, string> = {
   SGD: "S$",
   THB: "฿",
   CNY: "¥",
+  JPY: "¥",
+  KRW: "₩",
+  SAR: "ر.س",
 };
 
 let cachedRates: Record<Currency, number> | null = null;
@@ -51,6 +57,9 @@ export async function getExchangeRates(): Promise<Record<Currency, number>> {
       SGD: data.rates.SGD || FALLBACK_RATES.SGD,
       THB: data.rates.THB || FALLBACK_RATES.THB,
       CNY: data.rates.CNY || FALLBACK_RATES.CNY,
+      JPY: data.rates.JPY || FALLBACK_RATES.JPY,
+      KRW: data.rates.KRW || FALLBACK_RATES.KRW,
+      SAR: data.rates.SAR || FALLBACK_RATES.SAR,
     };
     ratesFetchedAt = now;
     return cachedRates;
@@ -73,6 +82,9 @@ export function formatCurrency(amount: number, currency: Currency): string {
     SGD: "en-SG",
     THB: "th-TH",
     CNY: "zh-CN",
+    JPY: "ja-JP",
+    KRW: "ko-KR",
+    SAR: "ar-SA",
   };
 
   return new Intl.NumberFormat(localeMap[currency], {

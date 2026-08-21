@@ -10,7 +10,8 @@
     "contact": "联系",
     "faq": "常见问题",
     "bookNow": "立即预订",
-    "trackOrder": "追踪订单"
+    "trackOrder": "追踪订单",
+    "customTour": "Custom Tour"
   },
   "hero": {
     "eyebrow": "万隆城市之旅 · 经验丰富的司机",
@@ -190,5 +191,27 @@
     "statusWait": "等待司机...",
     "tourDate": "游览日期",
     "driver": "司机"
+  },
+  "tourData": {
+    "bandung-utara": {
+      "title": "万隆北部：火山口与山脉",
+      "desc": "探索万隆北部的自然之美。享受凉爽的山区空气、活火山口景观和茂密的松树林。",
+      "highlight": "覆舟火山 (Tangkuban Perahu)、伦邦水上市场 (Floating Market Lembang)、芝科莱兰花森林 (Orchid Forest Cikole)、大亚非 (The Great Asia Africa)"
+    },
+    "bandung-selatan": {
+      "title": "万隆南部：湖泊与茶园",
+      "desc": "体验万隆南部的凉爽与宁静。周围环绕着广阔的茶园和充满异国情调的火山湖。",
+      "highlight": "白口火山 (Kawah Putih)、帕滕冈湖 (Situ Patenggang)、兰查乌帕斯 (Ranca Upas)、兰查巴厘茶园 (Rancabali Tea Plantation)"
+    },
+    "bandung-kota": {
+      "title": "万隆市区：历史与文化",
+      "desc": "漫步在万隆市中心的历史街道。欣赏殖民时期的建筑、购物胜地和传奇美食。",
+      "highlight": "沙爹大厦 (Gedung Sate)、布拉加街 (Braga Street)、地质博物馆、亚非街、万隆城市广场"
+    },
+    "custom": {
+      "title": "定制旅游",
+      "desc": "客户自主选择行程。自行决定在万隆及周边地区的旅游目的地。",
+      "highlight": "自由选择最多4个旅游目的地"
+    }
   }
 }

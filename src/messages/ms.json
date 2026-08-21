@@ -1,0 +1,217 @@
+{
+  "meta": {
+    "title": "Om Bram — Lawatan Bandar Bandung",
+    "description": "Terokai Bandung bersama Om Bram. Lawatan bandar, lawatan alam semula jadi, dan perjalanan tersuai dengan pemandu berpengalaman dan kenderaan berhawa dingin. Tempah sekarang!"
+  },
+  "nav": {
+    "home": "Laman Utama",
+    "tours": "Lawatan",
+    "about": "Mengenai",
+    "contact": "Hubungi",
+    "faq": "Soalan Lazim",
+    "bookNow": "Tempah Sekarang",
+    "trackOrder": "Semak Tempahan",
+    "customTour": "Custom Tour"
+  },
+  "hero": {
+    "eyebrow": "Lawatan Bandar Bandung · Pemandu Berpengalaman",
+    "title": "Terokai keindahan Bandung dengan lawatan yang anda boleh <em>jejak</em>.",
+    "subtitle": "Pilih lawatan, kami tugaskan pemandu dan kenderaan yang sesuai — kemudian anda boleh lihat lokasi kenderaan secara langsung dari halaman tempahan.",
+    "cta1": "Lihat Semua Lawatan",
+    "cta2": "Cara Ia Berfungsi"
+  },
+  "trust": {
+    "trips": "Perjalanan Selesai",
+    "drivers": "Pemandu Berpengalaman",
+    "onTime": "Tepat Waktu Mengambil",
+    "tracking": "Penjejakan Langsung"
+  },
+  "zones": {
+    "all": "Semua",
+    "north": "Bandung Utara",
+    "south": "Bandung Selatan",
+    "city": "Bandar Bandung"
+  },
+  "services": {
+    "eyebrow": "Perkhidmatan Kami",
+    "title": "Satu platform untuk menerokai Bandung.",
+    "subtitle": "Pilih zon lawatan yang sesuai dengan rancangan anda — semuanya dengan pemandu berpengalaman dan kenderaan berhawa dingin.",
+    "north": {
+      "name": "Bandung Utara",
+      "desc": "Gunung Tangkuban Perahu, Floating Market, Orchid Forest, dan udara pergunungan yang segar."
+    },
+    "south": {
+      "name": "Bandung Selatan",
+      "desc": "Kawah Putih, Situ Patenggang, ladang teh Pangalengan, dan pemandangan alam semula jadi yang dramatik."
+    },
+    "city": {
+      "name": "Bandar Bandung",
+      "desc": "Gedung Sate, Jalan Braga, Asia Afrika, Muzium Geologi — warisan kolonial dan kulinari."
+    }
+  },
+  "tours": {
+    "eyebrow": "Lawatan Pilihan",
+    "title": "Lawatan yang paling kerap ditempah.",
+    "subtitle": "Semua sudah termasuk pemandu berpengalaman dan kenderaan berhawa dingin.",
+    "viewAll": "Lihat Semua Lawatan",
+    "perPerson": "/ orang",
+    "duration": "Tempoh",
+    "stops": "perhentian",
+    "fullDay": "Sepanjang Hari",
+    "halfDay": "Separuh Hari",
+    "bookNow": "Tempah",
+    "viewDetail": "Lihat Butiran",
+    "popular": "Popular",
+    "searchPlaceholder": "Cari lawatan atau destinasi...",
+    "noResults": "Tiada lawatan yang sepadan dengan carian anda.",
+    "from": "Bermula dari"
+  },
+  "pricing": {
+    "title": "Butiran Harga",
+    "basePax": "Harga seorang",
+    "children": "Kanak-kanak (diskaun {pct}%)",
+    "extraLuggage": "Bagasi besar (>20kg)",
+    "perItem": "/ bagasi",
+    "subtotal": "Subjumlah",
+    "discount": "Diskaun",
+    "total": "Jumlah",
+    "adults": "Dewasa",
+    "childrenCount": "Kanak-kanak",
+    "luggageCount": "Bagasi besar"
+  },
+  "howItWorks": {
+    "eyebrow": "Cara Ia Berfungsi",
+    "title": "Tiga langkah dari tempahan hingga pulang.",
+    "subtitle": "Setiap lawatan dijalankan melalui proses pelepasan yang sama — jadi anda tahu dengan tepat apa yang berlaku pada setiap peringkat.",
+    "step1": {
+      "title": "Pilih lawatan & tarikh",
+      "desc": "Layari lawatan berdasarkan zon, tempoh, dan kenderaan yang sudah jelas sejak halaman pertama."
+    },
+    "step2": {
+      "title": "Pemandu & kenderaan ditugaskan",
+      "desc": "Penyelaras kami memadankan lawatan dengan pemandu dan kenderaan yang tersedia."
+    },
+    "step3": {
+      "title": "Jejak perjalanan secara langsung",
+      "desc": "Lihat lokasi kenderaan secara langsung dari halaman tempahan."
+    }
+  },
+  "testimonials": {
+    "eyebrow": "Testimoni",
+    "title": "Apa yang diperkatakan oleh pelancong tentang Om Bram."
+  },
+  "cta": {
+    "title": "Bersedia untuk menerokai Bandung?",
+    "subtitle": "Tempah lawatan sekarang dan nikmati perjalanan yang selesa serta telus.",
+    "button": "Tempah Lawatan Sekarang",
+    "whatsapp": "Sembang melalui WhatsApp"
+  },
+  "footer": {
+    "tagline": "Om Bram menghubungkan anda dengan lawatan Bandung yang selesa, telus, dan boleh dijejak secara langsung.",
+    "product": "PRODUK",
+    "company": "SYARIKAT",
+    "help": "BANTUAN",
+    "about": "Mengenai Kami",
+    "careers": "Kerjaya",
+    "partner": "Rakan Pemandu",
+    "helpCenter": "Pusat Bantuan",
+    "terms": "Terma & Syarat",
+    "privacy": "Dasar Privasi",
+    "copyright": "© 2026 OM BRAM — Lawatan Bandar Bandung"
+  },
+  "about": {
+    "eyebrow": "Mengenai Kami",
+    "title": "Lawatan Bandung yang Telus.",
+    "p1": "Om Bram lahir daripada keperluan untuk perkhidmatan lawatan bandar Bandung yang telus dan boleh dipercayai. Kami menghubungkan pelancong dengan pemandu berpengalaman dan kenderaan yang selesa.",
+    "p2": "Setiap perjalanan boleh dipantau secara langsung oleh pelanggan — dari lokasi mengambil hingga dihantar pulang.",
+    "missionTitle": "Misi Kami",
+    "mission": "Memberikan pengalaman lawatan Bandung terbaik kepada pelancong dari seluruh dunia dengan harga yang telus, pemandu profesional, dan teknologi penjejakan langsung."
+  },
+  "contact": {
+    "eyebrow": "Hubungi Kami",
+    "title": "Ada soalan? Terus hubungi kami.",
+    "subtitle": "Pasukan kami bersedia membantu anda merancang lawatan Bandung yang sempurna.",
+    "whatsappBtn": "Sembang WhatsApp",
+    "emailBtn": "Hantar E-mel",
+    "address": "Bandung, Jawa Barat, Indonesia"
+  },
+  "faq": {
+    "eyebrow": "Soalan Lazim & Dasar",
+    "title": "Soalan yang sering ditanya.",
+    "q1": "Berapakah caj tambahan jika membawa bagasi besar?",
+    "a1": "Setiap bagasi besar (melebihi 20kg) dikenakan caj tambahan yang tertera di halaman butiran lawatan. Caj ini adalah untuk memastikan keselesaan penumpang lain dan mengekalkan kapasiti kenderaan.",
+    "q2": "Bagaimana jika jumlah penumpang melebihi kapasiti?",
+    "a2": "Kapasiti kenderaan sudah ditetapkan untuk setiap lawatan. Jika jumlah penumpang melebihi kapasiti, anda perlu menempah kenderaan tambahan atau memilih lawatan dengan kenderaan yang lebih besar.",
+    "q3": "Apakah dasar pembatalan?",
+    "a3": "Pembatalan percuma sehingga 24 jam sebelum waktu berlepas. Pembatalan kurang dari 24 jam akan dikenakan caj 50% daripada harga keseluruhan. Tiada pemulangan wang untuk pembatalan pada hari berlepas.",
+    "q4": "Bolehkah lawatan diubah suai?",
+    "a4": "Ya! Hubungi kami melalui WhatsApp untuk membincangkan laluan tersuai, penambahan destinasi, atau permintaan khas yang lain.",
+    "q5": "Apa yang termasuk dalam harga lawatan?",
+    "a5": "Harga sudah termasuk kenderaan berhawa dingin, pemandu berpengalaman, petrol, dan bayaran letak kereta. Tiket masuk destinasi dan makanan tidak termasuk kecuali dinyatakan.",
+    "q6": "Adakah pemandu boleh berbahasa Inggeris?",
+    "a6": "Sebahagian besar pemandu kami boleh berkomunikasi dalam bahasa Inggeris asas. Untuk permintaan pemandu yang fasih berbahasa Inggeris, sila maklumkan semasa membuat tempahan."
+  },
+  "customTour": {
+    "addDest": "Tambah Destinasi",
+    "estTitle": "Anggaran Harga Lawatan Tersuai",
+    "btnSubmit": "Bayar & Sahkan Laluan",
+    "dist": "Jarak Perjalanan ({dist} KM x Rp {rate})",
+    "email": "Alamat E-mel",
+    "children": "Kanak-kanak",
+    "title": "Rancang Laluan Anda",
+    "date": "Tarikh Lawatan",
+    "name": "Nama Penuh",
+    "destTitle": "Destinasi Pelancongan (Maks 4)",
+    "btnLoading": "Memproses...",
+    "total": "JUMLAH",
+    "adults": "Dewasa",
+    "pageDesc": "Pilih lokasi mengambil dan tentukan sehingga 4 tempat pelancongan kegemaran anda. Sistem kami akan secara automatik mengira laluan terbaik dan harga berdasarkan jarak perjalanan.",
+    "base": "Sewa Kereta + Pemandu (Asas)",
+    "buyerData": "Data Penempah",
+    "phone": "Nombor WhatsApp aktif",
+    "pickupLabel": "Lokasi Mengambil (Mula)",
+    "pageTitle": "Buat Lawatan Tersuai Anda"
+  },
+  "track": {
+    "statusEnRoute": "Menunggu Isyarat GPS...",
+    "pickup": "Lokasi Mengambil",
+    "total": "Jumlah Pembayaran",
+    "liveMap": "Lokasi Mengambil / Penjejakan Langsung",
+    "subtotal": "Subjumlah",
+    "title": "Butiran Perjalanan",
+    "statusComplete": "Perjalanan Selesai",
+    "statusCompleteDesc": "Terima kasih kerana menerokai Bandung bersama Om Bram. Jumpa lagi pada perjalanan seterusnya!",
+    "statusPaid": "DIBAYAR (PAID)",
+    "statusWaitDesc": "Pembayaran berjaya. Sistem sedang mencari pemandu dan kenderaan terbaik untuk perjalanan anda. Sila tunggu sebentar.",
+    "backHome": "Kembali ke Laman Utama",
+    "statusUnpaid": "BELUM DIBAYAR",
+    "statusEnRouteDesc": "Pemandu mungkin dalam perjalanan atau isyarat lemah.",
+    "statusPending": "MENUNGGU PEMBAYARAN",
+    "extraFees": "Caj Tambahan",
+    "statusWait": "Menunggu Pemandu...",
+    "tourDate": "Tarikh Lawatan",
+    "driver": "Pemandu"
+  },
+  "tourData": {
+    "bandung-utara": {
+      "title": "Bandung Utara: Kawah & Pergunungan",
+      "desc": "Terokai keindahan alam semula jadi Bandung Utara. Nikmati udara gunung yang nyaman, pemandangan kawah aktif, dan hutan pain yang menghijau.",
+      "highlight": "Gunung Tangkuban Perahu, Floating Market Lembang, Orchid Forest Cikole, The Great Asia Africa"
+    },
+    "bandung-selatan": {
+      "title": "Bandung Selatan: Tasik & Ladang Teh",
+      "desc": "Rasai kedinginan dan ketenangan Bandung Selatan. Dikelilingi ladang teh yang luas dan tasik gunung berapi yang eksotik.",
+      "highlight": "Kawah Putih, Situ Patenggang, Ranca Upas, Ladang Teh Rancabali"
+    },
+    "bandung-kota": {
+      "title": "Bandung Kota: Sejarah & Budaya",
+      "desc": "Susuri jalan bersejarah di pusat bandar Bandung. Nikmati seni bina kolonial, destinasi beli-belah, dan kulinari legenda.",
+      "highlight": "Gedung Sate, Jalan Braga, Muzium Geologi, Jalan Asia Afrika, Alun-alun Bandung"
+    },
+    "custom": {
+      "title": "Jelajah Tersuai",
+      "desc": "Lawatan mengikut pilihan pelanggan. Tentukan sendiri destinasi pelancongan anda di Bandung dan sekitarnya.",
+      "highlight": "Bebas memilih sehingga 4 destinasi pelancongan"
+    }
+  }
+}

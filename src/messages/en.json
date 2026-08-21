@@ -10,7 +10,8 @@
     "contact": "Contact",
     "faq": "FAQ",
     "bookNow": "Book Now",
-    "trackOrder": "Track Order"
+    "trackOrder": "Track Order",
+    "customTour": "Custom Tour"
   },
   "hero": {
     "eyebrow": "Bandung City Tour · Experienced Drivers",
@@ -190,5 +191,27 @@
     "statusWait": "Waiting for Driver...",
     "tourDate": "Tour Date",
     "driver": "Driver"
+  },
+  "tourData": {
+    "bandung-utara": {
+      "title": "North Bandung: Craters & Mountains",
+      "desc": "Explore the natural beauty of North Bandung. Enjoy cool mountain air, views of active craters, and lush pine forests.",
+      "highlight": "Tangkuban Perahu Volcano, Floating Market Lembang, Orchid Forest Cikole, The Great Asia Africa"
+    },
+    "bandung-selatan": {
+      "title": "South Bandung: Lakes & Tea Plantations",
+      "desc": "Experience the cool and tranquil South Bandung. Surrounded by vast tea plantations and exotic volcanic lakes.",
+      "highlight": "Kawah Putih (White Crater), Situ Patenggang, Ranca Upas, Rancabali Tea Plantation"
+    },
+    "bandung-kota": {
+      "title": "Bandung City: History & Culture",
+      "desc": "Stroll through the historic streets of downtown Bandung. Enjoy colonial architecture, shopping spots, and legendary culinary delights.",
+      "highlight": "Gedung Sate, Braga Street, Geology Museum, Asia Africa Street, Bandung City Square"
+    },
+    "custom": {
+      "title": "Custom Tour",
+      "desc": "Customer's choice tour. Define your own tourist destinations in and around Bandung.",
+      "highlight": "Free to choose up to 4 tourist destinations"
+    }
   }
 }

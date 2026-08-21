@@ -3,6 +3,7 @@ import Image from "next/image";
 import { db } from "@/lib/db";
 import { PricingCalculator } from "@/components/tours/PricingCalculator";
 import type { TouristTrip, WithContext } from "schema-dts";
+import { getTranslations } from "next-intl/server";
 
 export default async function TourDetailPage({
   params,
@@ -10,10 +11,11 @@ export default async function TourDetailPage({
   params: Promise<{ locale: string; slug: string }>;
 }) {
   const { locale, slug } = await params;
-
+  const tTourData = await getTranslations({ locale, namespace: "tourData" });
+  
   const tour = await db.tour.findUnique({
     where: { slug },
-    include: { stops: { orderBy: { order: "asc" } } },
+    include: { stops: { orderBy: { order: "asc" } } }
   });
 
   if (!tour || !tour.isActive) {
@@ -22,21 +24,21 @@ export default async function TourDetailPage({
 
   const images = JSON.parse(tour.images || "[]");
   const mainImage = images[0] || "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272";
-
-  // Translate based on locale
+  
+  // Translate based on locale via next-intl
   let title = tour.titleId;
   let desc = tour.descId;
   let highlight = tour.highlightId;
 
-  if (locale === "en") {
-    title = tour.titleEn;
-    desc = tour.descEn;
-    highlight = tour.highlightEn;
-  } else if (locale === "zh") {
-    title = tour.titleZh || tour.titleEn;
-    desc = tour.descZh || tour.descEn;
-    highlight = tour.highlightZh || tour.highlightEn;
-  }
+  try {
+    const translatedTitle = tTourData(`${tour.slug}.title`);
+    const translatedDesc = tTourData(`${tour.slug}.desc`);
+    const translatedHighlight = tTourData(`${tour.slug}.highlight`);
+
+    if (translatedTitle && !translatedTitle.includes("tourData.")) title = translatedTitle;
+    if (translatedDesc && !translatedDesc.includes("tourData.")) desc = translatedDesc;
+    if (translatedHighlight && !translatedHighlight.includes("tourData.")) highlight = translatedHighlight;
+  } catch (e) {}
 
   // JSON-LD SEO
   const jsonLd: WithContext<TouristTrip> = {

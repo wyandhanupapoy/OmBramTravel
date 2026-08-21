@@ -10,7 +10,8 @@
     "contact": "Kontak",
     "faq": "FAQ",
     "bookNow": "Pesan Sekarang",
-    "trackOrder": "Cek Pesanan"
+    "trackOrder": "Cek Pesanan",
+    "customTour": "Tur Kustom"
   },
   "hero": {
     "eyebrow": "City Tour Bandung · Driver Berpengalaman",
@@ -190,5 +191,27 @@
     "statusWait": "Menunggu Driver...",
     "tourDate": "Tanggal Tur",
     "driver": "Driver"
+  },
+  "tourData": {
+    "bandung-utara": {
+      "title": "Bandung Utara: Kawah & Pegunungan",
+      "desc": "Jelajahi keindahan alam Bandung Utara. Nikmati udara sejuk pegunungan, pemandangan kawah aktif, dan hutan pinus yang asri.",
+      "highlight": "Gunung Tangkuban Perahu, Floating Market Lembang, Orchid Forest Cikole, The Great Asia Africa"
+    },
+    "bandung-selatan": {
+      "title": "Bandung Selatan: Danau & Kebun Teh",
+      "desc": "Rasakan kesejukan dan ketenangan Bandung Selatan. Dikelilingi perkebunan teh yang membentang luas dan danau vulkanik yang eksotis.",
+      "highlight": "Kawah Putih, Situ Patenggang, Ranca Upas, Perkebunan Teh Rancabali"
+    },
+    "bandung-kota": {
+      "title": "Bandung Kota: Sejarah & Budaya",
+      "desc": "Susuri jalanan bersejarah di pusat kota Bandung. Nikmati arsitektur kolonial, wisata belanja, dan kuliner legendaris.",
+      "highlight": "Gedung Sate, Jalan Braga, Museum Geologi, Jalan Asia Afrika, Alun-alun Bandung"
+    },
+    "custom": {
+      "title": "Tur Kustom",
+      "desc": "Tur sesuai pilihan pelanggan. Tentukan sendiri destinasi wisata Anda di Bandung dan sekitarnya.",
+      "highlight": "Bebas pilih hingga 4 destinasi wisata"
+    }
   }
 }

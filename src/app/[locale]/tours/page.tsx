@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function ToursPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "tours" });
-  const tZones = await getTranslations({ locale, namespace: "zones" });
+  const tTourData = await getTranslations({ locale, namespace: "tourData" });
 
   const tours = await db.tour.findMany({
     where: { isActive: true },
@@ -35,10 +35,14 @@ export default async function ToursPage({ params }: { params: Promise<{ locale: 
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {tours.map(tour => {
-          // Resolve translation fields based on locale
           let title = tour.titleId;
-          if (locale === "en") title = tour.titleEn;
-          else if (locale === "zh") title = tour.titleZh || tour.titleEn;
+          try {
+            // Fallback to DB titleId if translation key is missing
+            const translatedTitle = tTourData(`${tour.slug}.title`);
+            if (translatedTitle && !translatedTitle.includes("tourData.")) {
+              title = translatedTitle;
+            }
+          } catch(e) {}
 
           return (
             <TourCard
