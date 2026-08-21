@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { core } from "@/lib/midtrans";
 import crypto from "crypto";
+import { sendEmailReceipt, sendWhatsAppReceipt } from "@/lib/notifications";
+import { formatIDR } from "@/lib/utils";
 
 export async function POST(req: Request) {
   try {
@@ -33,15 +34,33 @@ export async function POST(req: Request) {
     }
 
     if (paymentStatus === "paid") {
-      await db.booking.update({
+      const booking = await db.booking.update({
         where: { orderCode: orderId },
         data: { 
           paymentStatus: "paid", 
           paymentMethod: body.payment_type,
           paidAt: new Date(),
           status: "confirmed"
-        }
+        },
+        include: { tour: true }
       });
+
+      const notifData = {
+        orderCode: booking.orderCode,
+        customerName: booking.customerName,
+        customerEmail: booking.customerEmail,
+        customerPhone: booking.customerPhone,
+        tourName: booking.tour.titleId,
+        date: booking.date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+        paxInfo: `${booking.pax} Dewasa, ${booking.children} Anak`,
+        totalIDR: formatIDR(booking.totalIDR)
+      };
+
+      Promise.all([
+        sendEmailReceipt(notifData),
+        sendWhatsAppReceipt(notifData)
+      ]).catch(err => console.error("Notification error:", err));
+
     } else if (paymentStatus === "expired") {
       await db.booking.update({
         where: { orderCode: orderId },

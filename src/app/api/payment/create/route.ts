@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { db } from "@/lib/db";
 import { snap } from "@/lib/midtrans";
 import { generateOrderCode } from "@/lib/utils";
@@ -96,9 +97,18 @@ export async function POST(req: Request) {
 
     const snapResponse = await snap.createTransaction(parameter);
 
+    // Set a cookie so the user's browser remembers their recent order
+    const cookieStore = await cookies();
+    cookieStore.set("ombram_recent_order", orderCode, {
+      httpOnly: false, // False so client-side can read it if needed, or we read it server-side
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+      path: "/",
+    });
+
     return NextResponse.json({
       token: snapResponse.token,
-      orderCode
+      orderCode: booking.orderCode,
     });
 
   } catch (error: any) {
