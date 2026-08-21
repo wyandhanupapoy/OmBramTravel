@@ -193,17 +193,17 @@
     "driver": "Pemandu"
   },
   "tourData": {
-    "bandung-utara": {
+    "north-bandung-volcano-tour": {
       "title": "Bandung Utara: Kawah & Pergunungan",
       "desc": "Terokai keindahan alam semula jadi Bandung Utara. Nikmati udara gunung yang nyaman, pemandangan kawah aktif, dan hutan pain yang menghijau.",
       "highlight": "Gunung Tangkuban Perahu, Floating Market Lembang, Orchid Forest Cikole, The Great Asia Africa"
     },
-    "bandung-selatan": {
+    "south-bandung-crater-lake": {
       "title": "Bandung Selatan: Tasik & Ladang Teh",
       "desc": "Rasai kedinginan dan ketenangan Bandung Selatan. Dikelilingi ladang teh yang luas dan tasik gunung berapi yang eksotik.",
       "highlight": "Kawah Putih, Situ Patenggang, Ranca Upas, Ladang Teh Rancabali"
     },
-    "bandung-kota": {
+    "bandung-city-heritage": {
       "title": "Bandung Kota: Sejarah & Budaya",
       "desc": "Susuri jalan bersejarah di pusat bandar Bandung. Nikmati seni bina kolonial, destinasi beli-belah, dan kulinari legenda.",
       "highlight": "Gedung Sate, Jalan Braga, Muzium Geologi, Jalan Asia Afrika, Alun-alun Bandung"
