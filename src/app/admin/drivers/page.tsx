@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { db } from "@/lib/db";
 import Link from "next/link";
 
@@ -67,3 +68,4 @@ export default async function AdminDrivers() {
     </div>
   );
 }
+

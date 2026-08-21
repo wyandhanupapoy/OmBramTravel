@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { db } from "@/lib/db";
 import { formatIDR } from "@/lib/utils";
 import Link from "next/link";
@@ -63,3 +64,4 @@ export default async function AdminTours() {
     </div>
   );
 }
+

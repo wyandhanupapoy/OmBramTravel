@@ -11,6 +11,7 @@ interface Booking {
   pax: number;
   status: string;
   tour: { titleId: string };
+  isReported?: boolean;
 }
 
 interface DriverDashboardClientProps {
@@ -117,6 +118,25 @@ export function DriverDashboardClient({ driver, bookings }: DriverDashboardClien
     window.location.reload(); // Refresh list
   };
 
+  const handleReport = async (bookingId: string) => {
+    const reason = prompt("Sebutkan alasan laporan (Misal: Kelebihan muatan orang, Koper terlalu banyak):");
+    if (!reason) return;
+
+    if (!confirm("Kirim laporan ini ke Admin?")) return;
+
+    try {
+      await fetch("/api/driver/report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bookingId, reportDetails: reason })
+      });
+      alert("Laporan berhasil dikirim. Admin akan segera meninjau.");
+      window.location.reload();
+    } catch (err) {
+      alert("Gagal mengirim laporan.");
+    }
+  };
+
   return (
     <div className="pb-24">
       {/* Header Mobile */}
@@ -146,7 +166,12 @@ export function DriverDashboardClient({ driver, bookings }: DriverDashboardClien
         )}
 
         {bookings.map(b => (
-          <div key={b.id} className={`bg-card border ${activeBookingId === b.id ? 'border-beacon shadow-lg' : 'border-line'} rounded-2xl overflow-hidden`}>
+          <div key={b.id} className={`bg-card border ${activeBookingId === b.id ? 'border-beacon shadow-lg' : 'border-line'} rounded-2xl overflow-hidden relative`}>
+            {b.isReported && (
+              <div className="absolute top-0 right-0 bg-rust text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg">
+                DILAPORKAN
+              </div>
+            )}
             <div className="p-5">
               <div className="flex justify-between items-start mb-3">
                 <span className="text-xs font-mono font-bold bg-line px-2 py-1 rounded uppercase">{b.orderCode}</span>
@@ -155,7 +180,7 @@ export function DriverDashboardClient({ driver, bookings }: DriverDashboardClien
               <h4 className="font-display text-lg text-pine-dark mb-1">{b.tour.titleId}</h4>
               <p className="text-sm font-medium mb-4">{b.customerName} • {b.pax} Penumpang</p>
               
-              <div className="bg-paper p-3 rounded-lg text-sm flex gap-3 items-start border border-line">
+              <div className="bg-paper p-3 rounded-lg text-sm flex gap-3 items-start border border-line mb-3">
                 <div className="mt-0.5 text-beacon">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 </div>
@@ -164,6 +189,12 @@ export function DriverDashboardClient({ driver, bookings }: DriverDashboardClien
                   <div className="text-ink-soft">{b.pickupPoint}</div>
                 </div>
               </div>
+
+              {!b.isReported && (
+                <button onClick={() => handleReport(b.id)} className="text-xs text-rust font-medium underline">
+                  Lapor Pelanggaran
+                </button>
+              )}
             </div>
 
             <div className="p-4 bg-paper border-t border-line flex gap-3">

@@ -87,6 +87,10 @@ model Booking {
   rating        Int?
   reviewText    String?
 
+  isReported    Boolean   @default(false)
+  reportDetails String?
+  extraCharge   Int       @default(0)
+
   trackings     Tracking[]
 
   createdAt     DateTime  @default(now())
