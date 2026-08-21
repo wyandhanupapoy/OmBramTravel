@@ -8,6 +8,12 @@ import { ReviewForm } from "@/components/track/ReviewForm";
 import { formatIDR } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 
+function getPickupGeoJson(pickupPoint: string, notes?: string | null) {
+  if (pickupPoint.startsWith("{")) return pickupPoint;
+  const geoMatch = notes?.match(/\[GEO\]:(\{[^\n]+\})/);
+  return geoMatch?.[1];
+}
+
 export default async function TrackPage({
   params,
   searchParams
@@ -32,6 +38,11 @@ export default async function TrackPage({
   
   // Tunjukkan map hanya jika lunas dan BELUM selesai
   const showMap = isSuccess && !isCompleted && booking.paymentStatus === "paid";
+  const pickupGeoJson = getPickupGeoJson(booking.pickupPoint, booking.notes);
+  const luggageCost = booking.extraLuggage * booking.tour.luggageFee;
+  const extraPaxCount = Math.max(0, booking.pax + booking.children - booking.tour.maxPax);
+  const extraPaxCost = booking.tour.slug === "custom" ? 0 : extraPaxCount * booking.tour.extraPaxFee;
+  const routeCost = booking.tour.slug === "custom" ? Math.max(0, booking.extraFees - luggageCost) : 0;
 
   let title = booking.tour.titleId;
   if (locale === "en") title = booking.tour.titleEn;
@@ -172,7 +183,7 @@ export default async function TrackPage({
             <LiveMap 
               bookingId={booking.id}
               tourName={title} 
-              pickupGeoJson={typeof booking.pickupPoint === 'string' && booking.pickupPoint.startsWith("{") ? booking.pickupPoint : undefined}
+              pickupGeoJson={pickupGeoJson}
             />
           </div>
         )}
@@ -191,27 +202,27 @@ export default async function TrackPage({
         Hanya muncul di Kertas Cetak
         ========================================
       */}
-      <div className="hidden print:block w-full max-w-[800px] mx-auto bg-white text-black p-8 font-sans">
+      <div className="hidden print:block w-full max-w-[800px] mx-auto bg-white text-black p-8 font-mono text-[11px] leading-relaxed">
         
         {/* Header Invoice */}
-        <div className="flex justify-between items-start border-b-2 border-black pb-6 mb-6">
+        <div className="flex justify-between items-start border-b-2 border-dashed border-black pb-5 mb-5">
           <div>
             <h1 className="font-display text-4xl font-bold tracking-wider mb-1">OM BRAM</h1>
             <p className="font-mono text-xs tracking-[0.2em] uppercase">City Tour Bandung</p>
-            <p className="text-sm mt-4 text-gray-600">Jl. Contoh Alamat Bandung No. 123<br/>Bandung, Jawa Barat, Indonesia<br/>WA: +62 838-7040-5395</p>
+            <p className="text-[10px] mt-3">Jl. Contoh Alamat Bandung No. 123<br/>Bandung, Jawa Barat, Indonesia<br/>WA: +62 838-7040-5395</p>
           </div>
           <div className="text-right">
             <h2 className="font-display text-3xl text-gray-800 mb-2">INVOICE</h2>
             <p className="font-mono font-bold text-lg">{orderCode}</p>
             <p className="text-sm text-gray-600 mt-2">Tanggal Terbit: {new Date().toLocaleDateString('id-ID')}</p>
-            <div className="mt-4 inline-block border-2 border-green-600 text-green-600 font-bold px-4 py-2 uppercase tracking-widest text-sm rounded">
-              LUNAS / PAID
+            <div className="mt-3 inline-block border border-black font-bold px-3 py-1 uppercase tracking-widest">
+              {isSuccess ? "LUNAS / PAID" : "PENDING"}
             </div>
           </div>
         </div>
 
         {/* Info Pelanggan & Perjalanan */}
-        <div className="flex justify-between mb-8">
+        <div className="flex justify-between mb-6">
           <div className="w-1/2 pr-4">
             <h3 className="font-bold text-gray-500 uppercase text-xs mb-2 tracking-wider">Ditagihkan Kepada:</h3>
             <p className="font-bold text-lg">{booking.customerName}</p>
@@ -234,45 +245,47 @@ export default async function TrackPage({
         <table className="w-full text-left border-collapse mb-8">
           <thead>
             <tr className="bg-gray-100 border-b border-gray-300">
-              <th className="py-3 px-4 font-bold text-sm text-gray-700">DESKRIPSI LAYANAN</th>
-              <th className="py-3 px-4 font-bold text-sm text-gray-700 text-center">QTY</th>
-              <th className="py-3 px-4 font-bold text-sm text-gray-700 text-right">TOTAL</th>
+              <th className="py-2 px-3 font-bold">DESKRIPSI</th>
+              <th className="py-2 px-3 font-bold text-center">QTY</th>
+              <th className="py-2 px-3 font-bold text-right">JUMLAH</th>
             </tr>
           </thead>
           <tbody>
             <tr className="border-b border-gray-200">
-              <td className="py-4 px-4">
+              <td className="py-3 px-3">
                 <p className="font-bold">{title}</p>
-                <p className="text-sm text-gray-600 mt-1">Private City Tour Bandung</p>
+                <p className="text-[10px] mt-1">Private City Tour Bandung</p>
               </td>
-              <td className="py-4 px-4 text-center align-top">{booking.pax} Pax</td>
-              <td className="py-4 px-4 text-right align-top">{formatIDR(booking.totalIDR)}</td>
+              <td className="py-3 px-3 text-center align-top">{booking.pax + booking.children}</td>
+              <td className="py-3 px-3 text-right align-top">{formatIDR(booking.subtotal)}</td>
             </tr>
-            {(booking.children > 0 || booking.extraLuggage > 0) && (
-              <tr className="border-b border-gray-200">
-                <td className="py-4 px-4 text-sm text-gray-600">
-                  Tambahan: {booking.children > 0 ? `${booking.children} Anak ` : ''} 
-                  {booking.extraLuggage > 0 ? `| ${booking.extraLuggage} Koper Besar` : ''}
-                </td>
-                <td className="py-4 px-4 text-center">-</td>
-                <td className="py-4 px-4 text-right">-</td>
-              </tr>
-            )}
+            {extraPaxCost > 0 && <tr className="border-b border-gray-400"><td className="py-2 px-3">Tambahan kapasitas ({extraPaxCount} pax)</td><td className="py-2 px-3 text-center">{extraPaxCount}</td><td className="py-2 px-3 text-right">{formatIDR(extraPaxCost)}</td></tr>}
+            {routeCost > 0 && <tr className="border-b border-gray-400"><td className="py-2 px-3">Biaya jarak/rute custom</td><td className="py-2 px-3 text-center">1</td><td className="py-2 px-3 text-right">{formatIDR(routeCost)}</td></tr>}
+            {luggageCost > 0 && <tr className="border-b border-gray-400"><td className="py-2 px-3">Bagasi besar</td><td className="py-2 px-3 text-center">{booking.extraLuggage}</td><td className="py-2 px-3 text-right">{formatIDR(luggageCost)}</td></tr>}
           </tbody>
         </table>
 
         {/* Ringkasan Biaya */}
         <div className="flex justify-end">
           <div className="w-1/2">
-            <div className="flex justify-between py-2 border-b border-gray-200">
-              <span className="font-semibold text-gray-600">Subtotal</span>
+            <div className="flex justify-between py-2 border-b border-gray-400">
+              <span className="font-semibold">SUBTOTAL</span>
+              <span>{formatIDR(booking.subtotal)}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b border-gray-400">
+              <span>BIAYA TAMBAHAN</span>
+              <span>{formatIDR(booking.extraFees)}</span>
+            </div>
+            <div className="flex justify-between py-3 border-b-2 border-black text-base font-bold">
+              <span>TOTAL DIBAYARKAN</span>
               <span>{formatIDR(booking.totalIDR)}</span>
             </div>
-            <div className="flex justify-between py-3 border-b-2 border-black">
-              <span className="font-bold text-lg">TOTAL DIBAYARKAN</span>
-              <span className="font-bold text-lg">{formatIDR(booking.totalIDR)}</span>
-            </div>
           </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-8 border-t border-dashed border-black pt-5 mt-6 mb-8">
+          <div><h3 className="font-bold uppercase mb-2">Termasuk</h3><p>Transportasi private sesuai kapasitas</p><p>Driver dan BBM</p><p>Penjemputan di titik tertera</p><p>Itinerary sesuai paket</p></div>
+          <div><h3 className="font-bold uppercase mb-2">Tidak Termasuk</h3><p>Tiket masuk objek wisata</p><p>Makan dan minum pribadi</p><p>Parkir, tol, dan biaya di luar paket</p><p>Pengeluaran pribadi dan tip driver</p></div>
         </div>
 
         {/* Footer Invoice */}
