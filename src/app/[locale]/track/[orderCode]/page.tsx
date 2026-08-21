@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
 import { LiveMap } from "@/components/track/LiveMap";
+import { PrintButton } from "@/components/track/PrintButton";
 
 export default async function TrackPage({
   params,
@@ -73,15 +74,7 @@ export default async function TrackPage({
         <div className="bg-card border border-line rounded-xl p-8 text-left mb-10 shadow-sm print:border-none print:p-0 print:shadow-none print:mb-4">
           <div className="flex justify-between items-center mb-6 border-b border-line pb-4 print:border-pine-dark">
             <h2 className="font-display text-xl text-pine-dark">Detail Perjalanan</h2>
-            {isSuccess && (
-              <button 
-                onClick={() => window.print()} 
-                className="print:hidden text-xs font-semibold uppercase tracking-wide bg-pine-dark text-paper px-4 py-2 rounded hover:bg-pine transition-colors flex items-center gap-2 cursor-pointer"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                Cetak Invoice
-              </button>
-            )}
+            {isSuccess && <PrintButton />}
           </div>
           
           <div className="space-y-4 text-[15px] print:text-sm">
