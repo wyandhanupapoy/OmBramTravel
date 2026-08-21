@@ -56,10 +56,16 @@ export async function POST(req: Request) {
         totalIDR: formatIDR(booking.totalIDR)
       };
 
-      Promise.all([
-        sendEmailReceipt(notifData),
-        sendWhatsAppReceipt(notifData)
-      ]).catch(err => console.error("Notification error:", err));
+      // WAJIB menggunakan await agar Vercel tidak mematikan fungsi sebelum email terkirim
+      try {
+        await Promise.all([
+          sendEmailReceipt(notifData),
+          sendWhatsAppReceipt(notifData)
+        ]);
+        console.log("Notifikasi berhasil dikirim!");
+      } catch (err) {
+        console.error("Notification error:", err);
+      }
 
     } else if (paymentStatus === "expired") {
       await db.booking.update({
