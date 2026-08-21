@@ -89,52 +89,71 @@ export async function POST(req: Request) {
     });
 
     // Request Snap Token
-    const parameter = {
+    let item_details: any[] = [];
+
+    if (tourId === "custom") {
+      item_details.push({
+        id: "custom-base",
+        price: 300000,
+        quantity: 1, // Flat base rate for the car
+        name: "Car & Driver Base Rate",
+      });
+      if (extraTotal > 0) {
+        item_details.push({
+          id: "custom-distance",
+          price: extraTotal,
+          quantity: 1,
+          name: `Distance Charge (${Math.ceil(customDistance || 0)} KM)`,
+        });
+      }
+    } else {
+      item_details.push({
+        id: tour.slug,
+        price: tour.basePrice,
+        quantity: adults,
+        name: `Tour: ${tour.titleEn.substring(0, 30)} (Adult)`,
+      });
+
+      if (children > 0) {
+        item_details.push({
+          id: `${tour.slug}-child`,
+          price: tour.basePrice * ((100 - tour.childDisc) / 100),
+          quantity: children,
+          name: `Child Ticket`,
+        });
+      }
+      
+      if (extraTotal > 0) {
+        item_details.push({
+          id: `extra-pax`,
+          price: tour.extraPaxFee,
+          quantity: extraPax,
+          name: `Extra Pax Charge`,
+        });
+      }
+
+      if (luggage > 0) {
+        item_details.push({
+          id: `luggage`,
+          price: tour.luggageFee,
+          quantity: luggage,
+          name: `Large Luggage Charge`,
+        });
+      }
+    }
+
+    const parameter: any = {
       transaction_details: {
         order_id: orderCode,
         gross_amount: totalIDR,
       },
       customer_details: {
         first_name: customerName,
-        email: customerEmail,
         phone: customerPhone,
+        email: customerEmail,
       },
-      item_details: [
-        {
-          id: tour.slug,
-          price: tour.basePrice,
-          quantity: adults,
-          name: `Tour: ${tour.titleEn.substring(0, 30)} (Adult)`,
-        }
-      ]
+      item_details,
     };
-
-    if (children > 0) {
-      parameter.item_details.push({
-        id: `${tour.slug}-child`,
-        price: tour.basePrice * ((100 - tour.childDisc) / 100),
-        quantity: children,
-        name: `Child Ticket`,
-      });
-    }
-    
-    if (extraTotal > 0) {
-      parameter.item_details.push({
-        id: `extra-pax`,
-        price: tour.extraPaxFee,
-        quantity: extraPax,
-        name: `Extra Pax Charge`,
-      });
-    }
-
-    if (luggage > 0) {
-      parameter.item_details.push({
-        id: `luggage`,
-        price: tour.luggageFee,
-        quantity: luggage,
-        name: `Large Luggage Charge`,
-      });
-    }
 
     const snapResponse = await snap.createTransaction(parameter);
 
