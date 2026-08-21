@@ -170,5 +170,25 @@
     "phone": "WhatsApp号码",
     "pickupLabel": "接送点（起点）",
     "pageTitle": "创建您的定制旅游"
+  },
+  "track": {
+    "statusEnRoute": "等待 GPS 信号...",
+    "pickup": "接送点",
+    "total": "付款总额",
+    "liveMap": "接送地点 / 实时追踪",
+    "subtotal": "小计",
+    "title": "行程详情",
+    "statusComplete": "行程结束",
+    "statusCompleteDesc": "感谢您与 Om Bram 一起探索万隆。下次旅行再见！",
+    "statusPaid": "已付款",
+    "statusWaitDesc": "付款成功。系统正在为您匹配最佳司机和车辆。请稍候。",
+    "backHome": "返回首页",
+    "statusUnpaid": "未付款",
+    "statusEnRouteDesc": "司机正在途中或信号较弱。",
+    "statusPending": "待付款",
+    "extraFees": "额外费用",
+    "statusWait": "等待司机...",
+    "tourDate": "游览日期",
+    "driver": "司机"
   }
 }

@@ -18,31 +18,37 @@ const Polyline = dynamic(() => import("react-leaflet").then(m => m.Polyline), { 
 export function CustomTourBuilder({ locale }: { locale: string }) {
   const router = useRouter();
   const t = useTranslations("customTour");
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Load initial state from sessionStorage or use defaults
-  const loadState = (key: string, defaultVal: any) => {
-    if (typeof window !== "undefined") {
-      const saved = sessionStorage.getItem(`ct_${key}`);
-      if (saved) {
-        try { return JSON.parse(saved); } catch (e) { return saved; }
-      }
-    }
-    return defaultVal;
-  };
-
-  const [pickup, setPickup] = useState<string>(() => loadState("pickup", ""));
-  const [destinations, setDestinations] = useState<string[]>(() => loadState("destinations", [""]));
+  const [pickup, setPickup] = useState<string>("");
+  const [destinations, setDestinations] = useState<string[]>([""]);
   
-  const [date, setDate] = useState<string>(() => loadState("date", ""));
-  const [adults, setAdults] = useState<number>(() => loadState("adults", 1));
-  const [children, setChildren] = useState<number>(() => loadState("children", 0));
-  const [name, setName] = useState<string>(() => loadState("name", ""));
-  const [phone, setPhone] = useState<string>(() => loadState("phone", ""));
-  const [email, setEmail] = useState<string>(() => loadState("email", ""));
+  const [date, setDate] = useState<string>("");
+  const [adults, setAdults] = useState<number>(1);
+  const [children, setChildren] = useState<number>(0);
+  const [name, setName] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
 
-  // Save to sessionStorage whenever they change
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    // Client-side only init
+    setIsMounted(true);
+    setPickup(sessionStorage.getItem("ct_pickup") || "");
+    const dests = sessionStorage.getItem("ct_destinations");
+    if (dests) {
+      try { setDestinations(JSON.parse(dests)); } catch(e){}
+    }
+    setDate(sessionStorage.getItem("ct_date") || "");
+    setAdults(parseInt(sessionStorage.getItem("ct_adults") || "1"));
+    setChildren(parseInt(sessionStorage.getItem("ct_children") || "0"));
+    setName(sessionStorage.getItem("ct_name") || "");
+    setPhone(sessionStorage.getItem("ct_phone") || "");
+    setEmail(sessionStorage.getItem("ct_email") || "");
+  }, []);
+
+  // Save to sessionStorage whenever they change (only if mounted)
+  useEffect(() => {
+    if (isMounted && typeof window !== "undefined") {
       sessionStorage.setItem("ct_pickup", pickup);
       sessionStorage.setItem("ct_destinations", JSON.stringify(destinations));
       sessionStorage.setItem("ct_date", date);
@@ -52,7 +58,7 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
       sessionStorage.setItem("ct_phone", phone);
       sessionStorage.setItem("ct_email", email);
     }
-  }, [pickup, destinations, date, adults, children, name, phone, email]);
+  }, [pickup, destinations, date, adults, children, name, phone, email, isMounted]);
 
   const [routeLine, setRouteLine] = useState<[number, number][]>([]);
   const [distanceKm, setDistanceKm] = useState(0);
@@ -81,10 +87,10 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
     const fetchRoute = async () => {
       try {
         const points = [];
-        if (pickup.startsWith("{")) points.push(JSON.parse(pickup));
+        if (typeof pickup === 'string' && pickup.startsWith("{")) points.push(JSON.parse(pickup));
         
         destinations.forEach(d => {
-          if (d.startsWith("{")) points.push(JSON.parse(d));
+          if (typeof d === 'string' && d.startsWith("{")) points.push(JSON.parse(d));
         });
 
         if (points.length >= 2) {
@@ -128,7 +134,10 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!pickup.startsWith("{") || destinations.some(d => !d.startsWith("{"))) {
+    const isPickupValid = typeof pickup === 'string' && pickup.startsWith("{");
+    const isDestsValid = destinations.every(d => typeof d === 'string' && d.startsWith("{"));
+    
+    if (!isPickupValid || !isDestsValid) {
       alert("Mohon pilih lokasi dari daftar saran yang muncul.");
       return;
     }

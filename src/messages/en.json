@@ -170,5 +170,25 @@
     "phone": "Active WhatsApp Number",
     "pickupLabel": "Pickup Point (Start)",
     "pageTitle": "Create Your Custom Tour"
+  },
+  "track": {
+    "statusEnRoute": "Waiting for GPS Signal...",
+    "pickup": "Pickup Point",
+    "total": "Total Payment",
+    "liveMap": "Pickup Location / Live Tracking",
+    "subtotal": "Subtotal",
+    "title": "Trip Details",
+    "statusComplete": "Trip Completed",
+    "statusCompleteDesc": "Thank you for exploring Bandung with Om Bram. See you on the next trip!",
+    "statusPaid": "PAID",
+    "statusWaitDesc": "Payment successful. The system is matching you with the best driver and vehicle. Please wait a moment.",
+    "backHome": "Back to Home",
+    "statusUnpaid": "UNPAID",
+    "statusEnRouteDesc": "Driver is on the way or signal is weak.",
+    "statusPending": "PENDING PAYMENT",
+    "extraFees": "Extra Fees",
+    "statusWait": "Waiting for Driver...",
+    "tourDate": "Tour Date",
+    "driver": "Driver"
   }
 }

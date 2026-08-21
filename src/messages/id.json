@@ -170,5 +170,25 @@
     "phone": "Nomor WhatsApp aktif",
     "pickupLabel": "Titik Jemput (Mulai)",
     "pageTitle": "Buat Tur Kustom Anda"
+  },
+  "track": {
+    "statusEnRoute": "Menunggu Sinyal GPS...",
+    "pickup": "Titik Jemput",
+    "total": "Total Pembayaran",
+    "liveMap": "Lokasi Penjemputan / Live Tracking",
+    "subtotal": "Subtotal",
+    "title": "Detail Perjalanan",
+    "statusComplete": "Perjalanan Selesai",
+    "statusCompleteDesc": "Terima kasih telah menjelajahi Bandung bersama Om Bram. Sampai jumpa di perjalanan berikutnya!",
+    "statusPaid": "LUNAS (PAID)",
+    "statusWaitDesc": "Pembayaran berhasil. Sistem sedang mencarikan driver dan armada terbaik untuk perjalanan Anda. Mohon tunggu beberapa saat.",
+    "backHome": "Kembali ke Beranda",
+    "statusUnpaid": "BELUM DIBAYAR",
+    "statusEnRouteDesc": "Driver mungkin sedang dalam perjalanan atau sinyal lemah.",
+    "statusPending": "MENUNGGU PEMBAYARAN",
+    "extraFees": "Biaya Tambahan",
+    "statusWait": "Menunggu Driver...",
+    "tourDate": "Tanggal Tur",
+    "driver": "Driver"
   }
 }

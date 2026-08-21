@@ -5,6 +5,7 @@ import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
 import { LiveMap } from "@/components/track/LiveMap";
 import { PrintButton } from "@/components/track/PrintButton";
 import { formatIDR } from "@/lib/utils";
+import { getTranslations } from "next-intl/server";
 
 export default async function TrackPage({
   params,
@@ -15,6 +16,7 @@ export default async function TrackPage({
 }) {
   const { locale, orderCode } = await params;
   const { status } = await searchParams;
+  const t = await getTranslations({ locale, namespace: "track" });
 
   const booking = await db.booking.findUnique({
     where: { orderCode },
@@ -50,24 +52,22 @@ export default async function TrackPage({
             <div className="w-20 h-20 bg-pine text-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
               <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             </div>
-            <h1 className="font-display uppercase tracking-tight text-3xl text-pine-dark mb-4">Perjalanan Selesai</h1>
-            <p className="text-ink-soft mb-8">
-              Terima kasih telah menjelajahi Bandung bersama Om Bram Travel. Sampai jumpa di perjalanan berikutnya!
-            </p>
+            <h1 className="font-display uppercase tracking-tight text-3xl text-pine-dark mb-4">{t("statusComplete")}</h1>
+            <p className="text-ink-soft mb-8">{t("statusCompleteDesc")}</p>
           </div>
         ) : isEnRoute ? (
           <div className="mb-10">
-            <h1 className="font-display uppercase tracking-tight text-3xl text-pine-dark mb-2">Driver Sedang Menjemput / Bertugas</h1>
-            <p className="text-ink-soft mb-8">Pantau pergerakan kendaraan Anda secara langsung pada peta di bawah ini.</p>
+            <h1 className="font-display uppercase tracking-tight text-3xl text-pine-dark mb-2">{t("statusEnRoute")}</h1>
+            <p className="text-ink-soft mb-8">{t("statusEnRouteDesc")}</p>
           </div>
         ) : isSuccess ? (
           <div className="mb-10">
             <div className="w-20 h-20 bg-ok text-white rounded-full flex items-center justify-center mx-auto mb-8">
               <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
-            <h1 className="font-display uppercase tracking-tight text-3xl text-pine-dark mb-4">Pembayaran Berhasil!</h1>
+            <h1 className="font-display uppercase tracking-tight text-3xl text-pine-dark mb-4">{t("statusWait")}</h1>
             <p className="text-ink-soft mb-8">
-              Pemesanan dengan kode <strong className="font-mono text-pine-dark mx-1">{orderCode}</strong> telah dikonfirmasi. 
+              {t("statusWaitDesc")} <strong className="font-mono text-pine-dark mx-1">{orderCode}</strong>
             </p>
           </div>
         ) : (
@@ -75,7 +75,7 @@ export default async function TrackPage({
             <div className="w-20 h-20 bg-beacon text-pine-dark rounded-full flex items-center justify-center mx-auto mb-8 live-dot">
               <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
-            <h1 className="font-display uppercase tracking-tight text-3xl text-pine-dark mb-4">Menunggu Pembayaran</h1>
+            <h1 className="font-display uppercase tracking-tight text-3xl text-pine-dark mb-4">{t("statusPending")}</h1>
             <p className="text-ink-soft mb-8">Selesaikan pembayaran untuk kode pesanan <strong className="font-mono">{orderCode}</strong>.</p>
           </div>
         )}
@@ -83,7 +83,7 @@ export default async function TrackPage({
         {/* Invoice Card UI */}
         <div className="bg-card border border-line rounded-xl p-8 text-left mb-10 shadow-sm">
           <div className="flex justify-between items-center mb-6 border-b border-line pb-4">
-            <h2 className="font-display text-xl text-pine-dark">Detail Perjalanan</h2>
+            <h2 className="font-display text-xl text-pine-dark">{t("title")}</h2>
             {isSuccess && <PrintButton />}
           </div>
           
@@ -93,7 +93,7 @@ export default async function TrackPage({
               <span className="font-medium text-right max-w-[200px]">{title}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-ink-soft">Tanggal Berangkat</span>
+              <span className="text-ink-soft">{t("tourDate")}</span>
               <span className="font-medium text-right">{booking.date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
             </div>
             <div className="flex justify-between">
@@ -101,14 +101,22 @@ export default async function TrackPage({
               <span className="font-medium text-right">{booking.customerName} ({booking.customerPhone})</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-ink-soft">Titik Jemput</span>
-              <span className="font-medium text-right">{booking.pickupPoint}</span>
+              <span className="text-ink-soft">{t("pickup")}</span>
+              <span className="font-medium text-right max-w-[250px]">{booking.pickupPoint}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-ink-soft">Jumlah Pax</span>
               <span className="font-medium text-right">{booking.pax} Dewasa, {booking.children} Anak, {booking.extraLuggage} Koper Besar</span>
             </div>
-            <div className="flex justify-between">
+
+            {booking.driver && (
+              <div className="flex justify-between border-t border-line/50 pt-4 mt-2">
+                <span className="text-ink-soft">{t("driver")}</span>
+                <span className="font-medium text-right">{booking.driver.name} ({booking.driver.vehicle?.plate})</span>
+              </div>
+            )}
+
+            <div className="flex justify-between border-t border-line pt-4 mt-2">
               <span className="text-ink-soft">Status Pembayaran</span>
               <span className={`font-mono font-bold ${isSuccess ? 'text-ok' : 'text-rust'}`}>
                 {isSuccess ? 'LUNAS (PAID)' : 'PENDING'}
@@ -130,34 +138,40 @@ export default async function TrackPage({
               </div>
             )}
 
-            <div className="flex justify-between border-t border-line pt-4 mt-4">
-              <span className="text-ink-soft">Total Pembayaran</span>
-              <CurrencyDisplay amountIDR={booking.totalIDR} className="font-bold text-pine-dark text-lg" />
+            <div className="flex justify-between pt-2">
+              <span className="text-ink-soft">{t("subtotal")}</span>
+              <span className="font-medium text-right">{formatIDR(booking.subtotal)}</span>
+            </div>
+
+            {booking.extraFees > 0 && (
+              <div className="flex justify-between">
+                <span className="text-ink-soft">{t("extraFees")}</span>
+                <span className="font-medium text-right">{formatIDR(booking.extraFees)}</span>
+              </div>
+            )}
+
+            <div className="flex justify-between pt-4 border-t border-line">
+              <span className="font-bold text-pine-dark">{t("total")}</span>
+              <span className="font-bold text-lg text-pine-dark">{formatIDR(booking.totalIDR)}</span>
             </div>
           </div>
         </div>
 
-        {/* Live Map - Selalu tampil jika lunas */}
         {showMap && (
-          <div className="mb-10 text-left">
-            <h2 className="font-display text-xl text-pine-dark mb-4 px-2">Lokasi Penjemputan / Live Tracking</h2>
+          <div className="bg-card border border-line rounded-xl p-8 text-left mb-10 shadow-sm">
+            <h2 className="font-display text-xl text-pine-dark mb-4 px-2">{t("liveMap")}</h2>
             <LiveMap 
               bookingId={booking.id} 
-              tourName={title} 
-              pickupGeoJson={
-                booking.notes?.includes('[GEO]:') 
-                  ? booking.notes.split('[GEO]:')[1] 
-                  : undefined
-              }
+              pickupGeoJson={typeof booking.pickupPoint === 'string' && booking.pickupPoint.startsWith("{") ? booking.pickupPoint : undefined}
             />
           </div>
         )}
 
-        <Link
+        <Link 
           href={`/${locale}`}
           className="inline-flex justify-center font-display uppercase tracking-wide text-sm font-semibold px-8 py-4 rounded border border-pine-dark text-pine-dark no-underline hover:bg-pine-dark hover:text-paper transition-colors"
         >
-          Kembali ke Beranda
+          {t("backHome")}
         </Link>
       </div>
 
