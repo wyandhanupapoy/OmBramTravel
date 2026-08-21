@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useDeferredValue, useEffect, useState } from "react";
+import { TourCard } from "@/components/tours/TourCard";
 
 interface SearchTour {
   slug: string;
@@ -10,6 +10,7 @@ interface SearchTour {
   duration: string;
   zone: string;
   stops: string[];
+  images: string[];
 }
 
 const searchCopy: Record<string, { eyebrow: string; heading: string; available: string; loading: string; placeholder: string; searchLabel: string; all: string; city: string; nature: string; family: string; areaLabel: string; recommended: string; cheap: string; expensive: string; sortLabel: string; reset: string; from: string; halfDay: string; fullDay: string; empty: string; showing: string }> = {
@@ -20,10 +21,6 @@ const searchCopy: Record<string, { eyebrow: string; heading: string; available: 
   ko: { eyebrow: "반둥 여행 찾기", heading: "여행지 또는 여행 경로 검색", available: "개 경로 이용 가능", loading: "검색 중...", placeholder: "예: Dago, Braga, 화이트 크레이터...", searchLabel: "여행지 검색", all: "전체 지역", city: "도시", nature: "자연", family: "가족", areaLabel: "지역 필터", recommended: "추천", cheap: "낮은 가격순", expensive: "높은 가격순", sortLabel: "가격순 정렬", reset: "필터 초기화", from: "최저가", halfDay: "반일", fullDay: "종일", empty: "여행지를 찾을 수 없습니다. 다른 검색어를 입력해 보세요.", showing: "상위 12개 결과입니다. 검색 범위를 좁혀 보세요." },
   ar: { eyebrow: "استكشف باندونغ", heading: "ابحث عن وجهة أو مسار رحلة", available: "مسار متاح", loading: "جارٍ البحث...", placeholder: "مثال: داغو، براغا، الحفرة البيضاء...", searchLabel: "البحث عن وجهة", all: "كل المناطق", city: "المدينة", nature: "الطبيعة", family: "العائلة", areaLabel: "تصفية المنطقة", recommended: "موصى به", cheap: "الأقل سعراً", expensive: "الأعلى سعراً", sortLabel: "ترتيب حسب السعر", reset: "إعادة ضبط", from: "يبدأ من", halfDay: "نصف يوم", fullDay: "يوم كامل", empty: "لم يتم العثور على وجهة. جرّب كلمة أخرى.", showing: "عرض أول 12 نتيجة. ضيّق البحث للحصول على نتائج أدق." }
 };
-
-function formatPrice(value: number, locale: string) {
-  return new Intl.NumberFormat(locale === "en" ? "en-US" : locale, { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value);
-}
 
 export function HomeTourSearch({ tours, locale }: { tours: SearchTour[]; locale: string }) {
   const [query, setQuery] = useState("");
@@ -84,21 +81,7 @@ export function HomeTourSearch({ tours, locale }: { tours: SearchTour[]; locale:
           )}
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredTours.slice(0, 9).map((tour) => (
-              <Link key={tour.slug} href={`/${locale}/tours/${tour.slug}`} className="group rounded-xl border border-line bg-white p-4 no-underline transition-all hover:-translate-y-0.5 hover:border-pine hover:shadow-md">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h3 className="font-display text-lg leading-tight text-pine-dark group-hover:text-rust">{tour.title}</h3>
-                    <p className="mt-2 line-clamp-1 text-xs text-ink-soft">{tour.stops.join(" • ")}</p>
-                  </div>
-                  <span className="shrink-0 rounded-full bg-mist px-2 py-1 text-[10px] font-bold uppercase text-pine-dark">{tour.duration === "half-day" ? copy.halfDay : copy.fullDay}</span>
-                </div>
-                <div className="mt-4 flex items-end justify-between border-t border-line pt-3">
-                  <span className="font-mono text-xs text-ink-soft">{copy.from}</span>
-                  <span className="font-mono text-sm font-bold text-pine-dark">{formatPrice(tour.basePrice, locale)}</span>
-                </div>
-              </Link>
-            ))}
+            {filteredTours.slice(0, 9).map((tour) => <TourCard key={tour.slug} slug={tour.slug} title={tour.title} images={tour.images} duration={tour.duration} stopsCount={tour.stops.length} basePrice={tour.basePrice} locale={locale} />)}
           </div>
 
           {filteredTours.length === 0 && <div className="py-10 text-center text-sm text-ink-soft">{copy.empty}</div>}

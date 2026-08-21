@@ -33,6 +33,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       basePrice: true,
       duration: true,
       zone: true,
+      images: true,
       stops: { orderBy: { order: "asc" }, select: { nameId: true } }
     },
     orderBy: { basePrice: "asc" },
@@ -50,7 +51,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           basePrice: tour.basePrice,
           duration: tour.duration,
           zone: tour.zone,
-          stops: tour.stops.map((stop) => stop.nameId)
+          stops: tour.stops.map((stop) => stop.nameId),
+          images: JSON.parse(tour.images || "[]")
         }))}
       />
       <ScrollVideoSection />
@@ -112,12 +114,10 @@ function HeroSection() {
           </div>
         </div>
 
-        <div className="relative h-[260px] sm:h-[330px] lg:h-[390px]" aria-label="Armada kendaraan Om Bram">
-          <div className="absolute inset-x-0 bottom-4 h-px bg-beacon/30" />
-          <Image src="/hiace.png" alt="Toyota Hiace travel Om Bram" fill sizes="(max-width: 1024px) 100vw, 48vw" className="object-contain object-bottom drop-shadow-[0_18px_18px_rgba(0,0,0,0.28)]" priority />
-          <Image src="/kijanginova.png" alt="Toyota Kijang Innova Om Bram" width={360} height={240} className="absolute -bottom-2 -left-8 w-[48%] object-contain drop-shadow-[0_12px_12px_rgba(0,0,0,0.24)]" />
-          <Image src="/avanza.png" alt="Toyota Avanza Om Bram" width={300} height={210} className="absolute -bottom-1 -right-3 w-[42%] object-contain drop-shadow-[0_12px_12px_rgba(0,0,0,0.24)]" />
-          <Image src="/isuzuelf.webp" alt="Isuzu ELF travel Om Bram" width={340} height={220} className="absolute -top-3 left-2 w-[38%] object-contain opacity-90 drop-shadow-[0_10px_10px_rgba(0,0,0,0.2)]" />
+        <div className="relative grid h-[260px] grid-cols-[0.85fr_1.15fr] grid-rows-[1fr_0.9fr] gap-2 sm:h-[330px] lg:h-[390px]" aria-label="Armada kendaraan Om Bram">
+          <div className="relative row-span-1 min-w-0"><Image src="/isuzuelf.webp" alt="Isuzu ELF travel Om Bram" fill sizes="(max-width: 1024px) 35vw, 18vw" className="object-contain object-left-bottom opacity-90 drop-shadow-[0_10px_10px_rgba(0,0,0,0.2)]" /></div>
+          <div className="relative row-span-2 min-w-0"><Image src="/hiace.png" alt="Toyota Hiace travel Om Bram" fill sizes="(max-width: 1024px) 55vw, 32vw" className="object-contain object-right-bottom drop-shadow-[0_18px_18px_rgba(0,0,0,0.28)]" priority /></div>
+          <div className="grid min-w-0 grid-cols-2 items-end gap-1"><Image src="/kijanginova.png" alt="Toyota Kijang Innova Om Bram" width={360} height={240} className="w-full object-contain object-bottom drop-shadow-[0_12px_12px_rgba(0,0,0,0.24)]" /><Image src="/avanza.png" alt="Toyota Avanza Om Bram" width={300} height={210} className="w-full object-contain object-bottom drop-shadow-[0_12px_12px_rgba(0,0,0,0.24)]" /></div>
           <span className="absolute right-0 top-4 rounded-full border border-white/25 bg-pine-dark/30 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-white/70">Armada siap jalan</span>
         </div>
       </div>
