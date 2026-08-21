@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useDeferredValue, useState } from "react";
+import { useDeferredValue, useEffect, useState } from "react";
 
 interface SearchTour {
   slug: string;
@@ -20,20 +20,23 @@ export function HomeTourSearch({ tours, locale }: { tours: SearchTour[]; locale:
   const [query, setQuery] = useState("");
   const [zone, setZone] = useState("all");
   const [sort, setSort] = useState("recommended");
+  const [results, setResults] = useState(tours);
+  const [resultCount, setResultCount] = useState(tours.length);
+  const [isSearching, setIsSearching] = useState(false);
   const deferredQuery = useDeferredValue(query);
 
-  const filteredTours = tours
-    .filter((tour) => zone === "all" || tour.zone === zone)
-    .filter((tour) => {
-      const needle = deferredQuery.trim().toLowerCase();
-      if (!needle) return true;
-      return [tour.title, ...tour.stops].some((value) => value.toLowerCase().includes(needle));
-    })
-    .sort((a, b) => {
-      if (sort === "cheap") return a.basePrice - b.basePrice;
-      if (sort === "expensive") return b.basePrice - a.basePrice;
-      return a.title.localeCompare(b.title);
-    });
+  useEffect(() => {
+    const controller = new AbortController();
+    setIsSearching(true);
+    fetch(`/api/tours?q=${encodeURIComponent(deferredQuery)}&zone=${zone}&sort=${sort}&limit=12`, { signal: controller.signal })
+      .then((response) => response.json())
+      .then((data) => { setResults(data.tours || []); setResultCount(data.total || 0); })
+      .catch(() => {})
+      .finally(() => setIsSearching(false));
+    return () => controller.abort();
+  }, [deferredQuery, zone, sort]);
+
+  const filteredTours = results;
 
   return (
     <section className="relative z-10 -mt-8 bg-paper py-6 sm:-mt-12">
@@ -44,7 +47,7 @@ export function HomeTourSearch({ tours, locale }: { tours: SearchTour[]; locale:
               <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-rust">Explore Bandung Raya</span>
               <h2 className="mt-2 font-display text-2xl uppercase text-pine-dark">Cari destinasi atau rute wisata</h2>
             </div>
-            <span className="font-mono text-xs text-ink-soft">{filteredTours.length} rute tersedia</span>
+            <span className="font-mono text-xs text-ink-soft">{isSearching ? "Mencari..." : `${resultCount} rute tersedia`}</span>
           </div>
 
           <div className="mt-5 grid gap-3 md:grid-cols-[1fr_auto_auto]">
@@ -89,7 +92,7 @@ export function HomeTourSearch({ tours, locale }: { tours: SearchTour[]; locale:
           </div>
 
           {filteredTours.length === 0 && <div className="py-10 text-center text-sm text-ink-soft">Destinasi belum ditemukan. Coba kata kunci lain.</div>}
-          {filteredTours.length > 9 && <p className="mt-5 text-center text-xs text-ink-soft">Menampilkan 9 hasil teratas. Persempit pencarian untuk hasil yang lebih spesifik.</p>}
+          {resultCount > 12 && <p className="mt-5 text-center text-xs text-ink-soft">Menampilkan 12 hasil teratas. Persempit pencarian untuk hasil yang lebih spesifik.</p>}
         </div>
       </div>
     </section>

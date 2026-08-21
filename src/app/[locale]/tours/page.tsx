@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { db } from "@/lib/db";
 import { TourCard } from "@/components/tours/TourCard";
 import { HomeTourSearch } from "@/components/home/HomeTourSearch";
+import Link from "next/link";
 import type { Metadata } from "next";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -12,16 +13,25 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
-export default async function ToursPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function ToursPage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<{ page?: string }> }) {
   const { locale } = await params;
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(Number(pageParam) || 1, 1);
+  const pageSize = 12;
   const t = await getTranslations({ locale, namespace: "tours" });
   const tTourData = await getTranslations({ locale, namespace: "tourData" });
 
-  const tours = await db.tour.findMany({
-    where: { isActive: true },
-    include: { _count: { select: { stops: true } }, stops: { orderBy: { order: "asc" } } },
-    orderBy: { createdAt: 'desc' }
-  });
+  const [totalTours, tours] = await Promise.all([
+    db.tour.count({ where: { isActive: true } }),
+    db.tour.findMany({
+      where: { isActive: true },
+      include: { _count: { select: { stops: true } }, stops: { orderBy: { order: "asc" } } },
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * pageSize,
+      take: pageSize
+    })
+  ]);
+  const totalPages = Math.ceil(totalTours / pageSize);
 
   return (
     <div className="py-24 max-w-[1180px] mx-auto px-7">
@@ -73,6 +83,16 @@ export default async function ToursPage({ params }: { params: Promise<{ locale: 
           );
         })}
       </div>
+
+      {totalPages > 1 && (
+        <nav className="mt-10 flex items-center justify-center gap-2" aria-label="Pagination tour">
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+            <Link key={pageNumber} href={`/${locale}/tours?page=${pageNumber}`} aria-current={pageNumber === page ? "page" : undefined} className={`flex h-10 w-10 items-center justify-center rounded-lg border text-sm font-semibold transition-colors ${pageNumber === page ? "border-pine bg-pine-dark text-paper" : "border-line-strong text-pine-dark hover:border-pine hover:bg-mist"}`}>
+              {pageNumber}
+            </Link>
+          ))}
+        </nav>
+      )}
 
       {tours.length === 0 && (
         <div className="py-20 text-center border border-dashed border-line rounded">

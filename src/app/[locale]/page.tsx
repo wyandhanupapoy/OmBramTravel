@@ -33,7 +33,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       zone: true,
       stops: { orderBy: { order: "asc" }, select: { nameId: true } }
     },
-    orderBy: { basePrice: "asc" }
+    orderBy: { basePrice: "asc" },
+    take: 12
   });
 
   return (

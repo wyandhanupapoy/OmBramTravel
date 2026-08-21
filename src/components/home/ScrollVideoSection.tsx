@@ -101,7 +101,7 @@ export function ScrollVideoSection() {
       <div className="sticky top-0 h-screen overflow-hidden">
         <video
           ref={videoRef}
-          className="absolute inset-0 h-full w-full object-cover opacity-25"
+          className="absolute inset-0 h-full w-full object-cover opacity-40"
           src="/scrollvideo.webm"
           muted
           playsInline

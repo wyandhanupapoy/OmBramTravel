@@ -13,7 +13,7 @@ export function Header() {
   const navLinks = [
     { href: `/${locale}`, label: t("home") },
     { href: `/${locale}/tours`, label: t("tours") },
-    { href: `/${locale}/articles`, label: "Artikel" },
+    { href: `/${locale}/articles`, label: locale === "id" ? "Artikel" : locale === "ja" ? "記事" : locale === "zh" ? "文章" : locale === "ko" ? "기사" : locale === "ar" ? "مقالات" : "Articles" },
     { href: `/${locale}/custom`, label: t("customTour") || "Tur Kustom" },
     { href: `/${locale}/about`, label: t("about") },
     { href: `/${locale}/contact`, label: t("contact") },
