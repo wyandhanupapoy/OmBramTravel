@@ -1,9 +1,10 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import destinationsData from "@/lib/destinationsData.json";
+import { getDestinationCategory, allDestinations } from "@/lib/destinationCatalog";
 
 interface DestinationSearchResult {
   name: string;
+  category: string;
 }
 
 export function DestinationSearchInput({ 
@@ -46,15 +47,15 @@ export function DestinationSearchInput({
   // Filter local destinations
   useEffect(() => {
     if (query.length === 0) {
-      setResults(destinationsData.slice(0, 8).map(d => ({ name: d })));
+      setResults(allDestinations.slice(0, 12).map(name => ({ name, category: getDestinationCategory(name) })));
       return;
     }
 
     if (!value.startsWith("{")) {
-      const filtered = destinationsData
+      const filtered = allDestinations
         .filter(d => d.toLowerCase().includes(query.toLowerCase()))
-        .slice(0, 8)
-        .map(d => ({ name: d }));
+        .slice(0, 12)
+        .map(name => ({ name, category: getDestinationCategory(name) }));
       setResults(filtered);
     }
   }, [query, value]);
@@ -121,14 +122,20 @@ export function DestinationSearchInput({
       )}
 
       {showDropdown && results.length > 0 && (
-        <ul className="absolute z-50 w-full mt-1 bg-white border border-line rounded shadow-lg max-h-60 overflow-y-auto">
+        <ul className="absolute z-50 w-full mt-1 bg-white border border-line rounded shadow-lg max-h-80 overflow-y-auto">
+          <li className="sticky top-0 bg-paper px-4 py-2 text-[10px] font-mono uppercase tracking-wider text-ink-soft border-b border-line">
+            {query ? `${results.length} hasil teratas dari ${allDestinations.length} destinasi` : "Destinasi populer Bandung Raya"}
+          </li>
           {results.map((result, i) => (
             <li 
               key={i}
               onClick={() => handleSelect(result)}
               className="px-4 py-3 hover:bg-paper cursor-pointer border-b border-line last:border-0 text-sm text-ink text-left"
             >
-              <div className="font-semibold text-pine-dark">{result.name}</div>
+              <div className="flex items-center justify-between gap-3">
+                <div className="font-semibold text-pine-dark">{result.name}</div>
+                <span className="shrink-0 rounded-full bg-mist px-2 py-0.5 text-[10px] text-pine-dark">{result.category}</span>
+              </div>
             </li>
           ))}
         </ul>

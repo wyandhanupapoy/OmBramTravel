@@ -7,6 +7,7 @@ import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
 import dynamic from "next/dynamic";
 import Script from "next/script";
 import { useTranslations } from "next-intl";
+import { getRandomDestinations } from "@/lib/destinationCatalog";
 import "leaflet/dist/leaflet.css";
 
 const originCountries = [
@@ -86,6 +87,7 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
   const price = BASE_PRICE + (Math.ceil(distanceKm) * RATE_PER_KM) + (extraLuggage * LUGGAGE_FEE);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGeneratingRoute, setIsGeneratingRoute] = useState(false);
 
   // Map Icons (loaded client side)
   const [icons, setIcons] = useState<any>(null);
@@ -147,6 +149,26 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
     const newDests = [...destinations];
     newDests[index] = val;
     setDestinations(newDests);
+  };
+
+  const geocodeDestination = async (name: string) => {
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(`${name} Bandung, Indonesia`)}&format=json&limit=1&countrycodes=id`);
+      const data = await res.json();
+      if (data?.[0]) {
+        return JSON.stringify({ name, lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) });
+      }
+    } catch (error) {}
+    return JSON.stringify({ name, lat: -6.9175, lng: 107.6191 });
+  };
+
+  const handleRandomRoute = async () => {
+    if (isGeneratingRoute) return;
+    setIsGeneratingRoute(true);
+    const randomNames = getRandomDestinations(3);
+    const randomRoute = await Promise.all(randomNames.map(geocodeDestination));
+    setDestinations(randomRoute);
+    setIsGeneratingRoute(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -213,7 +235,15 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-semibold text-pine-dark">{t("destTitle")}</h3>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 className="font-semibold text-pine-dark">{t("destTitle")}</h3>
+                <p className="mt-1 text-xs text-ink-soft">Pilih dari 240 destinasi Bandung Raya atau biarkan kami menyusun rute.</p>
+              </div>
+              <button type="button" onClick={handleRandomRoute} disabled={isGeneratingRoute} className="rounded-lg border border-pine px-3 py-2 text-xs font-semibold text-pine transition-colors hover:bg-pine hover:text-paper focus:outline-none focus:ring-2 focus:ring-beacon/70 disabled:cursor-wait disabled:opacity-60">
+                {isGeneratingRoute ? "Menyusun rute..." : "Rute Acak"}
+              </button>
+            </div>
             {destinations.map((dest, i) => (
               <div key={i} className="flex items-center gap-3">
                 <div className="flex-1">
