@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tour {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  zone        String    // "north" | "south" | "city"
+  duration    String    // "full-day" | "half-day"
+  maxPax      Int       @default(7)
+  basePrice   Int       // IDR per person
+  extraPaxFee Int       @default(0)
+  luggageFee  Int       @default(0)
+  childDisc   Int       @default(50) // percent discount for children
+  images      String    @default("[]") // JSON array
+  isActive    Boolean   @default(true)
+
+  titleId     String
+  titleEn     String
+  titleZh     String    @default("")
+  descId      String
+  descEn      String
+  descZh      String    @default("")
+  highlightId String    @default("")
+  highlightEn String    @default("")
+  highlightZh String    @default("")
+
+  stops       Stop[]
+  bookings    Booking[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Stop {
+  id       String @id @default(cuid())
+  tourId   String
+  tour     Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  order    Int
+  nameId   String
+  nameEn   String
+  nameZh   String @default("")
+  time     String
+  duration Int    // minutes at location
+
+  @@index([tourId])
+}
+
+model Booking {
+  id            String    @id @default(cuid())
+  orderCode     String    @unique
+  tourId        String
+  tour          Tour      @relation(fields: [tourId], references: [id])
+  date          DateTime
+  pax           Int
+  children      Int       @default(0)
+  extraLuggage  Int       @default(0)
+  pickupPoint   String
+
+  customerName  String
+  customerPhone String
+  customerEmail String
+  customerCountry String  @default("ID")
+  notes         String?
+
+  subtotal      Int
+  extraFees     Int       @default(0)
+  discount      Int       @default(0)
+  promoCode     String?
+  totalIDR      Int
+  displayCurrency String  @default("IDR")
+
+  paymentStatus String    @default("pending")
+  paymentMethod String?
+  midtransId    String?
+  paidAt        DateTime?
+
+  driverId      String?
+  driver        Driver?   @relation(fields: [driverId], references: [id])
+  status        String    @default("new")
+
+  trackings     Tracking[]
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([tourId])
+  @@index([driverId])
+  @@index([orderCode])
+  @@index([paymentStatus])
+}
+
+model Driver {
+  id        String    @id @default(cuid())
+  name      String
+  phone     String
+  photoUrl  String?
+  licenseNo String
+  rating    Float     @default(5.0)
+  isOnline  Boolean   @default(false)
+  vehicleId String?
+  vehicle   Vehicle?  @relation(fields: [vehicleId], references: [id])
+  email     String    @unique
+  password  String
+  bookings  Booking[]
+
+  @@index([vehicleId])
+}
+
+model Vehicle {
+  id       String   @id @default(cuid())
+  name     String
+  plate    String
+  type     String
+  capacity Int
+  imageUrl String?
+  drivers  Driver[]
+}
+
+model Tracking {
+  id        String   @id @default(cuid())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  lat       Float
+  lng       Float
+  speed     Float?
+  heading   Float?
+  timestamp DateTime @default(now())
+
+  @@index([bookingId])
+  @@index([timestamp])
+}
+
+model Policy {
+  id      String @id @default(cuid())
+  key     String @unique
+  titleId String
+  titleEn String
+  titleZh String @default("")
+  bodyId  String
+  bodyEn  String
+  bodyZh  String @default("")
+}

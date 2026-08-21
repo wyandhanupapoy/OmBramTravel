@@ -1,0 +1,144 @@
+{
+  "meta": {
+    "title": "Om Bram — City Tour Bandung",
+    "description": "Jelajahi Bandung bersama Om Bram. City tour, tur alam, dan perjalanan kustom dengan driver berpengalaman dan armada ber-AC. Pesan sekarang!"
+  },
+  "nav": {
+    "home": "Beranda",
+    "tours": "Tur",
+    "about": "Tentang",
+    "contact": "Kontak",
+    "faq": "FAQ",
+    "bookNow": "Pesan Sekarang",
+    "trackOrder": "Cek Pesanan"
+  },
+  "hero": {
+    "eyebrow": "City Tour Bandung · Driver Berpengalaman",
+    "title": "Jelajahi keindahan Bandung dengan tur yang bisa kamu <em>pantau</em>.",
+    "subtitle": "Pilih tur, kami tugaskan driver dan armada yang sesuai — lalu kamu bisa lihat posisi kendaraan secara langsung dari halaman pesanan.",
+    "cta1": "Lihat Semua Tur",
+    "cta2": "Cara Kerja"
+  },
+  "trust": {
+    "trips": "Perjalanan Selesai",
+    "drivers": "Driver Berpengalaman",
+    "onTime": "Tepat Waktu Jemput",
+    "tracking": "Pelacakan Langsung"
+  },
+  "zones": {
+    "all": "Semua",
+    "north": "Bandung Utara",
+    "south": "Bandung Selatan",
+    "city": "Bandung Kota"
+  },
+  "services": {
+    "eyebrow": "Layanan Kami",
+    "title": "Satu platform untuk menjelajahi Bandung.",
+    "subtitle": "Pilih zona tur yang sesuai dengan rencanamu — semua pakai driver berpengalaman dan armada ber-AC.",
+    "north": {
+      "name": "Bandung Utara",
+      "desc": "Gunung Tangkuban Perahu, Floating Market, Orchid Forest, dan udara sejuk pegunungan."
+    },
+    "south": {
+      "name": "Bandung Selatan",
+      "desc": "Kawah Putih, Situ Patenggang, kebun teh Pangalengan, dan pemandangan alam yang dramatis."
+    },
+    "city": {
+      "name": "Bandung Kota",
+      "desc": "Gedung Sate, Jalan Braga, Asia Afrika, Museum Geologi — warisan kolonial dan kuliner."
+    }
+  },
+  "tours": {
+    "eyebrow": "Tur Pilihan",
+    "title": "Tur yang paling sering dipesan.",
+    "subtitle": "Semua sudah termasuk driver berpengalaman dan armada ber-AC.",
+    "viewAll": "Lihat Semua Tur",
+    "perPerson": "/ orang",
+    "duration": "Durasi",
+    "stops": "titik",
+    "fullDay": "Sehari Penuh",
+    "halfDay": "Setengah Hari",
+    "bookNow": "Pesan",
+    "viewDetail": "Lihat Detail",
+    "popular": "Populer",
+    "searchPlaceholder": "Cari tur atau destinasi...",
+    "noResults": "Tidak ada tur yang cocok dengan pencarian Anda.",
+    "from": "Mulai dari"
+  },
+  "pricing": {
+    "title": "Rincian Harga",
+    "basePax": "Harga per orang",
+    "children": "Anak-anak (diskon {pct}%)",
+    "extraLuggage": "Koper besar (>20kg)",
+    "perItem": "/ koper",
+    "subtotal": "Subtotal",
+    "discount": "Diskon",
+    "total": "Total",
+    "adults": "Dewasa",
+    "childrenCount": "Anak-anak",
+    "luggageCount": "Koper besar"
+  },
+  "howItWorks": {
+    "eyebrow": "Cara Kerja",
+    "title": "Tiga langkah dari pesan sampai pulang.",
+    "subtitle": "Setiap tur dijalankan lewat proses dispatch yang sama — jadi kamu tahu persis apa yang terjadi di tiap tahap.",
+    "step1": { "title": "Pilih tur & tanggal", "desc": "Telusuri tur berdasarkan zona, durasi, dan armada yang sudah jelas sejak halaman pertama." },
+    "step2": { "title": "Driver & armada ditugaskan", "desc": "Dispatcher kami mencocokkan tur dengan driver dan kendaraan yang tersedia." },
+    "step3": { "title": "Pantau perjalanan langsung", "desc": "Lihat posisi kendaraan secara langsung dari halaman pesanan." }
+  },
+  "testimonials": {
+    "eyebrow": "Testimoni",
+    "title": "Yang dibilang wisatawan soal Om Bram."
+  },
+  "cta": {
+    "title": "Siap menjelajahi Bandung?",
+    "subtitle": "Pesan tur sekarang dan nikmati perjalanan yang nyaman dan transparan.",
+    "button": "Pesan Tur Sekarang",
+    "whatsapp": "Chat via WhatsApp"
+  },
+  "footer": {
+    "tagline": "Om Bram menghubungkan kamu dengan tur Bandung yang nyaman, transparan, dan bisa dipantau langsung.",
+    "product": "PRODUK",
+    "company": "PERUSAHAAN",
+    "help": "BANTUAN",
+    "about": "Tentang Kami",
+    "careers": "Karier",
+    "partner": "Mitra Driver",
+    "helpCenter": "Pusat Bantuan",
+    "terms": "Syarat & Ketentuan",
+    "privacy": "Kebijakan Privasi",
+    "copyright": "© 2026 OM BRAM — City Tour Bandung"
+  },
+  "about": {
+    "eyebrow": "Tentang Kami",
+    "title": "Tur Bandung yang Transparan.",
+    "p1": "Om Bram lahir dari kebutuhan akan layanan tur kota Bandung yang transparan dan terpercaya. Kami menghubungkan wisatawan dengan driver berpengalaman dan armada yang nyaman.",
+    "p2": "Setiap perjalanan bisa dipantau langsung oleh pelanggan — dari titik jemput sampai diantar pulang.",
+    "missionTitle": "Misi Kami",
+    "mission": "Memberikan pengalaman tur Bandung terbaik kepada wisatawan dari seluruh dunia dengan harga transparan, driver profesional, dan teknologi pelacakan langsung."
+  },
+  "contact": {
+    "eyebrow": "Hubungi Kami",
+    "title": "Ada pertanyaan? Langsung hubungi kami.",
+    "subtitle": "Tim kami siap membantu kamu merencanakan tur Bandung yang sempurna.",
+    "whatsappBtn": "Chat WhatsApp",
+    "emailBtn": "Kirim Email",
+    "address": "Bandung, Jawa Barat, Indonesia"
+  },
+  "faq": {
+    "eyebrow": "FAQ & Kebijakan",
+    "title": "Pertanyaan yang sering ditanyakan.",
+    "q1": "Berapa biaya tambahan jika membawa koper besar?",
+    "a1": "Setiap koper besar (di atas 20kg) dikenakan biaya tambahan yang tertera di halaman detail tur. Biaya ini untuk memastikan kenyamanan penumpang lain dan menjaga kapasitas kendaraan.",
+    "q2": "Bagaimana jika jumlah penumpang melebihi kapasitas?",
+    "a2": "Kapasitas kendaraan sudah ditentukan untuk setiap tur. Jika jumlah penumpang melebihi kapasitas, Anda perlu memesan kendaraan tambahan atau memilih tur dengan kendaraan yang lebih besar.",
+    "q3": "Apa kebijakan pembatalan?",
+    "a3": "Pembatalan gratis hingga 24 jam sebelum keberangkatan. Pembatalan kurang dari 24 jam dikenakan biaya 50% dari total harga. Tidak ada pengembalian untuk pembatalan di hari keberangkatan.",
+    "q4": "Apakah tur bisa dikustomisasi?",
+    "a4": "Ya! Hubungi kami via WhatsApp untuk mendiskusikan rute kustom, penambahan destinasi, atau permintaan khusus lainnya.",
+    "q5": "Apa saja yang termasuk dalam harga tur?",
+    "a5": "Harga sudah termasuk kendaraan ber-AC, driver berpengalaman, BBM, dan parkir. Tiket masuk destinasi dan makan tidak termasuk kecuali disebutkan.",
+    "q6": "Apakah driver bisa berbahasa Inggris?",
+    "a6": "Sebagian besar driver kami bisa berkomunikasi dalam bahasa Inggris dasar. Untuk permintaan driver berbahasa Inggris fasih, silakan informasikan saat pemesanan."
+  }
+}

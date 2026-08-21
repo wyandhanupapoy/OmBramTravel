@@ -1,0 +1,144 @@
+{
+  "meta": {
+    "title": "Om Bram — Bandung City Tour",
+    "description": "Explore Bandung with Om Bram. City tours, nature adventures, and custom trips with experienced drivers and AC vehicles. Book now!"
+  },
+  "nav": {
+    "home": "Home",
+    "tours": "Tours",
+    "about": "About",
+    "contact": "Contact",
+    "faq": "FAQ",
+    "bookNow": "Book Now",
+    "trackOrder": "Track Order"
+  },
+  "hero": {
+    "eyebrow": "Bandung City Tour · Experienced Drivers",
+    "title": "Explore the beauty of Bandung with tours you can <em>track</em>.",
+    "subtitle": "Choose a tour, we assign the right driver and vehicle — then track their position live from your booking page.",
+    "cta1": "View All Tours",
+    "cta2": "How It Works"
+  },
+  "trust": {
+    "trips": "Trips Completed",
+    "drivers": "Experienced Drivers",
+    "onTime": "On-Time Pickups",
+    "tracking": "Live Tracking"
+  },
+  "zones": {
+    "all": "All",
+    "north": "North Bandung",
+    "south": "South Bandung",
+    "city": "Bandung City"
+  },
+  "services": {
+    "eyebrow": "Our Services",
+    "title": "One platform to explore Bandung.",
+    "subtitle": "Choose the tour zone that fits your plan — all with experienced drivers and AC vehicles.",
+    "north": {
+      "name": "North Bandung",
+      "desc": "Tangkuban Perahu Volcano, Floating Market, Orchid Forest, and cool mountain air."
+    },
+    "south": {
+      "name": "South Bandung",
+      "desc": "White Crater, Situ Patenggang Lake, Pangalengan tea plantations, and dramatic natural scenery."
+    },
+    "city": {
+      "name": "Bandung City",
+      "desc": "Gedung Sate, Braga Street, Asia Afrika, Geology Museum — colonial heritage and culinary delights."
+    }
+  },
+  "tours": {
+    "eyebrow": "Featured Tours",
+    "title": "Most booked tours.",
+    "subtitle": "All include an experienced driver and air-conditioned vehicle.",
+    "viewAll": "View All Tours",
+    "perPerson": "/ person",
+    "duration": "Duration",
+    "stops": "stops",
+    "fullDay": "Full Day",
+    "halfDay": "Half Day",
+    "bookNow": "Book",
+    "viewDetail": "View Details",
+    "popular": "Popular",
+    "searchPlaceholder": "Search tours or destinations...",
+    "noResults": "No tours match your search.",
+    "from": "From"
+  },
+  "pricing": {
+    "title": "Price Breakdown",
+    "basePax": "Price per person",
+    "children": "Children ({pct}% discount)",
+    "extraLuggage": "Large luggage (>20kg)",
+    "perItem": "/ bag",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "total": "Total",
+    "adults": "Adults",
+    "childrenCount": "Children",
+    "luggageCount": "Large bags"
+  },
+  "howItWorks": {
+    "eyebrow": "How It Works",
+    "title": "Three steps from booking to arriving home.",
+    "subtitle": "Every tour runs through the same dispatch process — so you know exactly what's happening at every stage.",
+    "step1": { "title": "Choose a tour & date", "desc": "Browse tours by zone, duration, and vehicle — details and pricing are clear from the first page." },
+    "step2": { "title": "Driver & vehicle assigned", "desc": "Our dispatcher matches your tour with an available driver and vehicle." },
+    "step3": { "title": "Track your trip live", "desc": "See the vehicle position live from your booking page." }
+  },
+  "testimonials": {
+    "eyebrow": "Testimonials",
+    "title": "What travelers say about Om Bram."
+  },
+  "cta": {
+    "title": "Ready to explore Bandung?",
+    "subtitle": "Book a tour now and enjoy a comfortable, transparent journey.",
+    "button": "Book a Tour Now",
+    "whatsapp": "Chat via WhatsApp"
+  },
+  "footer": {
+    "tagline": "Om Bram connects you with comfortable, transparent, and trackable Bandung tours.",
+    "product": "PRODUCT",
+    "company": "COMPANY",
+    "help": "HELP",
+    "about": "About Us",
+    "careers": "Careers",
+    "partner": "Driver Partners",
+    "helpCenter": "Help Center",
+    "terms": "Terms & Conditions",
+    "privacy": "Privacy Policy",
+    "copyright": "© 2026 OM BRAM — Bandung City Tour"
+  },
+  "about": {
+    "eyebrow": "About Us",
+    "title": "Transparent Bandung Tours.",
+    "p1": "Om Bram was born from the need for transparent and reliable Bandung city tour services. We connect travelers with experienced drivers and comfortable vehicles.",
+    "p2": "Every journey can be tracked live by the customer — from pickup to drop-off.",
+    "missionTitle": "Our Mission",
+    "mission": "To provide the best Bandung tour experience to travelers from around the world with transparent pricing, professional drivers, and live tracking technology."
+  },
+  "contact": {
+    "eyebrow": "Contact Us",
+    "title": "Have a question? Reach out directly.",
+    "subtitle": "Our team is ready to help you plan the perfect Bandung tour.",
+    "whatsappBtn": "Chat WhatsApp",
+    "emailBtn": "Send Email",
+    "address": "Bandung, West Java, Indonesia"
+  },
+  "faq": {
+    "eyebrow": "FAQ & Policies",
+    "title": "Frequently asked questions.",
+    "q1": "What is the extra charge for large luggage?",
+    "a1": "Each large luggage item (over 20kg) incurs an additional fee shown on the tour detail page. This ensures comfort for other passengers and maintains vehicle capacity.",
+    "q2": "What if the number of passengers exceeds capacity?",
+    "a2": "Vehicle capacity is predetermined for each tour. If passengers exceed capacity, you'll need to book an additional vehicle or choose a tour with a larger vehicle.",
+    "q3": "What is the cancellation policy?",
+    "a3": "Free cancellation up to 24 hours before departure. Cancellations less than 24 hours incur a 50% charge. No refund for same-day cancellations.",
+    "q4": "Can tours be customized?",
+    "a4": "Yes! Contact us via WhatsApp to discuss custom routes, additional destinations, or other special requests.",
+    "q5": "What's included in the tour price?",
+    "a5": "Price includes AC vehicle, experienced driver, fuel, and parking. Destination entrance fees and meals are not included unless specified.",
+    "q6": "Do drivers speak English?",
+    "a6": "Most of our drivers can communicate in basic English. For fluent English-speaking driver requests, please let us know when booking."
+  }
+}
