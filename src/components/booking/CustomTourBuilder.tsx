@@ -5,6 +5,7 @@ import { LocationSearchInput } from "@/components/booking/LocationSearchInput";
 import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
 import dynamic from "next/dynamic";
 import Script from "next/script";
+import "leaflet/dist/leaflet.css";
 
 // Dynamic map components
 const MapContainer = dynamic(() => import("react-leaflet").then(m => m.MapContainer), { ssr: false });
@@ -232,7 +233,7 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
           </div>
         </div>
 
-        <div className="h-[500px] w-full rounded-xl overflow-hidden border-2 border-line">
+        <div className="h-[500px] w-full rounded-xl overflow-hidden border-2 border-line relative z-0">
           <MapContainer center={center} zoom={11} style={{ height: "100%", width: "100%" }}>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             
