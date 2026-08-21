@@ -2,9 +2,11 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { LocationSearchInput } from "@/components/booking/LocationSearchInput";
+import { DestinationSearchInput } from "@/components/booking/DestinationSearchInput";
 import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
 import dynamic from "next/dynamic";
 import Script from "next/script";
+import { useTranslations } from "next-intl";
 import "leaflet/dist/leaflet.css";
 
 // Dynamic map components
@@ -15,9 +17,43 @@ const Polyline = dynamic(() => import("react-leaflet").then(m => m.Polyline), { 
 
 export function CustomTourBuilder({ locale }: { locale: string }) {
   const router = useRouter();
-  const [pickup, setPickup] = useState("");
-  const [destinations, setDestinations] = useState<string[]>([""]);
+  const t = useTranslations("customTour");
+
+  // Load initial state from sessionStorage or use defaults
+  const loadState = (key: string, defaultVal: any) => {
+    if (typeof window !== "undefined") {
+      const saved = sessionStorage.getItem(`ct_${key}`);
+      if (saved) {
+        try { return JSON.parse(saved); } catch (e) { return saved; }
+      }
+    }
+    return defaultVal;
+  };
+
+  const [pickup, setPickup] = useState<string>(() => loadState("pickup", ""));
+  const [destinations, setDestinations] = useState<string[]>(() => loadState("destinations", [""]));
   
+  const [date, setDate] = useState<string>(() => loadState("date", ""));
+  const [adults, setAdults] = useState<number>(() => loadState("adults", 1));
+  const [children, setChildren] = useState<number>(() => loadState("children", 0));
+  const [name, setName] = useState<string>(() => loadState("name", ""));
+  const [phone, setPhone] = useState<string>(() => loadState("phone", ""));
+  const [email, setEmail] = useState<string>(() => loadState("email", ""));
+
+  // Save to sessionStorage whenever they change
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("ct_pickup", pickup);
+      sessionStorage.setItem("ct_destinations", JSON.stringify(destinations));
+      sessionStorage.setItem("ct_date", date);
+      sessionStorage.setItem("ct_adults", adults.toString());
+      sessionStorage.setItem("ct_children", children.toString());
+      sessionStorage.setItem("ct_name", name);
+      sessionStorage.setItem("ct_phone", phone);
+      sessionStorage.setItem("ct_email", email);
+    }
+  }, [pickup, destinations, date, adults, children, name, phone, email]);
+
   const [routeLine, setRouteLine] = useState<[number, number][]>([]);
   const [distanceKm, setDistanceKm] = useState(0);
   
@@ -26,13 +62,6 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
   const RATE_PER_KM = 5000;
   const price = BASE_PRICE + (Math.ceil(distanceKm) * RATE_PER_KM);
 
-  // Form Data
-  const [date, setDate] = useState("");
-  const [adults, setAdults] = useState(1);
-  const [children, setChildren] = useState(0);
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Map Icons (loaded client side)
@@ -147,11 +176,11 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
       
       {/* Form Section */}
       <div>
-        <h2 className="font-display text-2xl text-pine-dark mb-6">Rancang Rute Anda</h2>
+        <h2 className="font-display text-2xl text-pine-dark mb-6">{t("title") || "Rancang Rute Anda"}</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           
           <div className="bg-line/20 p-5 rounded-lg border border-line">
-            <label className="block text-sm font-semibold mb-2 text-pine-dark">Titik Jemput (Mulai)</label>
+            <label className="block text-sm font-semibold mb-2 text-pine-dark">{t("pickupLabel") || "Titik Jemput (Mulai)"}</label>
             <LocationSearchInput value={pickup} onChange={setPickup} placeholder="Cth: Stasiun Bandung..." />
           </div>
 
@@ -160,10 +189,10 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
             {destinations.map((dest, i) => (
               <div key={i} className="flex items-center gap-3">
                 <div className="flex-1">
-                  <LocationSearchInput 
+                  <DestinationSearchInput 
                     value={dest} 
                     onChange={(val) => handleDestChange(i, val)} 
-                    placeholder={`Tujuan Wisata ${i + 1}...`} 
+                    placeholder={`${t("customDestPlaceholder") || "Tujuan Wisata"} ${i + 1}...`} 
                   />
                 </div>
                 {destinations.length > 1 && (
@@ -176,37 +205,37 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
             
             {destinations.length < 4 && (
               <button type="button" onClick={handleAddDest} className="w-full py-3 border-2 border-dashed border-pine text-pine rounded font-semibold hover:bg-pine/10 transition-colors">
-                + Tambah Tujuan
+                + {t("customAddDest") || "Tambah Tujuan"}
               </button>
             )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6 border-t border-line">
             <div>
-              <label className="block text-sm font-medium mb-1.5">Tanggal Tour</label>
+              <label className="block text-sm font-medium mb-1.5">{t("date") || "Tanggal Tour"}</label>
               <input required type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full border border-line rounded px-4 py-3 focus:outline-none focus:border-pine" />
             </div>
             <div className="flex gap-4">
               <div className="flex-1">
-                <label className="block text-sm font-medium mb-1.5">Dewasa</label>
+                <label className="block text-sm font-medium mb-1.5">{t("adults") || "Dewasa"}</label>
                 <input required type="number" min="1" max="15" value={adults} onChange={e => setAdults(parseInt(e.target.value))} className="w-full border border-line rounded px-4 py-3 focus:outline-none focus:border-pine" />
               </div>
               <div className="flex-1">
-                <label className="block text-sm font-medium mb-1.5">Anak-anak</label>
+                <label className="block text-sm font-medium mb-1.5">{t("children") || "Anak-anak"}</label>
                 <input required type="number" min="0" max="15" value={children} onChange={e => setChildren(parseInt(e.target.value))} className="w-full border border-line rounded px-4 py-3 focus:outline-none focus:border-pine" />
               </div>
             </div>
           </div>
 
           <div className="space-y-4 pt-6 border-t border-line">
-            <h3 className="font-semibold text-pine-dark">Data Pemesan</h3>
-            <input required type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Nama Lengkap" className="w-full border border-line rounded px-4 py-3 focus:outline-none focus:border-pine" />
-            <input required type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Nomor WhatsApp aktif" className="w-full border border-line rounded px-4 py-3 focus:outline-none focus:border-pine" />
-            <input required type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Alamat Email" className="w-full border border-line rounded px-4 py-3 focus:outline-none focus:border-pine" />
+            <h3 className="font-semibold text-pine-dark">{t("buyerData") || "Data Pemesan"}</h3>
+            <input required type="text" value={name} onChange={e => setName(e.target.value)} placeholder={t("name") || "Nama Lengkap"} className="w-full border border-line rounded px-4 py-3 focus:outline-none focus:border-pine" />
+            <input required type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder={t("phone") || "Nomor WhatsApp aktif"} className="w-full border border-line rounded px-4 py-3 focus:outline-none focus:border-pine" />
+            <input required type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t("email") || "Alamat Email"} className="w-full border border-line rounded px-4 py-3 focus:outline-none focus:border-pine" />
           </div>
 
           <button disabled={isSubmitting || distanceKm === 0} type="submit" className="w-full bg-pine-dark text-white font-display uppercase tracking-wider py-4 rounded font-semibold hover:bg-pine transition-colors disabled:opacity-50">
-            {isSubmitting ? "Memproses..." : "Bayar & Konfirmasi Rute"}
+            {isSubmitting ? (t("btnLoading") || "Memproses...") : (t("btnSubmit") || "Bayar & Konfirmasi Rute")}
           </button>
         </form>
       </div>
@@ -214,21 +243,21 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
       {/* Map & Pricing Section */}
       <div className="space-y-6">
         <div className="bg-card p-6 rounded-xl border border-line shadow-sm">
-          <h3 className="font-display text-xl text-pine-dark border-b border-line pb-4 mb-4">Estimasi Harga Tur Kustom</h3>
+          <h3 className="font-display text-xl text-pine-dark border-b border-line pb-4 mb-4">{t("estTitle") || "Estimasi Harga Tur Kustom"}</h3>
           
           <div className="space-y-3 mb-6">
             <div className="flex justify-between text-ink-soft">
-              <span>Sewa Mobil + Driver (Base)</span>
+              <span>{t("base") || "Sewa Mobil + Driver (Base)"}</span>
               <CurrencyDisplay amountIDR={BASE_PRICE} />
             </div>
             <div className="flex justify-between text-ink-soft">
-              <span>Jarak Tempuh ({distanceKm.toFixed(1)} KM x Rp 5.000)</span>
+              <span>{t("dist", { dist: distanceKm.toFixed(1), rate: 5000 }) || `Jarak Tempuh (${distanceKm.toFixed(1)} KM x Rp 5.000)`}</span>
               <CurrencyDisplay amountIDR={Math.ceil(distanceKm) * RATE_PER_KM} />
             </div>
           </div>
           
           <div className="flex justify-between items-center pt-4 border-t border-line">
-            <span className="font-bold text-lg text-pine-dark">TOTAL</span>
+            <span className="font-bold text-lg text-pine-dark">{t("total") || "TOTAL"}</span>
             <CurrencyDisplay amountIDR={price} className="font-bold text-2xl text-pine-dark" />
           </div>
         </div>

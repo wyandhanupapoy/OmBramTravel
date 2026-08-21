@@ -82,9 +82,18 @@
     "eyebrow": "How It Works",
     "title": "Three steps from booking to arriving home.",
     "subtitle": "Every tour runs through the same dispatch process — so you know exactly what's happening at every stage.",
-    "step1": { "title": "Choose a tour & date", "desc": "Browse tours by zone, duration, and vehicle — details and pricing are clear from the first page." },
-    "step2": { "title": "Driver & vehicle assigned", "desc": "Our dispatcher matches your tour with an available driver and vehicle." },
-    "step3": { "title": "Track your trip live", "desc": "See the vehicle position live from your booking page." }
+    "step1": {
+      "title": "Choose a tour & date",
+      "desc": "Browse tours by zone, duration, and vehicle — details and pricing are clear from the first page."
+    },
+    "step2": {
+      "title": "Driver & vehicle assigned",
+      "desc": "Our dispatcher matches your tour with an available driver and vehicle."
+    },
+    "step3": {
+      "title": "Track your trip live",
+      "desc": "See the vehicle position live from your booking page."
+    }
   },
   "testimonials": {
     "eyebrow": "Testimonials",
@@ -140,5 +149,26 @@
     "a5": "Price includes AC vehicle, experienced driver, fuel, and parking. Destination entrance fees and meals are not included unless specified.",
     "q6": "Do drivers speak English?",
     "a6": "Most of our drivers can communicate in basic English. For fluent English-speaking driver requests, please let us know when booking."
+  },
+  "customTour": {
+    "addDest": "Add Destination",
+    "estTitle": "Custom Tour Estimated Price",
+    "btnSubmit": "Pay & Confirm Route",
+    "dist": "Distance ({dist} KM x Rp {rate})",
+    "email": "Email Address",
+    "children": "Children",
+    "title": "Design Your Route",
+    "date": "Tour Date",
+    "name": "Full Name",
+    "destTitle": "Destinations (Max 4)",
+    "btnLoading": "Processing...",
+    "total": "TOTAL",
+    "adults": "Adults",
+    "pageDesc": "Choose your pickup point and select up to 4 favorite tourist spots. Our system will automatically calculate the best route and price based on the distance.",
+    "base": "Car + Driver (Base)",
+    "buyerData": "Booking Details",
+    "phone": "Active WhatsApp Number",
+    "pickupLabel": "Pickup Point (Start)",
+    "pageTitle": "Create Your Custom Tour"
   }
 }

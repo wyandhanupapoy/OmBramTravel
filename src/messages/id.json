@@ -82,9 +82,18 @@
     "eyebrow": "Cara Kerja",
     "title": "Tiga langkah dari pesan sampai pulang.",
     "subtitle": "Setiap tur dijalankan lewat proses dispatch yang sama — jadi kamu tahu persis apa yang terjadi di tiap tahap.",
-    "step1": { "title": "Pilih tur & tanggal", "desc": "Telusuri tur berdasarkan zona, durasi, dan armada yang sudah jelas sejak halaman pertama." },
-    "step2": { "title": "Driver & armada ditugaskan", "desc": "Dispatcher kami mencocokkan tur dengan driver dan kendaraan yang tersedia." },
-    "step3": { "title": "Pantau perjalanan langsung", "desc": "Lihat posisi kendaraan secara langsung dari halaman pesanan." }
+    "step1": {
+      "title": "Pilih tur & tanggal",
+      "desc": "Telusuri tur berdasarkan zona, durasi, dan armada yang sudah jelas sejak halaman pertama."
+    },
+    "step2": {
+      "title": "Driver & armada ditugaskan",
+      "desc": "Dispatcher kami mencocokkan tur dengan driver dan kendaraan yang tersedia."
+    },
+    "step3": {
+      "title": "Pantau perjalanan langsung",
+      "desc": "Lihat posisi kendaraan secara langsung dari halaman pesanan."
+    }
   },
   "testimonials": {
     "eyebrow": "Testimoni",
@@ -140,5 +149,26 @@
     "a5": "Harga sudah termasuk kendaraan ber-AC, driver berpengalaman, BBM, dan parkir. Tiket masuk destinasi dan makan tidak termasuk kecuali disebutkan.",
     "q6": "Apakah driver bisa berbahasa Inggris?",
     "a6": "Sebagian besar driver kami bisa berkomunikasi dalam bahasa Inggris dasar. Untuk permintaan driver berbahasa Inggris fasih, silakan informasikan saat pemesanan."
+  },
+  "customTour": {
+    "addDest": "Tambah Tujuan",
+    "estTitle": "Estimasi Harga Tur Kustom",
+    "btnSubmit": "Bayar & Konfirmasi Rute",
+    "dist": "Jarak Tempuh ({dist} KM x Rp {rate})",
+    "email": "Alamat Email",
+    "children": "Anak-anak",
+    "title": "Rancang Rute Anda",
+    "date": "Tanggal Tour",
+    "name": "Nama Lengkap",
+    "destTitle": "Tujuan Wisata (Maks 4)",
+    "btnLoading": "Memproses...",
+    "total": "TOTAL",
+    "adults": "Dewasa",
+    "pageDesc": "Pilih titik jemput dan tentukan hingga 4 tempat wisata favorit Anda. Sistem kami akan secara otomatis menghitung rute terbaik dan harga berdasarkan jarak yang ditempuh.",
+    "base": "Sewa Mobil + Driver (Base)",
+    "buyerData": "Data Pemesan",
+    "phone": "Nomor WhatsApp aktif",
+    "pickupLabel": "Titik Jemput (Mulai)",
+    "pageTitle": "Buat Tur Kustom Anda"
   }
 }

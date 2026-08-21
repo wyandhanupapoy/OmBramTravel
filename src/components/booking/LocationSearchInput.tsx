@@ -49,7 +49,7 @@ export function LocationSearchInput({
   // Debounced Search using OpenStreetMap Nominatim
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      if (query.length > 3 && !query.startsWith("{")) {
+      if (query.length > 2 && !query.startsWith("{")) {
         setIsSearching(true);
         fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=5&countrycodes=id`)
           .then(res => res.json())
@@ -59,11 +59,23 @@ export function LocationSearchInput({
             setShowDropdown(true);
           })
           .catch(() => setIsSearching(false));
+      } else if (query.length === 0) {
+        // Show default popular pickup points when empty
+        setResults([
+          { place_id: 1, display_name: "Stasiun Bandung", lat: "-6.9146", lon: "107.6022" },
+          { place_id: 2, display_name: "Bandara Husein Sastranegara", lat: "-6.9005", lon: "107.5755" },
+          { place_id: 3, display_name: "Stasiun Kiaracondong", lat: "-6.9248", lon: "107.6465" },
+          { place_id: 4, display_name: "Terminal Cicaheum", lat: "-6.9030", lon: "107.6534" },
+          { place_id: 5, display_name: "Terminal Leuwipanjang", lat: "-6.9463", lon: "107.5947" },
+        ]);
+        if (document.activeElement === wrapperRef.current?.querySelector('input')) {
+          setShowDropdown(true);
+        }
       } else {
         setResults([]);
         setShowDropdown(false);
       }
-    }, 1000);
+    }, 500); // Reduced delay to 500ms for faster feel
 
     return () => clearTimeout(delayDebounceFn);
   }, [query]);
@@ -89,10 +101,21 @@ export function LocationSearchInput({
         value={query}
         onChange={(e) => {
           setQuery(e.target.value);
-          onChange(e.target.value); // fallback to plain string if they don't select
+          onChange(e.target.value);
         }}
         onFocus={() => {
-          if (results.length > 0) setShowDropdown(true);
+          if (query.length === 0) {
+            setResults([
+              { place_id: 1, display_name: "Stasiun Bandung", lat: "-6.9146", lon: "107.6022" },
+              { place_id: 2, display_name: "Bandara Husein Sastranegara", lat: "-6.9005", lon: "107.5755" },
+              { place_id: 3, display_name: "Stasiun Kiaracondong", lat: "-6.9248", lon: "107.6465" },
+              { place_id: 4, display_name: "Terminal Cicaheum", lat: "-6.9030", lon: "107.6534" },
+              { place_id: 5, display_name: "Terminal Leuwipanjang", lat: "-6.9463", lon: "107.5947" },
+            ]);
+            setShowDropdown(true);
+          } else if (results.length > 0) {
+            setShowDropdown(true);
+          }
         }}
         placeholder={placeholder}
         className="w-full px-4 py-3 border border-line rounded bg-white text-ink placeholder:text-ink-soft focus:outline-none focus:border-pine-dark"
