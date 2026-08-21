@@ -66,6 +66,7 @@ model Booking {
   customerPhone String
   customerEmail String
   customerCountry String  @default("ID")
+  customerLocale String    @default("id")
   notes         String?
 
   subtotal      Int

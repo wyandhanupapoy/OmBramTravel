@@ -4,6 +4,11 @@ import crypto from "crypto";
 import { sendEmailReceipt, sendWhatsAppReceipt, sendAdminWhatsApp } from "@/lib/notifications";
 import { formatIDR } from "@/lib/utils";
 
+const paxLabels: Record<string, [string, string]> = {
+  id: ["Dewasa", "Anak"], en: ["Adults", "Children"], zh: ["成人", "儿童"], ms: ["Dewasa", "Kanak-kanak"],
+  th: ["ผู้ใหญ่", "เด็ก"], ta: ["பெரியவர்கள்", "குழந்தைகள்"], ja: ["大人", "子供"], ko: ["성인", "어린이"], ar: ["بالغون", "أطفال"]
+};
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -45,15 +50,18 @@ export async function POST(req: Request) {
         include: { tour: true }
       });
 
+      const [adultLabel, childLabel] = paxLabels[booking.customerLocale] || paxLabels.id;
       const notifData = {
         orderCode: booking.orderCode,
         customerName: booking.customerName,
         customerEmail: booking.customerEmail,
         customerPhone: booking.customerPhone,
-        tourName: booking.tour.titleId,
-        date: booking.date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
-        paxInfo: `${booking.pax} Dewasa, ${booking.children} Anak`,
-        totalIDR: formatIDR(booking.totalIDR)
+        tourName: booking.customerLocale === "en" ? booking.tour.titleEn : booking.customerLocale === "zh" ? (booking.tour.titleZh || booking.tour.titleEn) : booking.tour.titleId,
+        date: new Intl.DateTimeFormat(booking.customerLocale, { weekday: "long", year: "numeric", month: "long", day: "numeric" }).format(booking.date),
+        paxInfo: `${booking.pax} ${adultLabel}, ${booking.children} ${childLabel}`,
+        totalIDR: formatIDR(booking.totalIDR),
+        locale: booking.customerLocale,
+        customerCountry: booking.customerCountry
       };
 
       // WAJIB menggunakan await agar Vercel tidak mematikan fungsi sebelum email terkirim

@@ -5,6 +5,13 @@ import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
 import Script from "next/script";
 import { LocationSearchInput } from "./LocationSearchInput";
 
+const originCountries = [
+  ["ID", "Indonesia"], ["MY", "Malaysia"], ["SG", "Singapore"], ["GB", "United Kingdom"],
+  ["US", "United States"], ["CN", "China"], ["JP", "Japan"], ["KR", "South Korea"],
+  ["TH", "Thailand"], ["IN", "India"], ["SA", "Saudi Arabia"], ["AU", "Australia"], ["OTHER", "Other"]
+] as const;
+const notificationLanguages = [["id", "Bahasa Indonesia"], ["en", "English"], ["zh", "中文"], ["ms", "Bahasa Melayu"], ["th", "ไทย"], ["ta", "தமிழ்"], ["ja", "日本語"], ["ko", "한국어"], ["ar", "العربية"]] as const;
+
 interface BookingFormProps {
   tourId: string;
   tourSlug: string;
@@ -33,7 +40,9 @@ export function BookingForm({
     email: "",
     date: "",
     pickup: "",
-    notes: ""
+    notes: "",
+    country: "ID",
+    language: locale
   });
 
   // Midtrans requires Snap script to be loaded
@@ -62,6 +71,8 @@ export function BookingForm({
           customerName: formData.name,
           customerPhone: formData.phone,
           customerEmail: formData.email,
+          customerCountry: formData.country,
+          customerLocale: formData.language,
           notes: formData.notes,
           locale
         })
@@ -107,6 +118,12 @@ export function BookingForm({
                 <label className="block text-sm font-medium mb-1.5">Nama Lengkap</label>
                 <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:outline-none focus:border-pine" placeholder="Sesuai KTP / Paspor" />
               </div>
+              <div>
+                <label className="block text-sm font-medium mb-1.5">Bahasa Notifikasi</label>
+                <select required value={formData.language} onChange={e => setFormData({...formData, language: e.target.value})} className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:outline-none focus:border-pine">
+                  {notificationLanguages.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
+                </select>
+              </div>
               <div className="grid grid-cols-2 gap-5">
                 <div>
                   <label className="block text-sm font-medium mb-1.5">No. WhatsApp</label>
@@ -116,6 +133,13 @@ export function BookingForm({
                   <label className="block text-sm font-medium mb-1.5">Email</label>
                   <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:outline-none focus:border-pine" placeholder="email@contoh.com" />
                 </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1.5">Negara Asal</label>
+                <select required value={formData.country} onChange={e => setFormData({...formData, country: e.target.value})} className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:outline-none focus:border-pine">
+                  {originCountries.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
+                </select>
+                <p className="text-xs text-ink-soft mt-1">Pesan WhatsApp dan email akan mengikuti bahasa halaman yang Anda pilih.</p>
               </div>
               <div className="grid grid-cols-2 gap-5">
                 <div>

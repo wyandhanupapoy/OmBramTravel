@@ -3,11 +3,13 @@ import { cookies } from "next/headers";
 import { db } from "@/lib/db";
 import { snap } from "@/lib/midtrans";
 import { generateOrderCode } from "@/lib/utils";
+import { locales, type Locale } from "@/i18n/config";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { tourId, date, adults, children, luggage, pickupPoint, customerName, customerPhone, customerEmail, notes, locale, customDistance } = body;
+    const { tourId, date, adults, children, luggage, pickupPoint, customerName, customerPhone, customerEmail, notes, locale, customerLocale, customerCountry = "ID", customDistance } = body;
+    const selectedLocale = locales.includes(customerLocale as Locale) ? customerLocale : (locales.includes(locale as Locale) ? locale : "id");
 
     let tour;
     let finalSubtotal = 0;
@@ -81,6 +83,8 @@ export async function POST(req: Request) {
         customerName,
         customerPhone,
         customerEmail,
+        customerCountry,
+        customerLocale: selectedLocale,
         notes: finalNotes,
         subtotal: finalSubtotal,
         extraFees: extraTotal + luggageTotal,

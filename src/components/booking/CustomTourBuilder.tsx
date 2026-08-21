@@ -9,6 +9,13 @@ import Script from "next/script";
 import { useTranslations } from "next-intl";
 import "leaflet/dist/leaflet.css";
 
+const originCountries = [
+  ["ID", "Indonesia"], ["MY", "Malaysia"], ["SG", "Singapore"], ["GB", "United Kingdom"],
+  ["US", "United States"], ["CN", "China"], ["JP", "Japan"], ["KR", "South Korea"],
+  ["TH", "Thailand"], ["IN", "India"], ["SA", "Saudi Arabia"], ["AU", "Australia"], ["OTHER", "Other"]
+] as const;
+const notificationLanguages = [["id", "Bahasa Indonesia"], ["en", "English"], ["zh", "中文"], ["ms", "Bahasa Melayu"], ["th", "ไทย"], ["ta", "தமிழ்"], ["ja", "日本語"], ["ko", "한국어"], ["ar", "العربية"]] as const;
+
 // Dynamic map components
 const MapContainer = dynamic(() => import("react-leaflet").then(m => m.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import("react-leaflet").then(m => m.TileLayer), { ssr: false });
@@ -30,6 +37,8 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
   const [name, setName] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+  const [country, setCountry] = useState<string>("ID");
+  const [notificationLocale, setNotificationLocale] = useState<string>(locale);
 
   useEffect(() => {
     // Client-side only init
@@ -46,6 +55,8 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
     setName(sessionStorage.getItem("ct_name") || "");
     setPhone(sessionStorage.getItem("ct_phone") || "");
     setEmail(sessionStorage.getItem("ct_email") || "");
+    setCountry(sessionStorage.getItem("ct_country") || "ID");
+    setNotificationLocale(sessionStorage.getItem("ct_notification_locale") || locale);
   }, []);
 
   // Save to sessionStorage whenever they change (only if mounted)
@@ -60,8 +71,10 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
       sessionStorage.setItem("ct_name", name);
       sessionStorage.setItem("ct_phone", phone);
       sessionStorage.setItem("ct_email", email);
+      sessionStorage.setItem("ct_country", country);
+      sessionStorage.setItem("ct_notification_locale", notificationLocale);
     }
-  }, [pickup, destinations, date, adults, children, extraLuggage, name, phone, email, isMounted]);
+  }, [pickup, destinations, date, adults, children, extraLuggage, name, phone, email, country, notificationLocale, isMounted]);
 
   const [routeLine, setRouteLine] = useState<[number, number][]>([]);
   const [distanceKm, setDistanceKm] = useState(0);
@@ -161,6 +174,8 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
           date, adults, children, luggage: extraLuggage,
           pickupPoint: pickup,
           customerName: name, customerPhone: phone, customerEmail: email,
+          customerCountry: country,
+          customerLocale: notificationLocale,
           notes: customNotes,
           locale,
           customDistance: distanceKm // Pass distance for server calc
@@ -249,6 +264,14 @@ export function CustomTourBuilder({ locale }: { locale: string }) {
             <input required type="text" value={name} onChange={e => setName(e.target.value)} placeholder={t("name")} className="w-full border border-line rounded px-4 py-3 focus:outline-none focus:border-pine" />
             <input required type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder={t("phone")} className="w-full border border-line rounded px-4 py-3 focus:outline-none focus:border-pine" />
             <input required type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t("email")} className="w-full border border-line rounded px-4 py-3 focus:outline-none focus:border-pine" />
+            <select required value={country} onChange={e => setCountry(e.target.value)} className="w-full border border-line rounded px-4 py-3 focus:outline-none focus:border-pine">
+              {originCountries.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
+            </select>
+            <p className="text-xs text-ink-soft">Pesan WhatsApp dan email akan mengikuti bahasa halaman yang Anda pilih.</p>
+            <select required value={notificationLocale} onChange={e => setNotificationLocale(e.target.value)} className="w-full border border-line rounded px-4 py-3 focus:outline-none focus:border-pine">
+              {notificationLanguages.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
+            </select>
+            <p className="text-xs text-ink-soft">Pilih bahasa untuk email dan WhatsApp konfirmasi.</p>
           </div>
 
           <button disabled={isSubmitting || distanceKm === 0} type="submit" className="w-full bg-pine-dark text-white font-display uppercase tracking-wider py-4 rounded font-semibold hover:bg-pine transition-colors disabled:opacity-50">
