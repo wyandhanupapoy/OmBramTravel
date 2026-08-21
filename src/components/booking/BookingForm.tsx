@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
 import Script from "next/script";
+import { LocationSearchInput } from "./LocationSearchInput";
 
 interface BookingFormProps {
   tourId: string;
@@ -121,10 +122,14 @@ export function BookingForm({
                   <label className="block text-sm font-medium mb-1.5">Tanggal Tour</label>
                   <input required type="date" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:outline-none focus:border-pine" />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1.5">Titik Jemput</label>
-                  <input required type="text" value={formData.pickup} onChange={e => setFormData({...formData, pickup: e.target.value})} className="w-full border border-line bg-transparent rounded px-4 py-2.5 focus:outline-none focus:border-pine" placeholder="Nama Hotel / Stasiun / Bandara" />
-                </div>
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-pine-dark">Titik Jemput (Hotel/Stasiun/Bandara)</label>
+                    <LocationSearchInput 
+                      value={formData.pickup}
+                      onChange={(val) => setFormData({ ...formData, pickup: val })}
+                      placeholder="Cth: Stasiun Bandung..."
+                    />
+                  </div>
               </div>
               
               <button 

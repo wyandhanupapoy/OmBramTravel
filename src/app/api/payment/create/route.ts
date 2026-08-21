@@ -26,6 +26,17 @@ export async function POST(req: Request) {
 
     const orderCode = generateOrderCode();
 
+    // Parse Autocomplete Geo JSON if present
+    let finalPickup = pickupPoint;
+    let finalNotes = notes || "";
+    try {
+      if (pickupPoint.startsWith("{")) {
+        const geo = JSON.parse(pickupPoint);
+        finalPickup = geo.name;
+        finalNotes = finalNotes + `\n\n[GEO]:${pickupPoint}`;
+      }
+    } catch(e) {}
+
     // Create DB Booking
     const booking = await db.booking.create({
       data: {
@@ -35,11 +46,11 @@ export async function POST(req: Request) {
         pax: adults,
         children,
         extraLuggage: luggage,
-        pickupPoint,
+        pickupPoint: finalPickup,
         customerName,
         customerPhone,
         customerEmail,
-        notes,
+        notes: finalNotes,
         subtotal,
         extraFees: extraTotal + luggageTotal,
         totalIDR,

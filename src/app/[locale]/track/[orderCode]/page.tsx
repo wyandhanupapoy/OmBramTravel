@@ -128,7 +128,15 @@ export default async function TrackPage({
         {showMap && (
           <div className="mb-10 text-left">
             <h2 className="font-display text-xl text-pine-dark mb-4 px-2">Lokasi Penjemputan / Live Tracking</h2>
-            <LiveMap bookingId={booking.id} tourName={title} />
+            <LiveMap 
+              bookingId={booking.id} 
+              tourName={title} 
+              pickupGeoJson={
+                booking.notes?.includes('[GEO]:') 
+                  ? booking.notes.split('[GEO]:')[1] 
+                  : undefined
+              }
+            />
           </div>
         )}
 
