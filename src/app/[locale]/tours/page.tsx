@@ -1,8 +1,9 @@
 import { getTranslations } from "next-intl/server";
 import { db } from "@/lib/db";
 import { TourCard } from "@/components/tours/TourCard";
-import { HomeTourSearch } from "@/components/home/HomeTourSearch";
+import { ToursSearchInput } from "@/components/tours/ToursSearchInput";
 import Link from "next/link";
+import { Suspense } from "react";
 import type { Metadata } from "next";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -13,18 +14,27 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
-export default async function ToursPage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<{ page?: string }> }) {
+export default async function ToursPage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<{ page?: string; q?: string }> }) {
   const { locale } = await params;
-  const { page: pageParam } = await searchParams;
+  const { page: pageParam, q } = await searchParams;
   const page = Math.max(Number(pageParam) || 1, 1);
   const pageSize = 12;
   const t = await getTranslations({ locale, namespace: "tours" });
   const tTourData = await getTranslations({ locale, namespace: "tourData" });
 
+  const whereClause: any = { isActive: true };
+  if (q) {
+    whereClause.OR = [
+      { titleId: { contains: q, mode: "insensitive" } },
+      { titleEn: { contains: q, mode: "insensitive" } },
+      { titleZh: { contains: q, mode: "insensitive" } },
+    ];
+  }
+
   const [totalTours, tours, vehicles] = await Promise.all([
-    db.tour.count({ where: { isActive: true } }),
+    db.tour.count({ where: whereClause }),
     db.tour.findMany({
-      where: { isActive: true },
+      where: whereClause,
       include: { _count: { select: { stops: true } }, stops: { orderBy: { order: "asc" } } },
       orderBy: { createdAt: 'desc' },
       skip: (page - 1) * pageSize,
@@ -35,8 +45,8 @@ export default async function ToursPage({ params, searchParams }: { params: Prom
   const totalPages = Math.ceil(totalTours / pageSize);
 
   return (
-    <div className="py-24 max-w-[1180px] mx-auto px-7">
-      <div className="mb-14">
+    <div className="py-24 max-w-[1180px] mx-auto px-7 min-h-[70vh]">
+      <div className="mb-10">
         <h1 className="font-display uppercase tracking-tight text-[clamp(32px,4vw,48px)] leading-[1.08] text-pine-dark mb-4">
           City Tour Bandung
         </h1>
@@ -45,22 +55,9 @@ export default async function ToursPage({ params, searchParams }: { params: Prom
         </p>
       </div>
 
-      <HomeTourSearch
-        locale={locale}
-        vehicles={vehicles}
-        tours={tours.map((tour) => ({
-          slug: tour.slug,
-          title: locale === "en" ? tour.titleEn : locale === "zh" ? (tour.titleZh || tour.titleEn) : tour.titleId,
-          images: JSON.parse(tour.images || "[]"),
-          basePrice: tour.basePrice,
-          duration: tour.duration,
-          zone: tour.zone,
-          maxPax: tour.maxPax,
-          ratingAvg: tour.ratingAvg,
-          ratingCount: tour.ratingCount,
-          stops: tour.stops.map((stop) => stop.nameId)
-        }))}
-      />
+      <Suspense fallback={<div className="h-[52px] bg-line animate-pulse rounded-xl mb-10 max-w-[400px]"></div>}>
+        <ToursSearchInput />
+      </Suspense>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {tours.map(tour => {

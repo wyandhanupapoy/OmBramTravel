@@ -18,6 +18,13 @@ interface SearchTour {
 
 interface SearchVehicle { type: string; capacity: number; name: string; }
 
+interface HomeTourSearchProps {
+  tours: SearchTour[];
+  vehicles?: SearchVehicle[];
+  locale: string;
+  isCompact?: boolean;
+}
+
 const searchCopy: Record<string, { eyebrow: string; heading: string; available: string; loading: string; placeholder: string; searchLabel: string; all: string; city: string; nature: string; family: string; areaLabel: string; recommended: string; cheap: string; expensive: string; sortLabel: string; reset: string; from: string; halfDay: string; fullDay: string; empty: string; showing: string }> = {
   id: { eyebrow: "Jelajahi Bandung Raya", heading: "Cari destinasi atau rute wisata", available: "rute tersedia", loading: "Mencari...", placeholder: "Contoh: Dago, Braga, Kawah Putih...", searchLabel: "Cari destinasi", all: "Semua area", city: "Kota", nature: "Alam", family: "Keluarga", areaLabel: "Filter area", recommended: "Rekomendasi", cheap: "Termurah", expensive: "Termahal", sortLabel: "Urutkan harga", reset: "Reset filter", from: "mulai dari", halfDay: "Half day", fullDay: "Full day", empty: "Destinasi belum ditemukan. Coba kata kunci lain.", showing: "Menampilkan 12 hasil teratas. Persempit pencarian untuk hasil yang lebih spesifik." },
   en: { eyebrow: "Explore Bandung Raya", heading: "Find a destination or travel route", available: "routes available", loading: "Searching...", placeholder: "Try: Dago, Braga, White Crater...", searchLabel: "Search destinations", all: "All areas", city: "City", nature: "Nature", family: "Family", areaLabel: "Filter area", recommended: "Recommended", cheap: "Lowest price", expensive: "Highest price", sortLabel: "Sort by price", reset: "Reset filters", from: "from", halfDay: "Half day", fullDay: "Full day", empty: "No destinations found. Try another keyword.", showing: "Showing the first 12 results. Refine your search for more specific results." },
@@ -109,8 +116,8 @@ export function HomeTourSearch({ tours, locale, vehicles = [] }: { tours: Search
             <button type="button" onClick={() => { setQuery(""); setZone("all"); setSort("recommended"); setMinPrice(0); setMaxPrice(0); setDuration("all"); setPax(0); setVehicleType("all"); setPage(1); }} className="mt-3 text-xs font-semibold text-rust underline underline-offset-2">{copy.reset}</button>
           )}
 
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredTours.slice(0, 9).map((tour) => <TourCard key={tour.slug} slug={tour.slug} title={tour.title} images={tour.images} duration={tour.duration} stopsCount={tour.stops.length} basePrice={tour.basePrice} ratingAvg={tour.ratingAvg} ratingCount={tour.ratingCount} locale={locale} />)}
+          <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredTours.map((tour) => <TourCard key={tour.slug} slug={tour.slug} title={tour.title} images={tour.images} duration={tour.duration} stopsCount={tour.stops.length} basePrice={tour.basePrice} ratingAvg={tour.ratingAvg} ratingCount={tour.ratingCount} locale={locale} />)}
           </div>
 
           {filteredTours.length === 0 && <div className="py-10 text-center text-sm text-ink-soft">{copy.empty}</div>}
