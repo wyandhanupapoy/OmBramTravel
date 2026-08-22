@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const [tours, vehicles] = await Promise.all([
+  const [tours, vehicles, testimonials] = await Promise.all([
     db.tour.findMany({
       where: { isActive: true },
       select: {
@@ -46,7 +46,10 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     }),
     db.vehicle.findMany(),
     db.booking.findMany({
-      where: { rating: 5, reviewText: { not: null, not: "" } },
+      where: { 
+        rating: 5, 
+        reviewText: { not: null, notIn: [""] } 
+      },
       select: { id: true, customerName: true, rating: true, reviewText: true, date: true, tour: { select: { titleId: true, titleEn: true, titleZh: true } } },
       orderBy: { date: "desc" },
       take: 5
@@ -76,7 +79,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <TrustBar />
       <ServicesSection />
       <HowItWorksSection />
-      <TestimonialSlider testimonials={testimonials} locale={locale} />
+      <TestimonialSlider testimonials={testimonials as any} locale={locale} />
       <CTASection />
     </>
   );
