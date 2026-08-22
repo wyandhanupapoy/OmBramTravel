@@ -19,7 +19,7 @@ export default async function AdminDashboard() {
       where: { paymentStatus: "paid", createdAt: { gte: startOfMonth } },
       _sum: { totalIDR: true }
     }),
-    db.driver.count({ where: { isActive: true } }),
+    db.driver.count({ where: { isOnline: true } }),
     db.booking.groupBy({
       by: ['tourId'],
       _count: { id: true },
