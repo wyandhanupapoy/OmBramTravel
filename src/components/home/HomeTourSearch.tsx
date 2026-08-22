@@ -36,7 +36,7 @@ const searchCopy: Record<string, { eyebrow: string; heading: string; available: 
 
 const cache = new Map<string, { tours: SearchTour[]; total: number }>();
 
-export function HomeTourSearch({ tours, locale, vehicles = [] }: { tours: SearchTour[]; locale: string; vehicles?: SearchVehicle[] }) {
+export function HomeTourSearch({ tours, locale, vehicles = [], isCompact = false }: HomeTourSearchProps) {
   const [query, setQuery] = useState("");
   const [zone, setZone] = useState("all");
   const [sort, setSort] = useState("recommended");
