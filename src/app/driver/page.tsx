@@ -26,7 +26,7 @@ export default async function DriverDashboard() {
   const activeBookings = await db.booking.findMany({
     where: { 
       driverId: driver.id,
-      status: { in: ["assigned", "en-route", "touring"] }
+      status: { in: ["assigned", "en-route", "arrived", "touring"] }
     },
     include: { tour: true },
     orderBy: { date: "asc" }
