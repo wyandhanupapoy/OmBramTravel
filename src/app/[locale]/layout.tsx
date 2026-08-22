@@ -5,8 +5,35 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
 
+import { Metadata } from "next";
+
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  
+  // Build alternates for hreflang
+  const languages: Record<string, string> = {};
+  locales.forEach(l => {
+    languages[l] = `/${l}`;
+  });
+  languages['x-default'] = '/id';
+
+  return {
+    alternates: {
+      canonical: `/${locale}`,
+      languages
+    },
+    openGraph: {
+      images: ['/images/og-default.jpg'],
+      siteName: 'OmBram Travel',
+    },
+    twitter: {
+      card: 'summary_large_image',
+    }
+  };
 }
 
 export default async function LocaleLayout({

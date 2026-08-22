@@ -4,6 +4,43 @@ import { db } from "@/lib/db";
 import { PricingCalculator } from "@/components/tours/PricingCalculator";
 import type { TouristTrip, WithContext } from "schema-dts";
 import { getTranslations } from "next-intl/server";
+import { Metadata } from "next";
+import { BreadcrumbSchema } from "@/components/seo/BreadcrumbSchema";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const tour = await db.tour.findUnique({ where: { slug } });
+  if (!tour) return {};
+
+  const images = JSON.parse(tour.images || "[]");
+  const mainImage = images[0] || "/images/og-default.jpg";
+  
+  let title = tour.titleId;
+  let desc = tour.descId;
+  try {
+    if (!tour.slug.startsWith("bandung-")) {
+      const tTourData = await getTranslations({ locale, namespace: "tourData" });
+      const translatedTitle = tTourData(`${tour.slug}.title`);
+      const translatedDesc = tTourData(`${tour.slug}.desc`);
+      if (translatedTitle && !translatedTitle.includes("tourData.")) title = translatedTitle;
+      if (translatedDesc && !translatedDesc.includes("tourData.")) desc = translatedDesc;
+    }
+  } catch (e) {}
+
+  return {
+    title: `${title} | OmBram Travel`,
+    description: desc,
+    openGraph: {
+      title,
+      description: desc,
+      images: [mainImage],
+      url: `https://ombramtravel.com/${locale}/tours/${slug}`
+    },
+    alternates: {
+      canonical: `/${locale}/tours/${slug}`
+    }
+  };
+}
 
 export default async function TourDetailPage({
   params,
@@ -74,6 +111,11 @@ export default async function TourDetailPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
+      <BreadcrumbSchema items={[
+        { name: "Home", item: `https://ombramtravel.com/${locale}` },
+        { name: "Tours", item: `https://ombramtravel.com/${locale}/tours` },
+        { name: title, item: `https://ombramtravel.com/${locale}/tours/${slug}` }
+      ]} />
       
       {/* Hero Image */}
       <div className="relative w-full h-[50vh] min-h-[400px]">

@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://ombramtravel.com'),
   verification: {
     google: "uM3l19nlPDO4zX2XXqJFP_Xg4Q0ZFlEULjRr15K0YlI",
   },
