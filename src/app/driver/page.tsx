@@ -20,7 +20,26 @@ export default async function DriverDashboard() {
     redirect("/driver/login");
   }
 
-  // Auto-complete is now handled securely by a Vercel Cron Job (/api/cron/auto-complete).
+  // Fallback: Lakukan auto-complete saat driver membuka halaman 
+  // Karena Vercel Hobby plan membatasi Cron hanya bisa berjalan 1x sehari (tengah malam)
+  const activeTours = await db.booking.findMany({
+    where: { driverId: driver.id, status: "touring", tourStartedAt: { not: null } },
+    include: { tour: true }
+  });
+
+  const now = Date.now();
+  await Promise.all(
+    activeTours
+      .filter((booking) => {
+        const duration = booking.tour.duration;
+        const limitMs = (duration === "custom" ? 12 : duration === "half-day" ? 4 : 8) * 60 * 60 * 1000;
+        return now - booking.tourStartedAt!.getTime() >= limitMs;
+      })
+      .map((booking) => db.booking.update({
+        where: { id: booking.id },
+        data: { status: "completed", completedAt: new Date() }
+      }))
+  );
 
   // Get active assignments, including tours currently in progress.
   const activeBookings = await db.booking.findMany({
