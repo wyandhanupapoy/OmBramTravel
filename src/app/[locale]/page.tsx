@@ -41,7 +41,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       orderBy: { basePrice: "asc" },
       take: 12
     }),
-    db.vehicle.findMany({ where: { isActive: true } })
+    db.vehicle.findMany()
   ]);
 
   return (

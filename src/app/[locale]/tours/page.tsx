@@ -30,7 +30,7 @@ export default async function ToursPage({ params, searchParams }: { params: Prom
       skip: (page - 1) * pageSize,
       take: pageSize
     }),
-    db.vehicle.findMany({ where: { isActive: true } })
+    db.vehicle.findMany()
   ]);
   const totalPages = Math.ceil(totalTours / pageSize);
 
