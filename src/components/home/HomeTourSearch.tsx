@@ -12,6 +12,8 @@ interface SearchTour {
   stops: string[];
   images: string[];
   maxPax: number;
+  ratingAvg: number;
+  ratingCount: number;
 }
 
 interface SearchVehicle { type: string; capacity: number; name: string; }
@@ -108,7 +110,7 @@ export function HomeTourSearch({ tours, locale, vehicles = [] }: { tours: Search
           )}
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredTours.slice(0, 9).map((tour) => <TourCard key={tour.slug} slug={tour.slug} title={tour.title} images={tour.images} duration={tour.duration} stopsCount={tour.stops.length} basePrice={tour.basePrice} locale={locale} />)}
+            {filteredTours.slice(0, 9).map((tour) => <TourCard key={tour.slug} slug={tour.slug} title={tour.title} images={tour.images} duration={tour.duration} stopsCount={tour.stops.length} basePrice={tour.basePrice} ratingAvg={tour.ratingAvg} ratingCount={tour.ratingCount} locale={locale} />)}
           </div>
 
           {filteredTours.length === 0 && <div className="py-10 text-center text-sm text-ink-soft">{copy.empty}</div>}

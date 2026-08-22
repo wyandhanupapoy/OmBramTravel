@@ -5,15 +5,15 @@ import { createTour } from "@/app/actions/tour";
 type TourFormData = {
   id?: string; slug: string; zone: string; duration: string; basePrice: number; maxPax: number; extraPaxFee: number; luggageFee: number;
   titleId: string; titleEn: string; titleZh: string; descId: string; descEn: string; descZh: string;
-  stops: { nameId: string; nameEn: string; nameZh: string; time: string; duration: number }[];
+  stops: { nameId: string; nameEn: string; nameZh: string; time: string; duration: number; lat?: number | null; lng?: number | null }[];
 };
 
 export function TourForm({ initialTour, action = createTour }: { initialTour?: TourFormData; action?: typeof createTour }) {
   const [loading, setLoading] = useState(false);
-  const [stops, setStops] = useState(initialTour?.stops?.map(stop => ({ ...stop, duration: String(stop.duration) })) || [{ nameId: "", nameEn: "", nameZh: "", time: "09:00", duration: "60" }]);
+  const [stops, setStops] = useState(initialTour?.stops?.map(stop => ({ ...stop, duration: String(stop.duration) })) || [{ nameId: "", nameEn: "", nameZh: "", time: "09:00", duration: "60", lat: null, lng: null }]);
 
   const addStop = () => {
-    setStops([...stops, { nameId: "", nameEn: "", nameZh: "", time: "10:00", duration: "60" }]);
+    setStops([...stops, { nameId: "", nameEn: "", nameZh: "", time: "10:00", duration: "60", lat: null, lng: null }]);
   };
 
   const updateStop = (index: number, field: string, value: string) => {
@@ -142,9 +142,9 @@ export function TourForm({ initialTour, action = createTour }: { initialTour?: T
                 <label className="block text-xs mb-1">Lama (Mnt)</label>
                 <input type="number" value={stop.duration} onChange={(e) => updateStop(i, "duration", e.target.value)} className="w-full border border-line rounded px-2 py-1 text-sm font-mono" />
               </div>
-              <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-2">
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-2">
                 <div>
-                  <label className="block text-xs mb-1 text-rust font-bold">🇮🇩 Nama (ID)</label>
+                  <label className="block text-xs mb-1 font-bold">Nama (ID)</label>
                   <input value={stop.nameId} onChange={(e) => updateStop(i, "nameId", e.target.value)} className="w-full border border-line rounded px-2 py-1 text-sm" required />
                 </div>
                 <div>
@@ -154,6 +154,14 @@ export function TourForm({ initialTour, action = createTour }: { initialTour?: T
                 <div>
                   <label className="block text-xs mb-1 text-rust font-bold">🇨🇳 Nama (ZH)</label>
                   <input value={stop.nameZh} onChange={(e) => updateStop(i, "nameZh", e.target.value)} className="w-full border border-line rounded px-2 py-1 text-sm" required />
+                </div>
+                <div>
+                  <label className="block text-xs mb-1 text-pine-dark">Latitude</label>
+                  <input type="number" step="any" value={stop.lat ?? ""} onChange={(e) => updateStop(i, "lat", e.target.value)} className="w-full border border-line rounded px-2 py-1 text-sm bg-pine-dark/5" placeholder="-6.9147" />
+                </div>
+                <div>
+                  <label className="block text-xs mb-1 text-pine-dark">Longitude</label>
+                  <input type="number" step="any" value={stop.lng ?? ""} onChange={(e) => updateStop(i, "lng", e.target.value)} className="w-full border border-line rounded px-2 py-1 text-sm bg-pine-dark/5" placeholder="107.6098" />
                 </div>
               </div>
               {stops.length > 1 && (

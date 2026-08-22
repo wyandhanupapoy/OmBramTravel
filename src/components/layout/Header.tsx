@@ -3,6 +3,7 @@ import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
 import { locales, localeNames, localeFlags, type Locale } from "@/i18n/config";
+import { CurrencySelector } from "./CurrencySelector";
 
 export function Header() {
   const t = useTranslations("nav");
@@ -49,7 +50,9 @@ export function Header() {
           ))}
         </ul>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
+          <CurrencySelector />
+
           {/* Language switch */}
           <div className="relative">
             <button

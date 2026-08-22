@@ -38,7 +38,7 @@ export async function GET(req: Request) {
       orderBy,
       skip: (page - 1) * limit,
       take: limit,
-      select: { slug: true, titleId: true, titleEn: true, titleZh: true, images: true, basePrice: true, duration: true, zone: true, stops: { orderBy: { order: "asc" }, select: { nameId: true } } }
+      select: { slug: true, titleId: true, titleEn: true, titleZh: true, images: true, basePrice: true, duration: true, zone: true, maxPax: true, ratingAvg: true, ratingCount: true, stops: { orderBy: { order: "asc" }, select: { nameId: true } } }
     })
   ]);
   return NextResponse.json({ total, page, limit, tours: tours.map((tour) => ({ ...tour, title: locale === "en" ? tour.titleEn : locale === "zh" ? (tour.titleZh || tour.titleEn) : tour.titleId, images: JSON.parse(tour.images || "[]"), stops: tour.stops.map((stop) => stop.nameId) })) });

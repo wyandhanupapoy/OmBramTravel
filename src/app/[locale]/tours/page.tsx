@@ -56,6 +56,8 @@ export default async function ToursPage({ params, searchParams }: { params: Prom
           duration: tour.duration,
           zone: tour.zone,
           maxPax: tour.maxPax,
+          ratingAvg: tour.ratingAvg,
+          ratingCount: tour.ratingCount,
           stops: tour.stops.map((stop) => stop.nameId)
         }))}
       />

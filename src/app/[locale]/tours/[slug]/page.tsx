@@ -6,6 +6,7 @@ import type { TouristTrip, WithContext } from "schema-dts";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { BreadcrumbSchema } from "@/components/seo/BreadcrumbSchema";
+import { TourRouteMap } from "@/components/tours/TourRouteMap";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const { locale, slug } = await params;
@@ -156,6 +157,17 @@ export default async function TourDetailPage({
                     </div>
                   );
                 })}
+              </div>
+
+              {/* Interactive Map */}
+              <div className="mt-8 mb-12">
+                <TourRouteMap stops={tour.stops.map(s => ({
+                  id: s.id,
+                  name: locale === "en" ? s.nameEn : locale === "zh" ? (s.nameZh || s.nameEn) : s.nameId,
+                  lat: s.lat || 0,
+                  lng: s.lng || 0,
+                  order: s.order
+                }))} />
               </div>
             </div>
           </div>

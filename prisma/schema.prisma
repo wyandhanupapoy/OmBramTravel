@@ -19,6 +19,8 @@ model Tour {
   childDisc   Int       @default(50) // percent discount for children
   images      String    @default("[]") // JSON array
   isActive    Boolean   @default(true)
+  ratingAvg   Float     @default(5.0)
+  ratingCount Int       @default(0)
 
   titleId     String
   titleEn     String
@@ -47,6 +49,8 @@ model Stop {
   nameZh   String @default("")
   time     String
   duration Int    // minutes at location
+  lat      Float?
+  lng      Float?
 
   @@index([tourId])
 }
@@ -166,3 +170,16 @@ model Policy {
   bodyEn  String
   bodyZh  String @default("")
 }
+
+model Promo {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  discount  Int      // amount or percentage
+  type      String   @default("percent") // "percent" | "flat"
+  maxUsage  Int?
+  usedCount Int      @default(0)
+  isActive  Boolean  @default(true)
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+}
+

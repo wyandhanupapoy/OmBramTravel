@@ -26,10 +26,28 @@ export async function POST(req: Request) {
     if (status === "touring") updateData.startedAt = new Date();
     if (status === "completed") updateData.completedAt = new Date();
 
-    await db.booking.update({
+    const updatedBooking = await db.booking.update({
       where: { id: bookingId },
-      data: updateData
+      data: updateData,
+      include: { driver: true, tour: true }
     });
+
+    // Kirim Notifikasi WhatsApp
+    if (status === "en-route" || status === "arrived") {
+      const { sendWhatsAppMessage } = await import("@/lib/whatsapp");
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ombramtravel.com";
+      const trackLink = `${baseUrl}/${updatedBooking.customerLocale}/track/${updatedBooking.orderCode}`;
+      
+      let msg = "";
+      if (status === "en-route") {
+        msg = `Halo ${updatedBooking.customerName}!\n\nDriver Anda, *${updatedBooking.driver?.name}*, sedang dalam perjalanan menuju titik penjemputan.\n\nLacak perjalanan secara real-time di sini:\n${trackLink}\n\nTerima kasih,\n*Om Bram Travel*`;
+      } else if (status === "arrived") {
+        msg = `Halo ${updatedBooking.customerName}!\n\nDriver Anda telah *tiba di titik penjemputan*. Silakan bersiap-siap untuk memulai perjalanan wisata Anda.\n\nJika butuh bantuan, hubungi driver di: ${updatedBooking.driver?.phone}\n\nSelamat menikmati *${updatedBooking.tour.titleId}*!`;
+      }
+
+      // Jalankan secara asynchronous tanpa memblokir response
+      sendWhatsAppMessage(updatedBooking.customerPhone, msg).catch(console.error);
+    }
 
     return NextResponse.json({ success: true, status });
   } catch (error) {

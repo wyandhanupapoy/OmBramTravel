@@ -2,6 +2,8 @@ import { ReactNode } from "react";
 import { Metadata } from "next";
 import "@/styles/globals.css";
 
+import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
+
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://ombramtravel.com'),
   verification: {
@@ -14,6 +16,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html>
       <body className="bg-paper text-ink min-h-screen flex flex-col">
         {children}
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

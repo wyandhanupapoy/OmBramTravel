@@ -10,10 +10,12 @@ interface TourProps {
   duration: string;
   stopsCount: number;
   basePrice: number;
+  ratingAvg: number;
+  ratingCount: number;
   locale: string;
 }
 
-export function TourCard({ slug, title, images, duration, stopsCount, basePrice, locale }: TourProps) {
+export function TourCard({ slug, title, images, duration, stopsCount, basePrice, ratingAvg, ratingCount, locale }: TourProps) {
   const t = useTranslations("tours");
   
   // Use first image or fallback
@@ -22,6 +24,13 @@ export function TourCard({ slug, title, images, duration, stopsCount, basePrice,
   return (
     <Link href={`/${locale}/tours/${slug}`} className="group bg-card border border-line rounded overflow-hidden flex flex-col no-underline transition-all hover:-translate-y-1 hover:shadow-lg">
       <div className="relative aspect-[4/3] w-full bg-line overflow-hidden">
+        {ratingCount > 0 && (
+          <div className="absolute top-3 left-3 bg-paper/90 backdrop-blur text-pine-dark text-xs font-bold px-2 py-1 rounded-md flex items-center gap-1 z-10 shadow-sm">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="text-yellow-500"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>{ratingAvg.toFixed(1)}</span>
+            <span className="opacity-50">({ratingCount})</span>
+          </div>
+        )}
         <Image
           src={mainImage}
           alt={title}

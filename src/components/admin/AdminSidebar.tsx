@@ -8,6 +8,7 @@ const navigation = [
   { href: "/admin/orders", label: "Pesanan", match: (path: string) => path.startsWith("/admin/orders") },
   { href: "/admin/tours", label: "Kelola Tour", match: (path: string) => path.startsWith("/admin/tours") },
   { href: "/admin/drivers", label: "Tim Driver", match: (path: string) => path.startsWith("/admin/drivers") },
+  { href: "/admin/promo", label: "Promo & Diskon", match: (path: string) => path.startsWith("/admin/promo") },
 ];
 
 export function AdminSidebar() {

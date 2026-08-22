@@ -35,6 +35,10 @@ export function BookingForm({
 }: BookingFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoError, setPromoError] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<{ discount: number, type: string, code: string } | null>(null);
+
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -53,6 +57,35 @@ export function BookingForm({
     : "https://app.sandbox.midtrans.com/snap/snap.js";
 
   const CLIENT_KEY = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || "";
+
+  const handleApplyPromo = async () => {
+    if (!promoCode) return;
+    setPromoError("");
+    setAppliedPromo(null);
+    try {
+      const res = await fetch("/api/promo", {
+        method: "POST",
+        body: JSON.stringify({ code: promoCode }),
+        headers: { "Content-Type": "application/json" }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      
+      setAppliedPromo({ discount: data.discount, type: data.type, code: promoCode.toUpperCase() });
+    } catch (err: any) {
+      setPromoError(err.message);
+    }
+  };
+
+  let promoDiscountAmount = 0;
+  if (appliedPromo) {
+    if (appliedPromo.type === "percent") {
+      promoDiscountAmount = Math.round((total * appliedPromo.discount) / 100);
+    } else {
+      promoDiscountAmount = appliedPromo.discount;
+    }
+  }
+  const finalTotal = Math.max(0, total - promoDiscountAmount);
 
   const handlePay = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,6 +110,8 @@ export function BookingForm({
           customerLocale: formData.language,
           vehicleId: formData.vehicleId,
           notes: formData.notes,
+          promoCode: appliedPromo?.code,
+          discount: promoDiscountAmount,
           locale
         })
       });
@@ -207,9 +242,49 @@ export function BookingForm({
               )}
             </div>
             
+            {/* Promo Code UI */}
+            <div className="border-b border-white/10 pb-6 mb-6">
+              <div className="flex gap-2">
+                <input 
+                  type="text" 
+                  placeholder="Kode Promo" 
+                  value={promoCode} 
+                  onChange={e => setPromoCode(e.target.value)}
+                  disabled={!!appliedPromo || loading}
+                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2 font-mono text-sm focus:outline-none focus:border-beacon uppercase"
+                />
+                {!appliedPromo ? (
+                  <button 
+                    type="button" 
+                    onClick={handleApplyPromo}
+                    disabled={!promoCode || loading}
+                    className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg font-mono text-sm transition-colors disabled:opacity-50"
+                  >
+                    Terapkan
+                  </button>
+                ) : (
+                  <button 
+                    type="button" 
+                    onClick={() => { setAppliedPromo(null); setPromoCode(""); }}
+                    disabled={loading}
+                    className="px-4 py-2 bg-rust/20 text-rust hover:bg-rust/30 rounded-lg font-mono text-sm transition-colors"
+                  >
+                    Batal
+                  </button>
+                )}
+              </div>
+              {promoError && <p className="text-rust text-xs mt-2">{promoError}</p>}
+              {appliedPromo && (
+                <div className="flex justify-between items-center mt-4 text-beacon font-mono text-sm">
+                  <span>Diskon Promo ({appliedPromo.code})</span>
+                  <span>-<CurrencyDisplay amountIDR={promoDiscountAmount} /></span>
+                </div>
+              )}
+            </div>
+            
             <div className="flex justify-between items-center text-xl font-bold">
               <span className="font-display tracking-wide uppercase">TOTAL</span>
-              <CurrencyDisplay amountIDR={total} className="text-beacon" />
+              <CurrencyDisplay amountIDR={finalTotal} className="text-beacon" />
             </div>
           </div>
         </div>

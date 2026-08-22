@@ -5,6 +5,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { ScrollVideoSection } from "@/components/home/ScrollVideoSection";
 import { HomeTourSearch } from "@/components/home/HomeTourSearch";
+import { TestimonialSlider } from "@/components/home/TestimonialSlider";
 import { db } from "@/lib/db";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -36,12 +37,20 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         zone: true,
         images: true,
         maxPax: true,
+        ratingAvg: true,
+        ratingCount: true,
         stops: { orderBy: { order: "asc" }, select: { nameId: true } }
       },
       orderBy: { basePrice: "asc" },
       take: 12
     }),
-    db.vehicle.findMany()
+    db.vehicle.findMany(),
+    db.booking.findMany({
+      where: { rating: 5, reviewText: { not: null, not: "" } },
+      select: { id: true, customerName: true, rating: true, reviewText: true, date: true, tour: { select: { titleId: true, titleEn: true, titleZh: true } } },
+      orderBy: { date: "desc" },
+      take: 5
+    })
   ]);
 
   return (
@@ -57,6 +66,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           duration: tour.duration,
           zone: tour.zone,
           maxPax: tour.maxPax,
+          ratingAvg: tour.ratingAvg,
+          ratingCount: tour.ratingCount,
           stops: tour.stops.map((stop) => stop.nameId),
           images: JSON.parse(tour.images || "[]")
         }))}
@@ -65,7 +76,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <TrustBar />
       <ServicesSection />
       <HowItWorksSection />
-      <TestimonialsSection />
+      <TestimonialSlider testimonials={testimonials} locale={locale} />
       <CTASection />
     </>
   );

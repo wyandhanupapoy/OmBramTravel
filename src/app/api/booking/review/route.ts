@@ -48,6 +48,24 @@ export async function POST(req: Request) {
       });
     }
 
+    // Update tour's average rating
+    const tourBookings = await db.booking.findMany({
+      where: { tourId: booking.tourId, rating: { not: null } },
+      select: { rating: true }
+    });
+
+    const totalTourRatings = tourBookings.length;
+    const sumTourRatings = tourBookings.reduce((sum, b) => sum + (b.rating || 0), 0);
+    const newTourAverage = totalTourRatings > 0 ? (sumTourRatings / totalTourRatings) : 5.0;
+
+    await db.tour.update({
+      where: { id: booking.tourId },
+      data: { 
+        ratingAvg: newTourAverage,
+        ratingCount: totalTourRatings
+      }
+    });
+
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error("Failed to submit review:", error);

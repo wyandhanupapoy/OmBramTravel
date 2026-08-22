@@ -25,8 +25,15 @@ export function CurrencyDisplay({ amountIDR, className, targetCurrency }: Props)
     // Auto-select currency based on locale if not explicitly provided
     let currency: Currency = targetCurrency || "IDR";
     if (!targetCurrency) {
-      if (locale === "en") currency = "USD";
-      else if (locale === "zh") currency = "CNY";
+      // First try to get from cookie
+      const match = document.cookie.match(new RegExp('(^| )currency=([^;]+)'));
+      if (match) {
+        currency = match[2] as Currency;
+      } else {
+        // Fallback to locale based
+        if (locale === "en") currency = "USD";
+        else if (locale === "zh") currency = "CNY";
+      }
     }
 
     setDisplay(formatDualCurrency(amountIDR, currency, rates));

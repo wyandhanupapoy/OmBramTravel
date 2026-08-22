@@ -55,7 +55,9 @@ export async function createTour(formData: FormData) {
           nameEn: stop.nameEn,
           nameZh: stop.nameZh,
           time: stop.time,
-          duration: parseInt(stop.duration)
+          duration: parseInt(stop.duration) || 60,
+          lat: stop.lat ? parseFloat(stop.lat) : null,
+          lng: stop.lng ? parseFloat(stop.lng) : null,
         }))
       }
     }
@@ -95,7 +97,9 @@ export async function updateTour(formData: FormData) {
           nameEn: stop.nameEn,
           nameZh: stop.nameZh,
           time: stop.time,
-          duration: Number(stop.duration)
+          duration: Number(stop.duration),
+          lat: stop.lat ? parseFloat(stop.lat) : null,
+          lng: stop.lng ? parseFloat(stop.lng) : null,
         }))
       }
     }
