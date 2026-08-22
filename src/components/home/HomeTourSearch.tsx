@@ -72,15 +72,17 @@ export function HomeTourSearch({ tours, locale, vehicles = [] }: { tours: Search
   const filteredTours = results;
 
   return (
-    <section className="relative z-10 -mt-8 bg-paper py-6 sm:-mt-12">
-      <div className="mx-auto max-w-[1180px] px-7">
-        <div className="rounded-2xl border border-line bg-card p-5 shadow-xl sm:p-7">
+    <section className={`relative z-10 ${isCompact ? "bg-transparent py-2" : "-mt-8 bg-paper py-6 sm:-mt-12"}`}>
+      <div className={`mx-auto ${isCompact ? "max-w-none px-0" : "max-w-[1180px] px-7"}`}>
+        <div className={`rounded-2xl border border-line bg-card ${isCompact ? "p-0 border-none shadow-none bg-transparent" : "p-5 shadow-xl sm:p-7"}`}>
           <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-rust">{copy.eyebrow}</span>
-              <h2 className="mt-2 font-display text-2xl uppercase text-pine-dark">{copy.heading}</h2>
-            </div>
-            <span className="font-mono text-xs text-ink-soft">{isSearching ? copy.loading : `${resultCount} ${copy.available}`}</span>
+            {!isCompact && (
+              <div>
+                <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-rust">{copy.eyebrow}</span>
+                <h2 className="mt-2 font-display text-2xl uppercase text-pine-dark">{copy.heading}</h2>
+              </div>
+            )}
+            <span className={`font-mono text-xs text-ink-soft ${isCompact ? "w-full text-right" : ""}`}>{isSearching ? copy.loading : `${resultCount} ${copy.available}`}</span>
           </div>
 
           <div className="mt-5 grid gap-3 md:grid-cols-[1fr_auto_auto]">
