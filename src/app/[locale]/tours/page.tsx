@@ -17,11 +17,13 @@ export default async function ToursPage({ params }: { params: Promise<{ locale: 
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "tours" });
 
-  const [tours, vehicles] = await Promise.all([
+  const [totalTours, tours, vehicles] = await Promise.all([
+    db.tour.count({ where: { isActive: true } }),
     db.tour.findMany({
       where: { isActive: true },
       include: { _count: { select: { stops: true } }, stops: { orderBy: { order: "asc" } } },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
+      take: 12
     }),
     db.vehicle.findMany()
   ]);
@@ -41,6 +43,7 @@ export default async function ToursPage({ params }: { params: Promise<{ locale: 
         locale={locale}
         vehicles={vehicles}
         isCompact={true}
+        totalTours={totalTours}
         tours={tours.map((tour) => ({
           slug: tour.slug,
           title: locale === "en" ? tour.titleEn : locale === "zh" ? (tour.titleZh || tour.titleEn) : tour.titleId,

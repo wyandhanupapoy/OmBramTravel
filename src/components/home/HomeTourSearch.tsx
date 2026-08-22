@@ -23,6 +23,7 @@ interface HomeTourSearchProps {
   vehicles?: SearchVehicle[];
   locale: string;
   isCompact?: boolean;
+  totalTours?: number;
 }
 
 const searchCopy: Record<string, { eyebrow: string; heading: string; available: string; loading: string; placeholder: string; searchLabel: string; all: string; city: string; nature: string; family: string; areaLabel: string; recommended: string; cheap: string; expensive: string; sortLabel: string; reset: string; from: string; halfDay: string; fullDay: string; empty: string; showing: string }> = {
@@ -36,12 +37,12 @@ const searchCopy: Record<string, { eyebrow: string; heading: string; available: 
 
 const cache = new Map<string, { tours: SearchTour[]; total: number }>();
 
-export function HomeTourSearch({ tours, locale, vehicles = [], isCompact = false }: HomeTourSearchProps) {
+export function HomeTourSearch({ tours, locale, vehicles = [], isCompact = false, totalTours }: HomeTourSearchProps) {
   const [query, setQuery] = useState("");
   const [zone, setZone] = useState("all");
   const [sort, setSort] = useState("recommended");
   const [results, setResults] = useState(tours);
-  const [resultCount, setResultCount] = useState(tours.length);
+  const [resultCount, setResultCount] = useState(totalTours !== undefined ? totalTours : tours.length);
   const [isSearching, setIsSearching] = useState(false);
   const [page, setPage] = useState(1);
   const [minPrice, setMinPrice] = useState(0);

@@ -24,7 +24,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const [tours, vehicles, testimonials] = await Promise.all([
+  const [totalTours, tours, vehicles, testimonials] = await Promise.all([
+    db.tour.count({ where: { isActive: true } }),
     db.tour.findMany({
       where: { isActive: true },
       select: {
@@ -62,6 +63,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <HomeTourSearch
         locale={locale}
         vehicles={vehicles}
+        totalTours={totalTours}
         tours={tours.map((tour) => ({
           slug: tour.slug,
           title: locale === "en" ? tour.titleEn : locale === "zh" ? (tour.titleZh || tour.titleEn) : tour.titleId,
