@@ -84,6 +84,8 @@ export default async function ToursPage({ params, searchParams }: { params: Prom
               duration={tour.duration}
               stopsCount={tour._count.stops}
               basePrice={tour.basePrice}
+              ratingAvg={tour.ratingAvg}
+              ratingCount={tour.ratingCount}
               locale={locale}
             />
           );
