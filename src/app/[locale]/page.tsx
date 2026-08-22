@@ -23,34 +23,40 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const tours = await db.tour.findMany({
-    where: { isActive: true },
-    select: {
-      slug: true,
-      titleId: true,
-      titleEn: true,
-      titleZh: true,
-      basePrice: true,
-      duration: true,
-      zone: true,
-      images: true,
-      stops: { orderBy: { order: "asc" }, select: { nameId: true } }
-    },
-    orderBy: { basePrice: "asc" },
-    take: 12
-  });
+  const [tours, vehicles] = await Promise.all([
+    db.tour.findMany({
+      where: { isActive: true },
+      select: {
+        slug: true,
+        titleId: true,
+        titleEn: true,
+        titleZh: true,
+        basePrice: true,
+        duration: true,
+        zone: true,
+        images: true,
+        maxPax: true,
+        stops: { orderBy: { order: "asc" }, select: { nameId: true } }
+      },
+      orderBy: { basePrice: "asc" },
+      take: 12
+    }),
+    db.vehicle.findMany({ where: { isActive: true } })
+  ]);
 
   return (
     <>
       <HeroSection />
       <HomeTourSearch
         locale={locale}
+        vehicles={vehicles}
         tours={tours.map((tour) => ({
           slug: tour.slug,
           title: locale === "en" ? tour.titleEn : locale === "zh" ? (tour.titleZh || tour.titleEn) : tour.titleId,
           basePrice: tour.basePrice,
           duration: tour.duration,
           zone: tour.zone,
+          maxPax: tour.maxPax,
           stops: tour.stops.map((stop) => stop.nameId),
           images: JSON.parse(tour.images || "[]")
         }))}
