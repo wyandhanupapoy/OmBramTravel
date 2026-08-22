@@ -107,6 +107,46 @@ function HeroSection() {
       {/* Radial glow */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_85%_-10%,rgba(242,169,60,0.16),transparent_55%)]" />
 
+      {/* Rotating Left Tire */}
+      <div className="absolute -left-48 top-1/2 -translate-y-1/2 w-96 h-96 opacity-[0.03] pointer-events-none" style={{ animation: 'spin 30s linear infinite' }}>
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" className="w-full h-full text-paper">
+          {/* Outer tire */}
+          <circle cx="50" cy="50" r="45" strokeWidth="10" strokeDasharray="4 4" />
+          <circle cx="50" cy="50" r="45" strokeWidth="6" />
+          {/* Inner rim */}
+          <circle cx="50" cy="50" r="28" strokeWidth="4" />
+          {/* Hub */}
+          <circle cx="50" cy="50" r="10" strokeWidth="3" />
+          {/* Spokes */}
+          <line x1="50" y1="5" x2="50" y2="22" strokeWidth="4" />
+          <line x1="50" y1="78" x2="50" y2="95" strokeWidth="4" />
+          <line x1="5" y1="50" x2="22" y2="50" strokeWidth="4" />
+          <line x1="78" y1="50" x2="95" y2="50" strokeWidth="4" />
+          <line x1="18.18" y1="18.18" x2="30.2" y2="30.2" strokeWidth="4" />
+          <line x1="81.82" y1="81.82" x2="69.8" y2="69.8" strokeWidth="4" />
+          <line x1="18.18" y1="81.82" x2="30.2" y2="69.8" strokeWidth="4" />
+          <line x1="81.82" y1="18.18" x2="69.8" y2="30.2" strokeWidth="4" />
+        </svg>
+      </div>
+
+      {/* Rotating Right Tire */}
+      <div className="absolute -right-48 top-1/2 -translate-y-1/2 w-96 h-96 opacity-[0.03] pointer-events-none" style={{ animation: 'spin 30s linear infinite reverse' }}>
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" className="w-full h-full text-paper">
+          <circle cx="50" cy="50" r="45" strokeWidth="10" strokeDasharray="4 4" />
+          <circle cx="50" cy="50" r="45" strokeWidth="6" />
+          <circle cx="50" cy="50" r="28" strokeWidth="4" />
+          <circle cx="50" cy="50" r="10" strokeWidth="3" />
+          <line x1="50" y1="5" x2="50" y2="22" strokeWidth="4" />
+          <line x1="50" y1="78" x2="50" y2="95" strokeWidth="4" />
+          <line x1="5" y1="50" x2="22" y2="50" strokeWidth="4" />
+          <line x1="78" y1="50" x2="95" y2="50" strokeWidth="4" />
+          <line x1="18.18" y1="18.18" x2="30.2" y2="30.2" strokeWidth="4" />
+          <line x1="81.82" y1="81.82" x2="69.8" y2="69.8" strokeWidth="4" />
+          <line x1="18.18" y1="81.82" x2="30.2" y2="69.8" strokeWidth="4" />
+          <line x1="81.82" y1="18.18" x2="69.8" y2="30.2" strokeWidth="4" />
+        </svg>
+      </div>
+
       <div className="relative mx-auto grid max-w-[1180px] items-center gap-10 px-7 lg:grid-cols-[1.05fr_0.95fr] lg:gap-4">
         <div className="relative z-10">
           <span className="font-mono text-xs tracking-[0.16em] uppercase font-medium text-beacon mb-5 block">
