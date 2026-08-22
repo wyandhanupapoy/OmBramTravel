@@ -3,11 +3,9 @@
 import { useEffect, useState } from "react";
 import { type Currency } from "@/i18n/config";
 import { CURRENCY_SYMBOLS } from "@/lib/currency";
-import { useRouter } from "next/navigation";
 
 export function CurrencySelector() {
   const [currency, setCurrency] = useState<Currency>("IDR");
-  const router = useRouter();
 
   useEffect(() => {
     // Read from cookie on mount
@@ -18,7 +16,7 @@ export function CurrencySelector() {
   const handleSelect = (c: Currency) => {
     setCurrency(c);
     document.cookie = `currency=${c}; path=/; max-age=31536000`; // 1 year
-    router.refresh();
+    window.dispatchEvent(new Event("currencyChange"));
   };
 
   const currencies: Currency[] = ["IDR", "USD", "EUR", "SGD", "MYR", "CNY", "THB", "JPY", "KRW", "SAR", "GBP"];

@@ -22,21 +22,24 @@ export function CurrencyDisplay({ amountIDR, className, targetCurrency }: Props)
   useEffect(() => {
     if (!rates) return;
     
-    // Auto-select currency based on locale if not explicitly provided
-    let currency: Currency = targetCurrency || "IDR";
-    if (!targetCurrency) {
-      // First try to get from cookie
-      const match = document.cookie.match(new RegExp('(^| )currency=([^;]+)'));
-      if (match) {
-        currency = match[2] as Currency;
-      } else {
-        // Fallback to locale based
-        if (locale === "en") currency = "USD";
-        else if (locale === "zh") currency = "CNY";
+    const updateDisplay = () => {
+      let currency: Currency = targetCurrency || "IDR";
+      if (!targetCurrency) {
+        const match = document.cookie.match(new RegExp('(^| )currency=([^;]+)'));
+        if (match) {
+          currency = match[2] as Currency;
+        } else {
+          if (locale === "en") currency = "USD";
+          else if (locale === "zh") currency = "CNY";
+        }
       }
-    }
+      setDisplay(formatDualCurrency(amountIDR, currency, rates));
+    };
 
-    setDisplay(formatDualCurrency(amountIDR, currency, rates));
+    updateDisplay(); // Run once initially
+    
+    window.addEventListener("currencyChange", updateDisplay);
+    return () => window.removeEventListener("currencyChange", updateDisplay);
   }, [amountIDR, rates, locale, targetCurrency]);
 
   return <span className={className}>{display}</span>;
