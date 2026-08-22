@@ -27,7 +27,7 @@ export default async function TrackPage({
 
   const booking = await db.booking.findUnique({
     where: { orderCode },
-    include: { tour: true, driver: { include: { vehicle: true } } }
+    include: { tour: true, vehicle: true, driver: { include: { vehicle: true } } }
   });
 
   if (!booking) notFound();
@@ -184,6 +184,7 @@ export default async function TrackPage({
               bookingId={booking.id}
               tourName={title} 
               pickupGeoJson={pickupGeoJson}
+              pickupAddress={booking.pickupPoint}
             />
           </div>
         )}
@@ -202,96 +203,103 @@ export default async function TrackPage({
         Hanya muncul di Kertas Cetak
         ========================================
       */}
-      <div className="hidden print:block w-full max-w-[800px] mx-auto bg-white text-black p-8 font-mono text-[11px] leading-relaxed">
+      <div className="hidden print:block w-full max-w-[800px] mx-auto bg-white text-black p-4 font-mono text-sm leading-relaxed whitespace-pre-wrap">
         
-        {/* Header Invoice */}
-        <div className="flex justify-between items-start border-b-2 border-dashed border-black pb-5 mb-5">
+        <div className="text-center border-b-2 border-dashed border-black pb-4 mb-4">
+          <h1 className="text-3xl font-bold tracking-widest uppercase mb-1">=== OM BRAM ===</h1>
+          <p className="text-sm tracking-widest uppercase">CITY TOUR BANDUNG</p>
+          <p className="text-xs mt-2">JL. CONTOH ALAMAT BANDUNG NO. 123<br/>BANDUNG, JAWA BARAT, INDONESIA<br/>WA: +62 838-7040-5395</p>
+        </div>
+
+        <div className="flex justify-between items-start mb-6 border-b-2 border-dashed border-black pb-4">
           <div>
-            <h1 className="font-display text-4xl font-bold tracking-wider mb-1">OM BRAM</h1>
-            <p className="font-mono text-xs tracking-[0.2em] uppercase">City Tour Bandung</p>
-            <p className="text-[10px] mt-3">Jl. Contoh Alamat Bandung No. 123<br/>Bandung, Jawa Barat, Indonesia<br/>WA: +62 838-7040-5395</p>
+            <p>NO ORDER : {orderCode}</p>
+            <p>TANGGAL  : {new Date().toLocaleDateString('id-ID')}</p>
+            <p>STATUS   : {isSuccess ? "LUNAS (PAID)" : "PENDING"}</p>
+            <p>MOBIL REQ: {booking.vehicle ? booking.vehicle.name.toUpperCase() : "BEBAS"}</p>
           </div>
           <div className="text-right">
-            <h2 className="font-display text-3xl text-gray-800 mb-2">INVOICE</h2>
-            <p className="font-mono font-bold text-lg">{orderCode}</p>
-            <p className="text-sm text-gray-600 mt-2">Tanggal Terbit: {new Date().toLocaleDateString('id-ID')}</p>
-            <div className="mt-3 inline-block border border-black font-bold px-3 py-1 uppercase tracking-widest">
-              {isSuccess ? "LUNAS / PAID" : "PENDING"}
+            <p>CUSTOMER : {booking.customerName.toUpperCase()}</p>
+            <p>TELP     : {booking.customerPhone}</p>
+            <p>JEMPUT   : {booking.pickupPoint.toUpperCase()}</p>
+            {booking.driver && <p>DRIVER   : {booking.driver.name.toUpperCase()} ({booking.driver.vehicle?.plate})</p>}
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <div className="flex border-b border-black pb-1 mb-2 font-bold uppercase">
+            <div className="w-1/2">DESKRIPSI</div>
+            <div className="w-1/4 text-center">QTY</div>
+            <div className="w-1/4 text-right">JUMLAH</div>
+          </div>
+          
+          <div className="flex mb-1">
+            <div className="w-1/2 pr-2">{title.toUpperCase()} (PRIVATE TOUR)</div>
+            <div className="w-1/4 text-center">{booking.pax + booking.children} PAX</div>
+            <div className="w-1/4 text-right">{formatIDR(booking.subtotal)}</div>
+          </div>
+          
+          {extraPaxCost > 0 && (
+            <div className="flex mb-1 text-xs">
+              <div className="w-1/2 pr-2">TAMBAHAN KAPASITAS</div>
+              <div className="w-1/4 text-center">{extraPaxCount} PAX</div>
+              <div className="w-1/4 text-right">{formatIDR(extraPaxCost)}</div>
             </div>
-          </div>
+          )}
+          {routeCost > 0 && (
+            <div className="flex mb-1 text-xs">
+              <div className="w-1/2 pr-2">BIAYA JARAK/RUTE CUSTOM</div>
+              <div className="w-1/4 text-center">1</div>
+              <div className="w-1/4 text-right">{formatIDR(routeCost)}</div>
+            </div>
+          )}
+          {luggageCost > 0 && (
+            <div className="flex mb-1 text-xs">
+              <div className="w-1/2 pr-2">BAGASI BESAR</div>
+              <div className="w-1/4 text-center">{booking.extraLuggage}</div>
+              <div className="w-1/4 text-right">{formatIDR(luggageCost)}</div>
+            </div>
+          )}
         </div>
 
-        {/* Info Pelanggan & Perjalanan */}
-        <div className="flex justify-between mb-6">
-          <div className="w-1/2 pr-4">
-            <h3 className="font-bold text-gray-500 uppercase text-xs mb-2 tracking-wider">Ditagihkan Kepada:</h3>
-            <p className="font-bold text-lg">{booking.customerName}</p>
-            <p className="text-sm">{booking.customerPhone}</p>
-            <p className="text-sm">{booking.customerEmail}</p>
-          </div>
-          <div className="w-1/2 pl-4 border-l border-gray-200">
-            <h3 className="font-bold text-gray-500 uppercase text-xs mb-2 tracking-wider">Detail Eksekusi:</h3>
-            <p className="text-sm"><span className="font-semibold">Tanggal Tur:</span> {booking.date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
-            <p className="text-sm mt-1"><span className="font-semibold">Titik Jemput:</span> {booking.pickupPoint}</p>
-            {booking.driver && (
-              <p className="text-sm mt-1">
-                <span className="font-semibold">Driver:</span> {booking.driver.name} ({booking.driver.vehicle?.plate})
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Tabel Layanan */}
-        <table className="w-full text-left border-collapse mb-8">
-          <thead>
-            <tr className="bg-gray-100 border-b border-gray-300">
-              <th className="py-2 px-3 font-bold">DESKRIPSI</th>
-              <th className="py-2 px-3 font-bold text-center">QTY</th>
-              <th className="py-2 px-3 font-bold text-right">JUMLAH</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border-b border-gray-200">
-              <td className="py-3 px-3">
-                <p className="font-bold">{title}</p>
-                <p className="text-[10px] mt-1">Private City Tour Bandung</p>
-              </td>
-              <td className="py-3 px-3 text-center align-top">{booking.pax + booking.children}</td>
-              <td className="py-3 px-3 text-right align-top">{formatIDR(booking.subtotal)}</td>
-            </tr>
-            {extraPaxCost > 0 && <tr className="border-b border-gray-400"><td className="py-2 px-3">Tambahan kapasitas ({extraPaxCount} pax)</td><td className="py-2 px-3 text-center">{extraPaxCount}</td><td className="py-2 px-3 text-right">{formatIDR(extraPaxCost)}</td></tr>}
-            {routeCost > 0 && <tr className="border-b border-gray-400"><td className="py-2 px-3">Biaya jarak/rute custom</td><td className="py-2 px-3 text-center">1</td><td className="py-2 px-3 text-right">{formatIDR(routeCost)}</td></tr>}
-            {luggageCost > 0 && <tr className="border-b border-gray-400"><td className="py-2 px-3">Bagasi besar</td><td className="py-2 px-3 text-center">{booking.extraLuggage}</td><td className="py-2 px-3 text-right">{formatIDR(luggageCost)}</td></tr>}
-          </tbody>
-        </table>
-
-        {/* Ringkasan Biaya */}
-        <div className="flex justify-end">
+        <div className="flex justify-end border-t border-dashed border-black pt-2 mb-6">
           <div className="w-1/2">
-            <div className="flex justify-between py-2 border-b border-gray-400">
-              <span className="font-semibold">SUBTOTAL</span>
+            <div className="flex justify-between mb-1">
+              <span>SUBTOTAL</span>
               <span>{formatIDR(booking.subtotal)}</span>
             </div>
-            <div className="flex justify-between py-2 border-b border-gray-400">
+            <div className="flex justify-between mb-1">
               <span>BIAYA TAMBAHAN</span>
               <span>{formatIDR(booking.extraFees)}</span>
             </div>
-            <div className="flex justify-between py-3 border-b-2 border-black text-base font-bold">
-              <span>TOTAL DIBAYARKAN</span>
+            <div className="flex justify-between font-bold text-lg mt-2 pt-2 border-t border-black">
+              <span>TOTAL</span>
               <span>{formatIDR(booking.totalIDR)}</span>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-8 border-t border-dashed border-black pt-5 mt-6 mb-8">
-          <div><h3 className="font-bold uppercase mb-2">Termasuk</h3><p>Transportasi private sesuai kapasitas</p><p>Driver dan BBM</p><p>Penjemputan di titik tertera</p><p>Itinerary sesuai paket</p></div>
-          <div><h3 className="font-bold uppercase mb-2">Tidak Termasuk</h3><p>Tiket masuk objek wisata</p><p>Makan dan minum pribadi</p><p>Parkir, tol, dan biaya di luar paket</p><p>Pengeluaran pribadi dan tip driver</p></div>
+        <div className="border-t-2 border-dashed border-black pt-4 mb-4">
+          <div className="mb-4">
+            <p className="font-bold uppercase mb-1">+++ INCLUDE (TERMASUK) +++</p>
+            <p className="text-xs">- TRANSPORTASI PRIVATE SESUAI KAPASITAS</p>
+            <p className="text-xs">- DRIVER BERPENGALAMAN & BBM</p>
+            <p className="text-xs">- PENJEMPUTAN & PENGANTARAN KE TITIK TERTERA</p>
+            <p className="text-xs">- ITINERARY SESUAI PAKET YANG DIPILIH</p>
+          </div>
+          <div>
+            <p className="font-bold uppercase mb-1">--- EXCLUDE (TIDAK TERMASUK) ---</p>
+            <p className="text-xs">- TIKET MASUK OBJEK WISATA</p>
+            <p className="text-xs">- MAKAN & MINUM PRIBADI</p>
+            <p className="text-xs">- PARKIR, TOL, DAN BIAYA DI LUAR PAKET</p>
+            <p className="text-xs">- PENGELUARAN PRIBADI & TIPPING DRIVER (SUKARELA)</p>
+          </div>
         </div>
 
-        {/* Footer Invoice */}
-        <div className="mt-16 pt-8 border-t border-gray-200 text-center text-sm text-gray-500">
-          <p>Terima kasih telah mempercayakan perjalanan Anda kepada Om Bram Travel.</p>
-          <p>Syarat & Ketentuan berlaku. Harap stand-by 15 menit sebelum waktu penjemputan.</p>
+        <div className="border-t-2 border-dashed border-black pt-4 text-center text-xs">
+          <p>TERIMA KASIH TELAH MEMPERCAYAKAN PERJALANAN ANDA KEPADA OM BRAM TRAVEL.</p>
+          <p>HARAP STAND-BY 15 MENIT SEBELUM WAKTU PENJEMPUTAN.</p>
+          <p className="mt-2 text-[10px]">Dicetak secara otomatis oleh sistem pada {new Date().toLocaleString('id-ID')}</p>
         </div>
 
       </div>

@@ -11,7 +11,10 @@ interface SearchTour {
   zone: string;
   stops: string[];
   images: string[];
+  maxPax: number;
 }
+
+interface SearchVehicle { type: string; capacity: number; name: string; }
 
 const searchCopy: Record<string, { eyebrow: string; heading: string; available: string; loading: string; placeholder: string; searchLabel: string; all: string; city: string; nature: string; family: string; areaLabel: string; recommended: string; cheap: string; expensive: string; sortLabel: string; reset: string; from: string; halfDay: string; fullDay: string; empty: string; showing: string }> = {
   id: { eyebrow: "Jelajahi Bandung Raya", heading: "Cari destinasi atau rute wisata", available: "rute tersedia", loading: "Mencari...", placeholder: "Contoh: Dago, Braga, Kawah Putih...", searchLabel: "Cari destinasi", all: "Semua area", city: "Kota", nature: "Alam", family: "Keluarga", areaLabel: "Filter area", recommended: "Rekomendasi", cheap: "Termurah", expensive: "Termahal", sortLabel: "Urutkan harga", reset: "Reset filter", from: "mulai dari", halfDay: "Half day", fullDay: "Full day", empty: "Destinasi belum ditemukan. Coba kata kunci lain.", showing: "Menampilkan 12 hasil teratas. Persempit pencarian untuk hasil yang lebih spesifik." },
@@ -22,26 +25,40 @@ const searchCopy: Record<string, { eyebrow: string; heading: string; available: 
   ar: { eyebrow: "استكشف باندونغ", heading: "ابحث عن وجهة أو مسار رحلة", available: "مسار متاح", loading: "جارٍ البحث...", placeholder: "مثال: داغو، براغا، الحفرة البيضاء...", searchLabel: "البحث عن وجهة", all: "كل المناطق", city: "المدينة", nature: "الطبيعة", family: "العائلة", areaLabel: "تصفية المنطقة", recommended: "موصى به", cheap: "الأقل سعراً", expensive: "الأعلى سعراً", sortLabel: "ترتيب حسب السعر", reset: "إعادة ضبط", from: "يبدأ من", halfDay: "نصف يوم", fullDay: "يوم كامل", empty: "لم يتم العثور على وجهة. جرّب كلمة أخرى.", showing: "عرض أول 12 نتيجة. ضيّق البحث للحصول على نتائج أدق." }
 };
 
-export function HomeTourSearch({ tours, locale }: { tours: SearchTour[]; locale: string }) {
+const cache = new Map<string, { tours: SearchTour[]; total: number }>();
+
+export function HomeTourSearch({ tours, locale, vehicles = [] }: { tours: SearchTour[]; locale: string; vehicles?: SearchVehicle[] }) {
   const [query, setQuery] = useState("");
   const [zone, setZone] = useState("all");
   const [sort, setSort] = useState("recommended");
   const [results, setResults] = useState(tours);
   const [resultCount, setResultCount] = useState(tours.length);
   const [isSearching, setIsSearching] = useState(false);
+  const [page, setPage] = useState(1);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(0);
+  const [duration, setDuration] = useState("all");
+  const [pax, setPax] = useState(0);
+  const [vehicleType, setVehicleType] = useState("all");
   const deferredQuery = useDeferredValue(query);
   const copy = searchCopy[locale] || searchCopy.id;
 
   useEffect(() => {
+    const timer = window.setTimeout(() => {
     const controller = new AbortController();
+    const key = `${deferredQuery}|${zone}|${sort}|${minPrice}|${maxPrice}|${duration}|${pax}|${vehicleType}`;
+    const cached = cache.get(key);
+    if (cached) { setResults(cached.tours); setResultCount(cached.total); return; }
     setIsSearching(true);
-    fetch(`/api/tours?q=${encodeURIComponent(deferredQuery)}&zone=${zone}&sort=${sort}&locale=${locale}&limit=12`, { signal: controller.signal })
+    fetch(`/api/tours?q=${encodeURIComponent(deferredQuery)}&zone=${zone}&sort=${sort}&locale=${locale}&page=${page}&limit=12&minPrice=${minPrice}&maxPrice=${maxPrice}&duration=${duration}&pax=${pax}&vehicleType=${vehicleType}`, { signal: controller.signal })
       .then((response) => response.json())
-      .then((data) => { setResults(data.tours || []); setResultCount(data.total || 0); })
+      .then((data) => { const next = { tours: data.tours || [], total: data.total || 0 }; cache.set(key, next); setResults(next.tours); setResultCount(next.total); })
       .catch(() => {})
       .finally(() => setIsSearching(false));
     return () => controller.abort();
-  }, [deferredQuery, zone, sort]);
+    }, 280);
+    return () => window.clearTimeout(timer);
+  }, [deferredQuery, zone, sort, minPrice, maxPrice, duration, pax, vehicleType, page, locale]);
 
   const filteredTours = results;
 
@@ -76,8 +93,18 @@ export function HomeTourSearch({ tours, locale }: { tours: SearchTour[]; locale:
             </select>
           </div>
 
-          {(query || zone !== "all" || sort !== "recommended") && (
-            <button type="button" onClick={() => { setQuery(""); setZone("all"); setSort("recommended"); }} className="mt-3 text-xs font-semibold text-rust underline underline-offset-2">{copy.reset}</button>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <input type="number" min="0" value={minPrice || ""} onChange={(event) => { setPage(1); setMinPrice(Number(event.target.value) || 0); }} placeholder="Harga minimum" className="rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-pine" />
+            <input type="number" min="0" value={maxPrice || ""} onChange={(event) => { setPage(1); setMaxPrice(Number(event.target.value) || 0); }} placeholder="Harga maksimum" className="rounded-xl border border-line bg-white px-4 py-3 text-sm outline-none focus:border-pine" />
+            <select value={duration} onChange={(event) => { setPage(1); setDuration(event.target.value); }} className="rounded-xl border border-line bg-white px-4 py-3 text-sm font-semibold text-pine-dark outline-none focus:border-pine"><option value="all">Semua durasi</option><option value="half-day">Half day</option><option value="full-day">Full day</option></select>
+            <select value={pax} onChange={(event) => { setPage(1); setPax(Number(event.target.value)); }} className="rounded-xl border border-line bg-white px-4 py-3 text-sm font-semibold text-pine-dark outline-none focus:border-pine"><option value="0">Semua kapasitas</option><option value="2">Min. 2 pax</option><option value="4">Min. 4 pax</option><option value="7">Min. 7 pax</option></select>
+          </div>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <select value={vehicleType} onChange={(event) => { setPage(1); setVehicleType(event.target.value); }} className="rounded-xl border border-line bg-white px-4 py-3 text-sm font-semibold text-pine-dark outline-none focus:border-pine"><option value="all">Semua kendaraan</option>{Array.from(new Set(vehicles.map(vehicle => vehicle.type))).map(type => <option key={type} value={type}>{type} {vehicles.find(vehicle => vehicle.type === type)?.capacity ? `(${vehicles.find(vehicle => vehicle.type === type)?.capacity} pax)` : ""}</option>)}</select>
+          </div>
+
+          {(query || zone !== "all" || sort !== "recommended" || minPrice || maxPrice || duration !== "all" || pax || vehicleType !== "all") && (
+            <button type="button" onClick={() => { setQuery(""); setZone("all"); setSort("recommended"); setMinPrice(0); setMaxPrice(0); setDuration("all"); setPax(0); setVehicleType("all"); setPage(1); }} className="mt-3 text-xs font-semibold text-rust underline underline-offset-2">{copy.reset}</button>
           )}
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -86,6 +113,7 @@ export function HomeTourSearch({ tours, locale }: { tours: SearchTour[]; locale:
 
           {filteredTours.length === 0 && <div className="py-10 text-center text-sm text-ink-soft">{copy.empty}</div>}
           {resultCount > 12 && <p className="mt-5 text-center text-xs text-ink-soft">{copy.showing}</p>}
+          {resultCount > 12 && <div className="mt-5 flex justify-center gap-2"><button type="button" disabled={page === 1} onClick={() => setPage(current => current - 1)} className="rounded-lg border border-line-strong px-4 py-2 text-sm font-semibold disabled:opacity-40">Prev</button><span className="px-3 py-2 font-mono text-sm">{page}</span><button type="button" disabled={page * 12 >= resultCount} onClick={() => setPage(current => current + 1)} className="rounded-lg border border-line-strong px-4 py-2 text-sm font-semibold disabled:opacity-40">Next</button></div>}
         </div>
       </div>
     </section>

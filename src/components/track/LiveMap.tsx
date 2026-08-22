@@ -9,7 +9,7 @@ const Marker = dynamic(() => import("react-leaflet").then((mod) => mod.Marker), 
 const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), { ssr: false });
 const Polyline = dynamic(() => import("react-leaflet").then((mod) => mod.Polyline), { ssr: false });
 
-export function LiveMap({ bookingId, tourName, pickupGeoJson }: { bookingId: string, tourName: string, pickupGeoJson?: string }) {
+export function LiveMap({ bookingId, tourName, pickupGeoJson, pickupAddress }: { bookingId: string, tourName: string, pickupGeoJson?: string, pickupAddress?: string }) {
   const [position, setPosition] = useState<[number, number] | null>(null);
   const [pickupCoords, setPickupCoords] = useState<[number, number] | null>(null);
   const [routeLine, setRouteLine] = useState<[number, number][]>([]);
@@ -21,10 +21,25 @@ export function LiveMap({ bookingId, tourName, pickupGeoJson }: { bookingId: str
     if (pickupGeoJson) {
       try {
         const geo = JSON.parse(pickupGeoJson);
-        if (geo.lat && geo.lng) setPickupCoords([geo.lat, geo.lng]);
+        if (geo.lat && geo.lng) {
+          setPickupCoords([geo.lat, geo.lng]);
+          return;
+        }
       } catch(e) {}
     }
-  }, [pickupGeoJson]);
+    
+    // Fallback: Geocode pickupAddress via Nominatim if no geojson is found
+    if (!pickupGeoJson && pickupAddress) {
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(pickupAddress)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.length > 0) {
+            setPickupCoords([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [pickupGeoJson, pickupAddress]);
 
   useEffect(() => {
     import("leaflet").then((L) => {

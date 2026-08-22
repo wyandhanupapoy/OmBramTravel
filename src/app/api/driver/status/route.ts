@@ -7,39 +7,31 @@ export async function POST(req: Request) {
     const { bookingId, status } = await req.json();
     const driverId = (await cookies()).get("driver_session")?.value;
 
-    if (!driverId || !["en-route", "arrived", "completed"].includes(status)) {
+    if (!driverId || !["en-route", "arrived", "touring", "completed"].includes(status)) {
       return NextResponse.json({ error: "Invalid driver status request" }, { status: 400 });
     }
 
     const booking = await db.booking.findFirst({
-      where: { id: bookingId, driverId },
-      include: { tour: true }
+      where: { id: bookingId, driverId }
     });
 
     if (!booking) {
       return NextResponse.json({ error: "Booking not assigned to this driver" }, { status: 404 });
     }
 
-    if (status === "en-route" && booking.status !== "assigned") {
-      return NextResponse.json({ error: "Booking is not waiting for pickup" }, { status: 409 });
-    }
-
-    if (status === "arrived" && booking.status !== "en-route") {
-      return NextResponse.json({ error: "Driver must be en route before arrival" }, { status: 409 });
-    }
-
-    if (status === "completed" && booking.status !== "touring") {
-      return NextResponse.json({ error: "Tour is not active" }, { status: 409 });
-    }
+    // Logic Timestamp
+    const updateData: any = { status };
+    if (status === "en-route") updateData.departedAt = new Date();
+    if (status === "arrived") updateData.arrivedAt = new Date();
+    if (status === "touring") updateData.startedAt = new Date();
+    if (status === "completed") updateData.completedAt = new Date();
 
     await db.booking.update({
       where: { id: bookingId },
-      data: status === "arrived"
-        ? { status: "touring", tourStartedAt: new Date() }
-        : { status }
+      data: updateData
     });
 
-    return NextResponse.json({ success: true, status: status === "arrived" ? "touring" : status });
+    return NextResponse.json({ success: true, status });
   } catch (error) {
     return NextResponse.json({ error: "Failed to update status" }, { status: 500 });
   }

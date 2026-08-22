@@ -61,6 +61,8 @@ model Booking {
   children      Int       @default(0)
   extraLuggage  Int       @default(0)
   pickupPoint   String
+  vehicleId     String?
+  vehicle       Vehicle? @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
 
   customerName  String
   customerPhone String
@@ -92,6 +94,14 @@ model Booking {
   isReported    Boolean   @default(false)
   reportDetails String?
   extraCharge   Int       @default(0)
+
+  // Advanced Tracking & Vehicle
+  requestedVehicleType String?
+  assignedAt    DateTime?
+  departedAt    DateTime?
+  arrivedAt     DateTime?
+  startedAt     DateTime?
+  completedAt   DateTime?
 
   trackings     Tracking[]
 
@@ -129,6 +139,7 @@ model Vehicle {
   capacity Int
   imageUrl String?
   drivers  Driver[]
+  bookings Booking[]
 }
 
 model Tracking {

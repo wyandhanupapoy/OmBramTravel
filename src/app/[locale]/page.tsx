@@ -116,9 +116,9 @@ function HeroSection() {
 
         <div className="relative h-[260px] overflow-visible sm:h-[330px] lg:h-[390px]" aria-label="Armada kendaraan Om Bram">
           <Image src="/hiace.png" alt="Toyota Hiace travel Om Bram" fill sizes="(max-width: 1024px) 65vw, 38vw" className="absolute inset-0 z-10 object-contain object-right-bottom drop-shadow-[0_18px_18px_rgba(0,0,0,0.28)]" priority />
-          <Image src="/isuzuelf.webp" alt="Isuzu ELF travel Om Bram" width={340} height={220} className="absolute left-0 top-3 z-20 w-[48%] object-contain opacity-95 drop-shadow-[0_10px_10px_rgba(0,0,0,0.2)]" />
-          <Image src="/kijanginova.png" alt="Toyota Kijang Innova Om Bram" width={360} height={240} className="absolute bottom-0 left-[7%] z-30 w-[48%] object-contain drop-shadow-[0_12px_12px_rgba(0,0,0,0.24)]" />
-          <Image src="/avanza.png" alt="Toyota Avanza Om Bram" width={300} height={210} className="absolute bottom-1 right-[4%] z-40 w-[40%] object-contain drop-shadow-[0_12px_12px_rgba(0,0,0,0.24)]" />
+          <Image src="/isuzuelf.webp" alt="Isuzu ELF travel Om Bram" width={340} height={220} className="absolute left-0 top-3 z-0 w-[48%] -scale-x-100 object-contain opacity-95 drop-shadow-[0_10px_10px_rgba(0,0,0,0.2)]" />
+          <Image src="/kijanginova.png" alt="Toyota Kijang Innova Om Bram" width={360} height={240} className="absolute bottom-0 left-[7%] z-30 w-[48%] scale-x-[-1] object-contain drop-shadow-[0_12px_12px_rgba(0,0,0,0.24)]" />
+          <Image src="/avanza.png" alt="Toyota Avanza Om Bram" width={300} height={210} className="absolute bottom-1 right-[1%] z-40 w-[50%] object-contain drop-shadow-[0_12px_12px_rgba(0,0,0,0.24)]" />
           <span className="absolute right-0 top-4 rounded-full border border-white/25 bg-pine-dark/30 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-white/70">Armada siap jalan</span>
         </div>
       </div>

@@ -15,6 +15,7 @@ export default async function BookingPage({
   const tour = await db.tour.findUnique({
     where: { slug: tourSlug },
   });
+  const vehicles = await db.vehicle.findMany({ orderBy: [{ capacity: "asc" }, { name: "asc" }] });
 
   if (!tour || !tour.isActive) {
     notFound();
@@ -61,6 +62,7 @@ export default async function BookingPage({
           total={total}
           extraPax={extraPax}
           locale={locale}
+          vehicles={vehicles}
         />
       </div>
     </div>

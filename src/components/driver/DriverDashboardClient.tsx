@@ -99,7 +99,7 @@ export function DriverDashboardClient({ driver, bookings }: DriverDashboardClien
     };
   }, [tracking, activeBookingId]);
 
-  const handleStatusChange = async (bookingId: string, status: "en-route" | "arrived" | "completed") => {
+  const handleStatusChange = async (bookingId: string, status: "en-route" | "arrived" | "touring" | "completed") => {
     if (status === "completed" && !confirm("Akhiri tour ini?")) return;
 
     const response = await fetch("/api/driver/status", {
@@ -157,7 +157,7 @@ export function DriverDashboardClient({ driver, bookings }: DriverDashboardClien
           </div>
           <div>
             <h2 className="text-xl font-medium">{driver.name}</h2>
-            <p className="text-sm opacity-70 font-mono">{driver.vehicle?.name} • {driver.vehicle?.plate}</p>
+            <p className="text-sm opacity-70 font-mono">{driver.vehicle?.name}   {driver.vehicle?.plate}</p>
           </div>
         </div>
       </div>
@@ -184,14 +184,25 @@ export function DriverDashboardClient({ driver, bookings }: DriverDashboardClien
                 <span className="text-xs text-ink-soft">{new Date(b.date).toLocaleDateString('id-ID')}</span>
               </div>
               <h4 className="font-display text-lg text-pine-dark mb-1">{b.tour.titleId}</h4>
-              <p className="text-sm font-medium mb-4">{b.customerName} • {b.pax} Penumpang</p>
+              <p className="text-sm font-medium mb-4">{b.customerName}   {b.pax} Penumpang</p>
 
-              <div className={`mb-3 rounded-lg border p-3 text-sm ${b.status === "assigned" ? "border-beacon/40 bg-beacon/10 text-pine-dark" : b.status === "touring" ? "border-ok/30 bg-ok/10 text-ok" : "border-pine/30 bg-pine/10 text-pine-dark"}`}>
+              <div className={`mb-3 rounded-lg border p-3 text-sm ${
+                b.status === "assigned" ? "border-beacon/40 bg-beacon/10 text-pine-dark" : 
+                b.status === "en-route" ? "border-pine/30 bg-pine/10 text-pine-dark" : 
+                b.status === "arrived" ? "border-rust/30 bg-rust/10 text-rust" :
+                "border-ok/30 bg-ok/10 text-ok"
+              }`}>
                 <div className="font-bold uppercase tracking-wide text-xs">
-                  {b.status === "assigned" ? "Peringatan jemput penumpang" : b.status === "en-route" ? "Menuju lokasi penumpang" : "Tour sedang berjalan"}
+                  {b.status === "assigned" ? "Peringatan jemput penumpang" : 
+                   b.status === "en-route" ? "Menuju lokasi penumpang" : 
+                   b.status === "arrived" ? "Standby di lokasi penjemputan" :
+                   "Tour sedang berjalan"}
                 </div>
                 <div className="mt-1">
-                  {b.status === "assigned" ? "Segera berangkat ke titik pickup." : b.status === "en-route" ? "Klik setelah sudah tiba di lokasi penumpang." : "Tour akan otomatis diakhiri setelah durasi paket habis."}
+                  {b.status === "assigned" ? "Segera berangkat ke titik pickup." : 
+                   b.status === "en-route" ? "Klik 'Tiba' setelah sudah berada di lokasi penumpang." : 
+                   b.status === "arrived" ? "Tunggu tamu masuk mobil, lalu klik 'Mulai Tour'." :
+                   "Tour akan otomatis diakhiri setelah durasi paket habis atau ditekan 'Akhiri Tour'."}
                 </div>
               </div>
               
@@ -218,13 +229,18 @@ export function DriverDashboardClient({ driver, bookings }: DriverDashboardClien
               </a>
               
               {b.status === "assigned" && (
-                <button onClick={() => handleStatusChange(b.id, "en-route")} disabled={tracking} className="flex-1 py-3 bg-beacon text-pine-dark rounded-xl font-display uppercase tracking-wide text-sm shadow-md disabled:opacity-50">
-                  Berangkat ke Penumpang
+                <button onClick={() => handleStatusChange(b.id, "en-route")} disabled={tracking && activeBookingId !== b.id} className="flex-1 py-3 bg-beacon text-pine-dark rounded-xl font-display uppercase tracking-wide text-sm shadow-md disabled:opacity-50">
+                  Berangkat Jemput
                 </button>
               )}
               {b.status === "en-route" && (
                 <button onClick={() => handleStatusChange(b.id, "arrived")} className="flex-1 py-3 bg-pine-dark text-paper rounded-xl font-display uppercase tracking-wide text-sm shadow-md">
-                  Sampai di Lokasi Penumpang
+                  Tiba di Lokasi
+                </button>
+              )}
+              {b.status === "arrived" && (
+                <button onClick={() => handleStatusChange(b.id, "touring")} className="flex-1 py-3 bg-ok text-white rounded-xl font-display uppercase tracking-wide text-sm shadow-md">
+                  Mulai Tour
                 </button>
               )}
               {b.status === "touring" && (

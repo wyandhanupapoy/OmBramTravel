@@ -9,7 +9,7 @@ import { AdminOrdersTable } from "@/components/admin/AdminOrdersTable";
 export default async function AdminOrders() {
   const orders = await db.booking.findMany({
     orderBy: { createdAt: "desc" },
-    include: { tour: true, driver: true }
+    include: { tour: true, driver: true, vehicle: true }
   });
 
   const availableDrivers = await db.driver.findMany({

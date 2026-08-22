@@ -9,8 +9,18 @@ export async function GET(req: Request) {
   const locale = url.searchParams.get("locale") || "id";
   const page = Math.max(Number(url.searchParams.get("page")) || 1, 1);
   const limit = Math.min(Math.max(Number(url.searchParams.get("limit")) || 12, 1), 24);
+  const minPrice = Math.max(Number(url.searchParams.get("minPrice")) || 0, 0);
+  const maxPrice = Number(url.searchParams.get("maxPrice")) || undefined;
+  const duration = url.searchParams.get("duration") || "all";
+  const pax = Math.max(Number(url.searchParams.get("pax")) || 0, 0);
+  const vehicleType = url.searchParams.get("vehicleType") || "all";
+  const vehicleCapacity = vehicleType !== "all" ? await db.vehicle.aggregate({ where: { type: vehicleType }, _max: { capacity: true } }) : null;
   const where = {
     isActive: true,
+    basePrice: { gte: minPrice, ...(maxPrice ? { lte: maxPrice } : {}) },
+    ...(duration !== "all" ? { duration } : {}),
+    ...(pax ? { maxPax: { gte: pax } } : {}),
+    ...(vehicleType !== "all" ? { maxPax: { lte: vehicleCapacity?._max.capacity || 0 } } : {}),
     ...(zone !== "all" ? { zone } : {}),
     ...(query ? {
       OR: [

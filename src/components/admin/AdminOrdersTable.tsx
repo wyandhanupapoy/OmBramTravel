@@ -33,8 +33,45 @@ export function AdminOrdersTable({ orders, drivers }: { orders: any[], drivers: 
     }
   };
 
+  const handleExportCSV = () => {
+    const headers = ["Order Code", "Date", "Customer Name", "Phone", "Tour", "Pax", "Subtotal", "Extra Charge", "Total IDR", "Payment Status", "Driver", "Vehicle Requested", "Assigned At", "Departed At", "Arrived At", "Started At", "Completed At"];
+    const rows = orders.map(o => [
+      o.orderCode,
+      new Date(o.date).toISOString().split('T')[0],
+      `"${o.customerName}"`,
+      `"${o.customerPhone}"`,
+      `"${o.tour.titleId}"`,
+      o.pax + (o.children || 0),
+      o.subtotal,
+      o.extraCharge || 0,
+      o.totalIDR,
+      o.paymentStatus,
+      `"${o.driver?.name || "Unassigned"}"`,
+      o.vehicle ? `"${o.vehicle.name} (${o.vehicle.type})"` : "-",
+      o.assignedAt ? new Date(o.assignedAt).toLocaleString('id-ID') : "-",
+      o.departedAt ? new Date(o.departedAt).toLocaleString('id-ID') : "-",
+      o.arrivedAt ? new Date(o.arrivedAt).toLocaleString('id-ID') : "-",
+      o.startedAt ? new Date(o.startedAt).toLocaleString('id-ID') : "-",
+      o.completedAt ? new Date(o.completedAt).toLocaleString('id-ID') : "-"
+    ]);
+    
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `Data_Pesanan_OmBram_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <>
+      <div className="flex justify-end mb-4">
+        <button onClick={handleExportCSV} className="bg-beacon text-pine-dark font-display uppercase tracking-wide text-sm px-6 py-2 rounded-lg shadow-sm hover:opacity-90 transition-opacity">
+          Export ke CSV
+        </button>
+      </div>
       <div className="bg-card border border-line rounded overflow-hidden">
         <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
@@ -123,11 +160,43 @@ export function AdminOrdersTable({ orders, drivers }: { orders: any[], drivers: 
                 <div className="font-medium">{selectedOrder.pickupPoint}</div>
               </div>
               <div className="bg-line/30 p-3 rounded-lg text-sm">
+                <div className="text-ink-soft mb-1">Mobil Diminta Pelanggan:</div>
+                <div className="font-medium text-pine-dark">{selectedOrder.vehicle ? `${selectedOrder.vehicle.name} (${selectedOrder.vehicle.type})` : "Tidak ada permintaan spesifik"}</div>
+              </div>
+              <div className="bg-line/30 p-3 rounded-lg text-sm">
                 <div className="text-ink-soft mb-1">Catatan Tambahan:</div>
                 <div className="font-medium whitespace-pre-wrap">{selectedOrder.notes || "-"}</div>
               </div>
 
-              <div>
+              {selectedOrder.driverId && (
+                <div className="border border-line rounded-lg p-4 bg-paper shadow-inner mt-4">
+                  <h4 className="font-display font-semibold text-pine-dark mb-3">Audit Trail Status</h4>
+                  <div className="space-y-2 text-xs font-mono">
+                    <div className="flex justify-between border-b border-line pb-1">
+                      <span className="text-ink-soft">1. Ditugaskan:</span>
+                      <span className="font-medium">{selectedOrder.assignedAt ? new Date(selectedOrder.assignedAt).toLocaleString('id-ID') : '-'}</span>
+                    </div>
+                    <div className="flex justify-between border-b border-line pb-1">
+                      <span className="text-ink-soft">2. Berangkat Jemput:</span>
+                      <span className="font-medium">{selectedOrder.departedAt ? new Date(selectedOrder.departedAt).toLocaleString('id-ID') : '-'}</span>
+                    </div>
+                    <div className="flex justify-between border-b border-line pb-1">
+                      <span className="text-ink-soft">3. Tiba di Lokasi:</span>
+                      <span className="font-medium">{selectedOrder.arrivedAt ? new Date(selectedOrder.arrivedAt).toLocaleString('id-ID') : '-'}</span>
+                    </div>
+                    <div className="flex justify-between border-b border-line pb-1">
+                      <span className="text-ink-soft">4. Tour Dimulai:</span>
+                      <span className="font-medium">{selectedOrder.startedAt ? new Date(selectedOrder.startedAt).toLocaleString('id-ID') : '-'}</span>
+                    </div>
+                    <div className="flex justify-between pt-1">
+                      <span className="text-ink-soft">5. Selesai:</span>
+                      <span className="font-medium">{selectedOrder.completedAt ? new Date(selectedOrder.completedAt).toLocaleString('id-ID') : '-'}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="pt-2">
                 <label className="block text-sm font-medium mb-1.5 text-pine-dark">Cas Lebih (Extra Charge) Rp</label>
                 <input 
                   type="number" 

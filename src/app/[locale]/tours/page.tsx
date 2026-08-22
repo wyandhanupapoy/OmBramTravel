@@ -21,7 +21,7 @@ export default async function ToursPage({ params, searchParams }: { params: Prom
   const t = await getTranslations({ locale, namespace: "tours" });
   const tTourData = await getTranslations({ locale, namespace: "tourData" });
 
-  const [totalTours, tours] = await Promise.all([
+  const [totalTours, tours, vehicles] = await Promise.all([
     db.tour.count({ where: { isActive: true } }),
     db.tour.findMany({
       where: { isActive: true },
@@ -29,7 +29,8 @@ export default async function ToursPage({ params, searchParams }: { params: Prom
       orderBy: { createdAt: 'desc' },
       skip: (page - 1) * pageSize,
       take: pageSize
-    })
+    }),
+    db.vehicle.findMany({ where: { isActive: true } })
   ]);
   const totalPages = Math.ceil(totalTours / pageSize);
 
@@ -46,6 +47,7 @@ export default async function ToursPage({ params, searchParams }: { params: Prom
 
       <HomeTourSearch
         locale={locale}
+        vehicles={vehicles}
         tours={tours.map((tour) => ({
           slug: tour.slug,
           title: locale === "en" ? tour.titleEn : locale === "zh" ? (tour.titleZh || tour.titleEn) : tour.titleId,

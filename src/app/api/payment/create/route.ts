@@ -8,7 +8,7 @@ import { locales, type Locale } from "@/i18n/config";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { tourId, date, adults, children, luggage, pickupPoint, customerName, customerPhone, customerEmail, notes, locale, customerLocale, customerCountry = "ID", customDistance } = body;
+    const { tourId, date, adults, children, luggage, pickupPoint, vehicleId, customerName, customerPhone, customerEmail, notes, locale, customerLocale, customerCountry = "ID", customDistance } = body;
     const selectedLocale = locales.includes(customerLocale as Locale) ? customerLocale : (locales.includes(locale as Locale) ? locale : "id");
 
     let tour;
@@ -80,6 +80,7 @@ export async function POST(req: Request) {
         children,
         extraLuggage: luggage,
         pickupPoint: finalPickup,
+        vehicleId: vehicleId || null,
         customerName,
         customerPhone,
         customerEmail,
